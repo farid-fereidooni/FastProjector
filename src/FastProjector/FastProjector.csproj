@@ -13,9 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FastProjector.Shared\FastProjector.Shared.csproj" PrivateAssets="all" GeneratePathProperty="true"  />
+    <!-- <ProjectReference Include="..\FastProjector.Shared\FastProjector.Shared.csproj" PrivateAssets="all" GeneratePathProperty="true"  /> -->
+    <ProjectReference Include="..\FastProjector.Shared\FastProjector.Shared.csproj" />
 
-    <None Include="$(PkgFastProjector_SHared)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <!-- <None Include="$(PkgFastProjector_SHared)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" /> -->
   </ItemGroup>
 
 </Project>
