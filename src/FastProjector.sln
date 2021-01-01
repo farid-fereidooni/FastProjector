@@ -3,11 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastProjector", "FastProjector\FastProjector.csproj", "{62C336BC-537F-4660-BC9D-716138DE42F8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "Sample\Sample.csproj", "{59EFCE88-9555-42E8-82D4-B4FD358CE718}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastProjector.MapGenerator", "FastProjector.MapGenerator\FastProjector.MapGenerator.csproj", "{16693AE5-54B1-4F89-87F0-B77A14809F50}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,5 +54,17 @@ Global
 		{16693AE5-54B1-4F89-87F0-B77A14809F50}.Release|x64.Build.0 = Release|Any CPU
 		{16693AE5-54B1-4F89-87F0-B77A14809F50}.Release|x86.ActiveCfg = Release|Any CPU
 		{16693AE5-54B1-4F89-87F0-B77A14809F50}.Release|x86.Build.0 = Release|Any CPU
+		{0288838C-E462-497A-92F4-A6C84640A68E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0288838C-E462-497A-92F4-A6C84640A68E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0288838C-E462-497A-92F4-A6C84640A68E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0288838C-E462-497A-92F4-A6C84640A68E}.Debug|x64.Build.0 = Debug|Any CPU
+		{0288838C-E462-497A-92F4-A6C84640A68E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0288838C-E462-497A-92F4-A6C84640A68E}.Debug|x86.Build.0 = Debug|Any CPU
+		{0288838C-E462-497A-92F4-A6C84640A68E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0288838C-E462-497A-92F4-A6C84640A68E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0288838C-E462-497A-92F4-A6C84640A68E}.Release|x64.ActiveCfg = Release|Any CPU
+		{0288838C-E462-497A-92F4-A6C84640A68E}.Release|x64.Build.0 = Release|Any CPU
+		{0288838C-E462-497A-92F4-A6C84640A68E}.Release|x86.ActiveCfg = Release|Any CPU
+		{0288838C-E462-497A-92F4-A6C84640A68E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
