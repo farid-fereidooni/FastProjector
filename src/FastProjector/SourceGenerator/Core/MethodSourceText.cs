@@ -13,7 +13,7 @@ namespace FastProjector.MapGenerator.SourceGenerator.Interfaces
         private readonly bool isStatic;
         private readonly bool isVirtual;
         private readonly bool isAsync;
-        private List<ISourceText> members;
+        private readonly List<ISourceText> members;
 
         public string Text => BuildSource();
 

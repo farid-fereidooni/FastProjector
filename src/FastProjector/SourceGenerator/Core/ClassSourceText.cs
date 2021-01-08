@@ -11,7 +11,7 @@ namespace FastProjector.MapGenerator.SourceGenerator.Core
         private readonly AccessModifier accessModifier;
         private readonly bool isStatic;
         private readonly bool isVirtual;
-        private List<ISourceText> members;
+        private readonly List<ISourceText> members;
 
         public string Text => BuildSource();
         

@@ -34,12 +34,10 @@ namespace FastProjector.MapGenerator.DevTools
                  File.Create(LogPath).Close();
                  
              }
-             using (var writer = File.AppendText(LogPath))
-             {
-                 writer.WriteLine("\n" + DateTime.Now.ToLocalTime());
-                   writer.WriteLine(JsonConvert.SerializeObject(log));
-                 //writer.WriteLine(ObjectDumper.Dump(log));
-             }
+            using var writer = File.AppendText(LogPath);
+            writer.WriteLine("\n" + DateTime.Now.ToLocalTime());
+            writer.WriteLine(JsonConvert.SerializeObject(log));
+            //writer.WriteLine(ObjectDumper.Dump(log));
         }
     }
 }
