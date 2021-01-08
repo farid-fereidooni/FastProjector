@@ -1,10 +1,11 @@
 using System;
+using Microsoft.CodeAnalysis;
 
 namespace FastProjector.MapGenerator.Analyzing
 {
     internal class ProjectionRequest
     {
-        public Type ProjectionSource { get; set; }
-        public Type ProjectionTarget {get;set;}
+        public INamedTypeSymbol ProjectionSource { get; set; }
+        public INamedTypeSymbol ProjectionTarget {get;set;}
     }
 }

@@ -8,7 +8,7 @@ namespace FastProjector.Shared
     public sealed class ProjectFrom : Attribute
     {
         
-        readonly Type projectionSource;
+        public readonly Type projectionSource;
         
         // This is a positional argument
         public ProjectFrom(Type projectionSource)
