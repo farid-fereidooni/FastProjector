@@ -84,7 +84,6 @@ namespace FastProjector.MapGenerator.Proccessing
             return null;
         }
 
-
         private static bool IsPropertyPublic(IPropertySymbol property)
         {
             var node = GetNodeOfSymbol(property);
@@ -112,6 +111,10 @@ namespace FastProjector.MapGenerator.Proccessing
             return false;
         }
 
+        private static PropertyMapMetaData CreateBinding(IPropertySymbol sourceProp, IPropertySymbol destinationProp)
+        {
+            return null;
+        }
        
         
     }    
