@@ -19,10 +19,10 @@ namespace FastProjector.MapGenerator.DevTools
         }
         public static void Log(string log)
         {
-             if(!File.Exists(LogPath)){
-                 File.Create(LogPath).Close();
-                 
-             }
+            if(!File.Exists(LogPath)) {
+                File.Create(LogPath).Close();
+                
+            }
             using var writer = File.AppendText(LogPath);
             writer.WriteLine("\n" + DateTime.Now.ToLocalTime());
             writer.WriteLine(log);
@@ -30,10 +30,10 @@ namespace FastProjector.MapGenerator.DevTools
 
         public static void Log(object log)
         {
-              if(!File.Exists(LogPath)){
-                 File.Create(LogPath).Close();
-                 
-             }
+            if(!File.Exists(LogPath)) {
+                File.Create(LogPath).Close();
+                
+            }
             using var writer = File.AppendText(LogPath);
             writer.WriteLine("\n" + DateTime.Now.ToLocalTime());
             writer.WriteLine(JsonConvert.SerializeObject(log));

@@ -10,9 +10,9 @@ namespace FastProjector.MapGenerator.SourceGenerator.Interfaces
         private readonly AccessModifier accessModifier;
         private readonly string type;
         private readonly string name;
-        private readonly Expression<Func<object>> initializer;
+        private readonly string initializer;
 
-        public FieldSourceText(AccessModifier accessModifier, string type, string name, Expression<Func<object>> initializer = null)
+        public FieldSourceText(AccessModifier accessModifier, string type, string name, string initializer = null)
         {
             this.accessModifier = accessModifier;
             this.type = type;
@@ -26,7 +26,7 @@ namespace FastProjector.MapGenerator.SourceGenerator.Interfaces
         {
             var declaration =  $"{accessModifier} {type} {name}";
             if(initializer != null)
-                return declaration + " = " + initializer.Body.ToString();
+                return declaration + " = " + initializer + ";";
             else 
                 return declaration + ";";
         }

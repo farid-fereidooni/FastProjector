@@ -15,24 +15,30 @@ namespace FastProjector.MapGenerator
     {
         public void Execute(GeneratorExecutionContext context)
         {
+            try {
+                if(!(context.SyntaxReceiver is ProjectionSyntaxReceiver projectionSyntaxReceiver))
+                    return;
 
-            if(!(context.SyntaxReceiver is ProjectionSyntaxReceiver projectionSyntaxReceiver))
-                return;
-
-            if (projectionSyntaxReceiver.ProjectionCandidates.NotNullAny())
-            {
-                List<ProjectionRequest> requests = new List<ProjectionRequest>();
-                foreach (var projectionCandidate in projectionSyntaxReceiver.ProjectionCandidates)
+                if (projectionSyntaxReceiver.ProjectionCandidates.NotNullAny())
                 {
-                    try {
-                         requests.Add(SymbolDetector.AnalyzeProjectionCandidates(projectionCandidate, context));
+                    List<ProjectionRequest> requests = new List<ProjectionRequest>();
+                    foreach (var projectionCandidate in projectionSyntaxReceiver.ProjectionCandidates)
+                    {
+                        try {
+                            requests.Add(SymbolDetector.AnalyzeProjectionCandidates(projectionCandidate, context));
+                        }
+                        catch (ArgumentException)
+                        { }
                     }
-                    catch (ArgumentException)
-                    { }
-                }
 
-                string finalSource = RequestProccessing.ProccessProjectionRequest(requests);
-                context.AddSource("Projections.cs", SourceText.From(finalSource, Encoding.UTF8));
+                    string finalSource = RequestProccessing.ProccessProjectionRequest(requests);
+                    context.AddSource("Projections.cs", SourceText.From(finalSource, Encoding.UTF8));
+                }
+            }
+            catch (Exception ex) {
+                Logger.Log(ex.Message);
+                Logger.Log(ex.StackTrace);
+                throw;
             }
 
         }
