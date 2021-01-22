@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FastProjector.MapGenerator.Analyzing;
@@ -13,7 +14,10 @@ namespace FastProjector.MapGenerator.Proccessing
         
         public static string ProccessProjectionRequest(IEnumerable<ProjectionRequest> requests)
         { 
-            CreateMappings(requests.First());
+            foreach(var item in requests)
+            {
+                CreateMappings(item);
+            }
             return "";
         }
 
@@ -25,15 +29,29 @@ namespace FastProjector.MapGenerator.Proccessing
 
             foreach(var sourceProp in sourceProps)
             {
-                var destinationNode = destinationProps.First;
-                while(destinationNode != null)
+                
+
+                Logger.Log(sourceProp.Type.Name);
+                Logger.Log(sourceProp.Type.GetFullNamespace());
+                Logger.Log(sourceProp.Type.TypeKind.ToString());
+                if(sourceProp.Type is INamedTypeSymbol namedType)
                 {
-                    if(destinationNode.Value.Name == sourceProp.Name)
-                    {
+                    Logger.Log(namedType.MetadataName);
+                }
+                if(sourceProp.Type is IArrayTypeSymbol arrayType)
+                {
+                    Logger.Log(arrayType.MetadataName);
+                }
+                Logger.Log("=========");
+                // var destinationNode = destinationProps.First;
+                // while(destinationNode != null)
+                // {
+                //     if(destinationNode.Value.Name == sourceProp.Name)
+                //     {
                         
-                    }
-                    destinationNode = destinationNode.Next;
-                }               
+                //     }
+                //     destinationNode = destinationNode.Next;
+                // }               
             }
             
         }
@@ -41,7 +59,6 @@ namespace FastProjector.MapGenerator.Proccessing
         public static IEnumerable<IPropertySymbol> ExtractProps(INamedTypeSymbol classSymbol, PropertyTypeEnum? propertyTypeToSearch = null )
         {
             List<IPropertySymbol> result = new List<IPropertySymbol>();
-            Logger.Log(classSymbol.Name);
             var mems = classSymbol.GetMembers();
             foreach(var mem in mems)
             {
@@ -87,6 +104,7 @@ namespace FastProjector.MapGenerator.Proccessing
         private static bool IsPropertyPublic(IPropertySymbol property)
         {
             var node = GetNodeOfSymbol(property);
+
             if(node != null)
             {
                 if (node is PropertyDeclarationSyntax propertyNode)
@@ -113,6 +131,7 @@ namespace FastProjector.MapGenerator.Proccessing
 
         private static PropertyMapMetaData CreateBinding(IPropertySymbol sourceProp, IPropertySymbol destinationProp)
         {
+            Logger.Log(sourceProp.ContainingType.Name);
             return null;
         }
        
