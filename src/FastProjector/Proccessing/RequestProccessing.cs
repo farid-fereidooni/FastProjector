@@ -23,9 +23,9 @@ namespace FastProjector.MapGenerator.Proccessing
 
         public static void CreateMappings(ProjectionRequest request)
         {
-            
-            var sourceProps = ExtractProps(request.ProjectionSource, PropertyTypeEnum.HasPublicGet);
-            var destinationProps = new LinkedList<IPropertySymbol>(ExtractProps(request.ProjectionTarget, PropertyTypeEnum.HasPublicSet));
+              
+            var sourceProps = ExtractProps(request.ProjectionSource, PropertyAccessTypeEnum.HasPublicGet);
+            var destinationProps = new LinkedList<IPropertySymbol>(ExtractProps(request.ProjectionTarget, PropertyAccessTypeEnum`.HasPublicSet));
 
             foreach(var sourceProp in sourceProps)
             {
@@ -56,7 +56,7 @@ namespace FastProjector.MapGenerator.Proccessing
             
         }
 
-        public static IEnumerable<IPropertySymbol> ExtractProps(INamedTypeSymbol classSymbol, PropertyTypeEnum? propertyTypeToSearch = null )
+        public static IEnumerable<IPropertySymbol> ExtractProps(INamedTypeSymbol classSymbol, PropertyAccessTypeEnum? propertyTypeToSearch = null )
         {
             List<IPropertySymbol> result = new List<IPropertySymbol>();
             var mems = classSymbol.GetMembers();
@@ -68,11 +68,11 @@ namespace FastProjector.MapGenerator.Proccessing
                     bool isFiltered = false;    
                     if(propertyTypeToSearch != null)
                     {
-                        if((propertyTypeToSearch & PropertyTypeEnum.HasPublicGet) == PropertyTypeEnum.HasPublicGet)
+                        if((propertyTypeToSearch & PropertyAccessTypeEnum.HasPublicGet) == PropertyAccessTypeEnum.HasPublicGet)
                         {
                             isFiltered = !IsPropertyPublic(propSymbol);
                         }
-                        if((propertyTypeToSearch & PropertyTypeEnum.HasPublicSet) == PropertyTypeEnum.HasPublicSet)
+                        if((propertyTypeToSearch & PropertyAccessTypeEnum.HasPublicSet) == PropertyAccessTypeEnum.HasPublicSet)
                         {
                             isFiltered = !IsPropertySuitableForSet(propSymbol);
                         }

@@ -23,5 +23,15 @@ namespace FastProjector.MapGenerator.Proccessing
 
             return result;
         }
+
+        public static string GetFullName(this ISymbol symbol)
+        {
+           var fullNameSpace = symbol.GetFullNamespace();
+           if(fullNameSpace != null)
+           {
+               return $"{fullNameSpace}.{symbol.Name}";
+           }
+           return null;
+        }
     }
 }

@@ -3,10 +3,11 @@ namespace FastProjector.MapGenerator.Proccessing.Models
   public enum PropertyTypeCategoryEnum 
     {
         SinglePrimitive = 1,
-        SingleObject,
+        SingleNonGenenericClass,
+        SingleGenericClass,
         CollectionPrimitive,
-        CollectionObject,
-        GenericClass
+        CollectionObject, 
+        Unknown
 
     }
 }

@@ -8,10 +8,10 @@ namespace FastProjector.MapGenerator.Proccessing
 {
     internal class PropertyCasting
     {
-        private Dictionary<SpecialType, Dictionary<SpecialType, Func<string, string>>> _availableCasts;
+        private Dictionary<PropertyTypeEnum, Dictionary<PropertyTypeEnum, Func<string, string>>> _availableCasts;
         public PropertyCasting()
         {
-            _availableCasts = new Dictionary<SpecialType, Dictionary<SpecialType, Func<string, string>>>();
+            _availableCasts = new Dictionary<PropertyTypeEnum, Dictionary<PropertyTypeEnum, Func<string, string>>>();
             InitializeCasts();
         }
 
@@ -20,41 +20,41 @@ namespace FastProjector.MapGenerator.Proccessing
             static string toStringFunc(string source) => source + ".ToString()";
 
             #region string
-            var stringCastableDict = new Dictionary<SpecialType, Func<string, string>>();
-            _availableCasts.Add(SpecialType.System_String, stringCastableDict);
+            var stringCastableDict = new Dictionary<PropertyTypeEnum, Func<string, string>>();
+            _availableCasts.Add(PropertyTypeEnum.System_String, stringCastableDict);
 
-            stringCastableDict.Add(SpecialType.System_Boolean, toStringFunc);
-            stringCastableDict.Add(SpecialType.System_Byte, toStringFunc);
-            stringCastableDict.Add(SpecialType.System_Int16, toStringFunc);
-            stringCastableDict.Add(SpecialType.System_Int32, toStringFunc);
-            stringCastableDict.Add(SpecialType.System_Int64, toStringFunc);
-            stringCastableDict.Add(SpecialType.System_Single, toStringFunc);
-            stringCastableDict.Add(SpecialType.System_Double, toStringFunc);
-            stringCastableDict.Add(SpecialType.System_Decimal, toStringFunc);
+            stringCastableDict.Add(PropertyTypeEnum.System_Boolean, toStringFunc);
+            stringCastableDict.Add(PropertyTypeEnum.System_Byte, toStringFunc);
+            stringCastableDict.Add(PropertyTypeEnum.System_Int16, toStringFunc);
+            stringCastableDict.Add(PropertyTypeEnum.System_Int32, toStringFunc);
+            stringCastableDict.Add(PropertyTypeEnum.System_Int64, toStringFunc);
+            stringCastableDict.Add(PropertyTypeEnum.System_Single, toStringFunc);
+            stringCastableDict.Add(PropertyTypeEnum.System_Double, toStringFunc);
+            stringCastableDict.Add(PropertyTypeEnum.System_Decimal, toStringFunc);
 
 
             #endregion
 
             #region short
 
-            var shortCastableDict = new Dictionary<SpecialType, Func<string, string>>();
+            var shortCastableDict = new Dictionary<PropertyTypeEnum, Func<string, string>>();
             static string castToShort(string source) => "(short)" + source;
 
-            _availableCasts.Add(SpecialType.System_Int16, shortCastableDict);
+            _availableCasts.Add(PropertyTypeEnum.System_Int16, shortCastableDict);
 
-            shortCastableDict.Add(SpecialType.System_Byte, castToShort);
+            shortCastableDict.Add(PropertyTypeEnum.System_Byte, castToShort);
 
             #endregion
 
             #region int
 
-            var intCastableDict = new Dictionary<SpecialType, Func<string, string>>();
+            var intCastableDict = new Dictionary<PropertyTypeEnum, Func<string, string>>();
             static string castToInt(string source) => "(int)" + source;
 
-            _availableCasts.Add(SpecialType.System_Int32, intCastableDict);
+            _availableCasts.Add(PropertyTypeEnum.System_Int32, intCastableDict);
 
-            intCastableDict.Add(SpecialType.System_Byte, castToInt);
-            intCastableDict.Add(SpecialType.System_Int16, castToInt);
+            intCastableDict.Add(PropertyTypeEnum.System_Byte, castToInt);
+            intCastableDict.Add(PropertyTypeEnum.System_Int16, castToInt);
 
             #endregion
 
@@ -62,37 +62,37 @@ namespace FastProjector.MapGenerator.Proccessing
 
             #region long
 
-            var longCastableDict = new Dictionary<SpecialType, Func<string, string>>();
+            var longCastableDict = new Dictionary<PropertyTypeEnum, Func<string, string>>();
             static string castToLong(string source) => "(long)" + source;
 
-            _availableCasts.Add(SpecialType.System_Int32, longCastableDict);
+            _availableCasts.Add(PropertyTypeEnum.System_Int32, longCastableDict);
 
-            longCastableDict.Add(SpecialType.System_Byte, castToLong);
-            longCastableDict.Add(SpecialType.System_Int16, castToLong);
-            longCastableDict.Add(SpecialType.System_Int32, castToLong);
+            longCastableDict.Add(PropertyTypeEnum.System_Byte, castToLong);
+            longCastableDict.Add(PropertyTypeEnum.System_Int16, castToLong);
+            longCastableDict.Add(PropertyTypeEnum.System_Int32, castToLong);
 
             #endregion
 
             #region IEnumerable
-            var iEnumerableCastableDict = new Dictionary<SpecialType, Func<string, string>>();
+            var iEnumerableCastableDict = new Dictionary<PropertyTypeEnum, Func<string, string>>();
             static string castToIEnumerable(string source) => source;
 
-            _availableCasts.Add(SpecialType.System_Collections_Generic_IEnumerable_T, iEnumerableCastableDict);
+            _availableCasts.Add(PropertyTypeEnum.System_Collections_Generic_IEnumerable_T, iEnumerableCastableDict);
 
-            iEnumerableCastableDict.Add(SpecialType.System_Array, castToIEnumerable);
-            iEnumerableCastableDict.Add(SpecialType.System_Collections_Generic_IList_T, castToIEnumerable);
-            iEnumerableCastableDict.Add(SpecialType.System_Collections_Generic_ICollection_T, castToIEnumerable);
+            iEnumerableCastableDict.Add(PropertyTypeEnum.System_Array, castToIEnumerable);
+            iEnumerableCastableDict.Add(PropertyTypeEnum.System_Collections_Generic_IList_T, castToIEnumerable);
+            iEnumerableCastableDict.Add(PropertyTypeEnum.System_Collections_Generic_ICollection_T, castToIEnumerable);
 
             #endregion
 
 
             #region IList
-            var iListCastableDict = new Dictionary<SpecialType, Func<string, string>>();
+            var iListCastableDict = new Dictionary<PropertyTypeEnum, Func<string, string>>();
             static string castToIList(string source) => source + ".ToList()";
 
-            _availableCasts.Add(SpecialType.System_Collections_Generic_IList_T, iListCastableDict);
+            _availableCasts.Add(PropertyTypeEnum.System_Collections_Generic_IList_T, iListCastableDict);
 
-            iListCastableDict.Add(SpecialType.System_Collections_Generic_IEnumerable_T, castToIList);
+            iListCastableDict.Add(PropertyTypeEnum.System_Collections_Generic_IEnumerable_T, castToIList);
 
             #endregion
 
@@ -124,13 +124,6 @@ namespace FastProjector.MapGenerator.Proccessing
                 DestinationPropertyCastMetaData = destinationProp,
             };
 
-            if (sourceProp.Type == SpecialType.None || destinationProp.Type == SpecialType.None)
-            {
-                result.IsUnMapable = true;
-                result.Cast = null;
-                return result;
-            }
-
             //same types, might be castable
             if (sourceProp.TypeCategory == destinationProp.TypeCategory)
             {
@@ -138,7 +131,7 @@ namespace FastProjector.MapGenerator.Proccessing
                 if (sourceProp.TypeCategory == PropertyTypeCategoryEnum.CollectionPrimitive ||
                    sourceProp.TypeCategory == PropertyTypeCategoryEnum.CollectionObject)
                 {
-                    if (!IsSameGenericType(sourceProp.GenericTypes, destinationProp.GenericTypes))
+                    if (!IsSameGenericTypes(sourceProp.GenericTypes, destinationProp.GenericTypes))
                     {
                         result.IsUnMapable = true;
                         result.Cast = null;
@@ -168,92 +161,194 @@ namespace FastProjector.MapGenerator.Proccessing
 
         private CastMetaData CreateCastMetadata(IPropertySymbol prop)
         {
-            //if array:
-            if (prop.Type is IArrayTypeSymbol arrayType)
+
+            var propTypeInfo = DeterminePropertyType(prop.Type);
+            //Enumerables:
+            if(propTypeInfo.IsGenericEnumerable)
+            {
+                PropertyTypeInfo  enumerableArgumentTypeInfo = null;
+                
+                //array:
+                if(propTypeInfo.Type == PropertyTypeEnum.System_Array)
+                {
+                    enumerableArgumentTypeInfo = DeterminePropertyType(((IArrayTypeSymbol)prop.Type).ElementType);
+                }
+                //other enumerable types:
+                else
+                {
+                    enumerableArgumentTypeInfo = DeterminePropertyType((prop.Type as INamedTypeSymbol).TypeArguments.FirstOrDefault());
+                }
+                
+                return new CastMetaData
+                {
+                    FullName = propTypeInfo.FullName,
+                    HasGenericType = true,
+                    Type = propTypeInfo.Type,
+                    TypeCategory = enumerableArgumentTypeInfo.IsPrimitive ? PropertyTypeCategoryEnum.CollectionPrimitive : PropertyTypeCategoryEnum.CollectionObject,
+                    GenericTypes = new GenericMetaData[] {
+                        new GenericMetaData {
+                            FullName = enumerableArgumentTypeInfo.FullName,
+                            IsPrimitive = enumerableArgumentTypeInfo.IsPrimitive
+                        }
+                    }
+                };
+            }
+            //genericClass:
+            if(propTypeInfo.IsGenericClass)
             {
                 return new CastMetaData
                 {
-                    Type = SpecialType.System_Array,
+                    FullName = propTypeInfo.FullName,
                     HasGenericType = true,
-                    TypeCategory =  arrayType.ElementType.TypeKind == TypeKind.Class
-                                    && arrayType.ElementType.SpecialType == SpecialType.None ? PropertyTypeCategoryEnum.CollectionObject : PropertyTypeCategoryEnum.CollectionPrimitive,         
-                    GenericTypes = new CastMetaData[] {
-                       new CastMetaData {
-                           FullName = arrayType.ElementType.GetFullNamespace() + "." + arrayType.ElementType.Name,
-                           TypeCategory = arrayType.ElementType.TypeKind == TypeKind.Class
-                                && arrayType.ElementType.SpecialType == SpecialType.None ? PropertyTypeCategoryEnum.SingleObject : PropertyTypeCategoryEnum.SinglePrimitive
+                    Type = propTypeInfo.Type,
+                    TypeCategory = PropertyTypeCategoryEnum.SingleGenericClass,
+                    GenericTypes = ((INamedTypeSymbol)prop.Type).TypeArguments.Select(typeArg => 
+                        {
+                            var typeArgTypeInfo = DeterminePropertyType(typeArg);
+                            return new GenericMetaData
+                            {
+                                FullName = typeArgTypeInfo.FullName,
+                                IsPrimitive = typeArgTypeInfo.IsPrimitive
+                            };
                         }
+                    ).ToArray()
+                };
+            }
 
-                    }
+            //primitive:
+            if(propTypeInfo.IsPrimitive)
+            {
+                return new CastMetaData
+                {
+                    FullName = propTypeInfo.FullName,
+                    HasGenericType = false,
+                    GenericTypes = null,
+                    Type = propTypeInfo.Type,
+                    TypeCategory = PropertyTypeCategoryEnum.SinglePrimitive
+                };
+            }
+
+            //single class or unknown
+            return new CastMetaData
+            {
+                FullName = propTypeInfo.FullName,
+                HasGenericType = false,
+                GenericTypes = null,
+                Type = propTypeInfo.Type,
+                TypeCategory = propTypeInfo.IsNonGenericClass ? PropertyTypeCategoryEnum.SingleNonGenenericClass : PropertyTypeCategoryEnum.Unknown
+            };
+        }
+
+        private PropertyTypeInfo DeterminePropertyType(ITypeSymbol type)
+        {
+            //if array:
+            if (type is IArrayTypeSymbol)
+            {
+            
+                return new PropertyTypeInfo
+                {
+                    FullName = type.GetFullName(),
+                    Type = PropertyTypeEnum.System_Array,
+                    IsGenericEnumerable = true
                 };
             }
             else
             {
-                SpecialType propType = prop.Type.SpecialType;
-                bool isGenericCollection = false;
-                //some times collection types dont get recognized
-                if (propType == SpecialType.None)
+                // primitive:
+                PropertyTypeEnum propType = type.SpecialType switch
                 {
-                    switch (prop.Type.GetFullNamespace() + "." + prop.Name)
-                    {
-                        case "System.Collections.Generic.List":
-                            propType = SpecialType.System_Collections_Generic_IList_T;
-                            isGenericCollection = true;
-                            break;
-                        case "System.Collections.Generic.IList":
-                            propType = SpecialType.System_Collections_Generic_IList_T;
-                            isGenericCollection = true;
-                            break;
-                        case "System.Collections.Generic.IEnumerable":
-                            propType = SpecialType.System_Collections_Generic_IEnumerable_T;
-                            isGenericCollection = true;
-                            break;
-                        case "System.Collections.Generic.ICollection":
-                            propType = SpecialType.System_Collections_Generic_ICollection_T;
-                            isGenericCollection = true;
-                            break;  
-                    }
-                }
-                
-                var result = new CastMetaData
-                {
-                    Type = propType,                    
+                    SpecialType.System_Enum => PropertyTypeEnum.System_Enum,
+                    SpecialType.System_Boolean => PropertyTypeEnum.System_Boolean,
+                    SpecialType.System_Char => PropertyTypeEnum.System_Char,
+                    SpecialType.System_SByte => PropertyTypeEnum.System_SByte,
+                    SpecialType.System_Byte => PropertyTypeEnum.System_Byte,
+                    SpecialType.System_Int16 => PropertyTypeEnum.System_Int16,
+                    SpecialType.System_UInt16 => PropertyTypeEnum.System_UInt16,
+                    SpecialType.System_Int32 => PropertyTypeEnum.System_Int32,
+                    SpecialType.System_UInt32 => PropertyTypeEnum.System_UInt32,
+                    SpecialType.System_Int64 => PropertyTypeEnum.System_Int64,
+                    SpecialType.System_UInt64 => PropertyTypeEnum.System_UInt64,
+                    SpecialType.System_Decimal => PropertyTypeEnum.System_Decimal,
+                    SpecialType.System_Single => PropertyTypeEnum.System_Single,
+                    SpecialType.System_Double => PropertyTypeEnum.System_Double,
+                    SpecialType.System_String => PropertyTypeEnum.System_String,
+                    SpecialType.System_IntPtr => PropertyTypeEnum.System_IntPtr,
+                    SpecialType.System_UIntPtr => PropertyTypeEnum.System_UIntPtr,
+                    SpecialType.System_DateTime => PropertyTypeEnum.System_DateTime,
+                    _ => PropertyTypeEnum.Other
                 };
 
-                if (prop.Type is INamedTypeSymbol typeSymbol && typeSymbol.Arity > 0 && typeSymbol.TypeArguments.NotNullAny())
+                if (propType != PropertyTypeEnum.Other)
                 {
-                    result.HasGenericType = true;
+                    return new PropertyTypeInfo
+                    {
+                         FullName = type.GetFullName(),
+                         IsPrimitive = true,
+                         Type = propType
+                    };
+                }
 
-                    result.GenericTypes = typeSymbol.TypeArguments.Select(s => new CastMetaData
+                //Generics:
+
+                if (type is INamedTypeSymbol typeSymbol && typeSymbol.Arity > 0 && typeSymbol.TypeArguments.NotNullAny())
+                {
+
+                    var typeFullName = type.GetFullName();
+                    propType = typeFullName switch {
+                        
+                        "System.Collections.Generic.List" => PropertyTypeEnum.System_Collections_Generic_List_T,
+                        "System.Collections.Generic.IList" => PropertyTypeEnum.System_Collections_Generic_IList_T,
+                        "System.Collections.Generic.IEnumerable" =>  PropertyTypeEnum.System_Collections_Generic_IEnumerable_T,
+                        "System.Collections.Generic.ICollection" => PropertyTypeEnum.System_Collections_Generic_ICollection_T,
+                        _ => PropertyTypeEnum.Other
+                    };
+                    //Generic Enumerable
+
+                    if(propType != PropertyTypeEnum.Other)
                     {
-                        FullName = s.GetFullNamespace() + "." + s.Name,
-                        TypeCategory = s.TypeKind == TypeKind.Class && s.SpecialType == SpecialType.None ? PropertyTypeCategoryEnum.SingleObject : PropertyTypeCategoryEnum.SinglePrimitive
-                    }).ToArray();
-            
-                    if(isGenericCollection)
-                    {
-                        if(result.GenericTypes.FirstOrDefault().TypeCategory == PropertyTypeCategoryEnum.SinglePrimitive)
-                            result.TypeCategory = PropertyTypeCategoryEnum.CollectionPrimitive;
-                        else
-                            result.TypeCategory = PropertyTypeCategoryEnum.CollectionObject;
+                        return new PropertyTypeInfo
+                        {
+                            FullName = typeFullName,
+                            IsGenericEnumerable = true,
+                            Type = propType
+                        };
                     }
-                    else 
+                
+                    //Generic class:
+
+                    return new PropertyTypeInfo
                     {
-                        result.TypeCategory = PropertyTypeCategoryEnum.GenericClass;
-                    }
+                        FullName = typeFullName,
+                        IsGenericClass = true,
+                        Type = propType
+                    };
+
                 }
                 else 
                 {
-                    if(propType == SpecialType.None && prop.Type.TypeKind == TypeKind.Class)                    
-                        result.TypeCategory = PropertyTypeCategoryEnum.SingleObject;
+                    //class:
+                    if(type.SpecialType == SpecialType.None && type.TypeKind == TypeKind.Class)                    
+                    {
+                        return new PropertyTypeInfo
+                        {
+                            FullName = type.GetFullName(),
+                            IsNonGenericClass = true,
+                            Type = propType
+                        };                        
+                    } 
+                    //unknown:
+                    else {
+                        return new PropertyTypeInfo
+                        {
+                            FullName = type.GetFullName(),
+                            Type = propType
+                        };      
+                    }
                 }
-
-              
-                
             }
         }
 
-        private bool IsSameGenericType(CastMetaData[] sourceGenericTypes, CastMetaData[] destinationGenericTypes)
+        private bool IsSameGenericTypes(GenericMetaData[] sourceGenericTypes, GenericMetaData[] destinationGenericTypes)
         {
             if (sourceGenericTypes == null && destinationGenericTypes == null)
                 return true;
