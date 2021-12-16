@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+using FastProjector.SourceGeneration.Core;
 
-namespace FastProjector.MapGenerator.SourceGenerator.Interfaces
+namespace FastProjector.MapGenerator.SourceGeneration.Interfaces
 {   
-    internal class FieldSourceText: IFieldSourceText
+    internal class FieldSourceText: SourceTextBase, IFieldSourceText
     {
         private readonly AccessModifier accessModifier;
         private readonly string type;
@@ -19,10 +16,7 @@ namespace FastProjector.MapGenerator.SourceGenerator.Interfaces
             this.name = name;
             this.initializer = initializer;
         }
-
-        public string Text => BuildSource();
-
-        public string BuildSource()
+        protected override string BuildSource()
         {
             var declaration =  $"{accessModifier} {type} {name}";
             if(initializer != null)

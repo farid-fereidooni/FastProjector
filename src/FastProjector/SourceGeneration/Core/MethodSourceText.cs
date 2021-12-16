@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using FastProjector.SourceGeneration.Core;
 
-namespace FastProjector.MapGenerator.SourceGenerator.Interfaces
+namespace FastProjector.MapGenerator.SourceGeneration.Interfaces
 {   
-    internal class MethodSourceText: IMethodSourceText
+    internal class MethodSourceText: SourceTextBase, IMethodSourceText
     {
         private readonly AccessModifier accessModifier;
         private readonly string returnType;
@@ -14,8 +15,6 @@ namespace FastProjector.MapGenerator.SourceGenerator.Interfaces
         private readonly bool isVirtual;
         private readonly bool isAsync;
         private readonly List<ISourceText> members;
-
-        public string Text => BuildSource();
 
         public MethodSourceText(AccessModifier accessModifier, string returnType, string name, IEnumerable<string> parameters, bool isStatic = false, bool isVirtual = false, bool isAsync = false)
         {
@@ -29,7 +28,7 @@ namespace FastProjector.MapGenerator.SourceGenerator.Interfaces
             members = new List<ISourceText>();
         }
 
-        public string BuildSource()
+        protected override string BuildSource()
         {
              var sourceStringBuilder = new StringBuilder();
             sourceStringBuilder.AppendLine($"{accessModifier} {(isAsync? "async " : "" )}{(isStatic? "static": (isVirtual? "virtual" : ""))} {returnType} {name}");

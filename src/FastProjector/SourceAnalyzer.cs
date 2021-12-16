@@ -6,6 +6,8 @@ using FastProjector.MapGenerator.Analyzing;
 using FastProjector.MapGenerator.DevTools;
 using FastProjector.MapGenerator.Proccessing;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
 namespace FastProjector.MapGenerator
@@ -15,6 +17,9 @@ namespace FastProjector.MapGenerator
     {
         public void Execute(GeneratorExecutionContext context)
         {
+
+            var s = SyntaxFactory.ParseTypeName("");
+            s.
             try {
                 if(!(context.SyntaxReceiver is ProjectionSyntaxReceiver projectionSyntaxReceiver))
                     return;
@@ -31,7 +36,7 @@ namespace FastProjector.MapGenerator
                         { }
                     }
 
-                    string finalSource = RequestProccessing.ProccessProjectionRequest(requests);
+                    string finalSource = RequestProcessing.ProcessProjectionRequest(requests);
                     context.AddSource("Projections.cs", SourceText.From(finalSource, Encoding.UTF8));
                 }
             }

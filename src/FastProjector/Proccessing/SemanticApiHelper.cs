@@ -1,8 +1,9 @@
+using FastProjector.MapGenerator.Proccessing.Models;
 using Microsoft.CodeAnalysis;
 
 namespace FastProjector.MapGenerator.Proccessing
 {
-    public static class SemanticApiHelper
+    internal static class SemanticApiHelper
     {
         public static string GetFullNamespace(this ISymbol symbol)
         {
@@ -33,5 +34,19 @@ namespace FastProjector.MapGenerator.Proccessing
            }
            return null;
         }
+
+        public static bool IsGeneric(this ITypeSymbol typeSymbol)
+        {
+            return (typeSymbol is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.Arity > 0 &&
+                    namedTypeSymbol.TypeArguments.NotNullAny());
+        }
+
+        public static TypeInformation ToTypeInformation(this ITypeSymbol typeSymbol)
+        {
+            return new TypeInformation(typeSymbol);
+        }
+        
+        
+        
     }
 }

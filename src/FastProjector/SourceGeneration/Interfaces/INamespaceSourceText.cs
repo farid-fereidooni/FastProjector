@@ -1,6 +1,6 @@
-using FastProjector.MapGenerator.SourceGenerator.Interfaces;
+using FastProjector.MapGenerator.SourceGeneration.Interfaces;
 
-namespace FastProjector.MapGenerator.SourceGenerator.Interfaces
+namespace FastProjector.MapGenerator.SourceGeneration.Interfaces
 {   
     internal interface INamespaceSourceText: ISourceText
     {

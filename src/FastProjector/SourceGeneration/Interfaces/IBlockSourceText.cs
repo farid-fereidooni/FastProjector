@@ -1,4 +1,4 @@
-namespace FastProjector.MapGenerator.SourceGenerator.Interfaces
+namespace FastProjector.MapGenerator.SourceGeneration.Interfaces
 {   
     internal interface IBlockSourceText: ISourceText
     {

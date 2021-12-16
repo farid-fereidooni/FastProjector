@@ -6,8 +6,8 @@ namespace FastProjector.MapGenerator.Proccessing.Models
     {
         
         public bool IsUnMapable {get;set;}
-        public CastMetaData SourcePropertyCastMetaData {get;set;}
-        public CastMetaData DestinationPropertyCastMetaData {get;set;}
+        public PropertyTypeInformation SourceProperyTypeInfo {get;set;}
+        public PropertyTypeInformation DestinationProperyTypeInfo {get;set;}
         public Func<string, string> Cast {get;set;}
     }
 }

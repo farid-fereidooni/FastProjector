@@ -1,4 +1,4 @@
-namespace FastProjector.MapGenerator.SourceGenerator
+namespace FastProjector.MapGenerator.SourceGeneration
 {
     internal enum AccessModifier{
         @public,

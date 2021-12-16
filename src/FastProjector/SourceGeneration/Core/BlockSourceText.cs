@@ -1,15 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using FastProjector.SourceGeneration.Core;
 
-namespace FastProjector.MapGenerator.SourceGenerator.Interfaces
+namespace FastProjector.MapGenerator.SourceGeneration.Interfaces
 {   
-    internal class BlockSourceText: IBlockSourceText
+    internal class BlockSourceText: SourceTextBase, IBlockSourceText
     {
         private readonly string blockExpression;
         private readonly List<ISourceText> members;
-
-        public string Text => BuildSource();
 
         public BlockSourceText(string blockExpression)
         {
@@ -17,7 +16,7 @@ namespace FastProjector.MapGenerator.SourceGenerator.Interfaces
             members = new List<ISourceText>();
         }
 
-        public string BuildSource()
+        protected override string BuildSource()
         {
              var sourceStringBuilder = new StringBuilder();
             sourceStringBuilder.AppendLine(blockExpression);

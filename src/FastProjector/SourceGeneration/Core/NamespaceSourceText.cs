@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Text;
-using FastProjector.MapGenerator.SourceGenerator.Interfaces;
+using FastProjector.MapGenerator.SourceGeneration.Interfaces;
+using FastProjector.SourceGeneration.Core;
 
-namespace FastProjector.MapGenerator.SourceGenerator.Core
+namespace FastProjector.MapGenerator.SourceGeneration.Core
 {   
-    internal class NamespaceSourceText: INamespaceSourceText
+    internal class NamespaceSourceText: SourceTextBase, INamespaceSourceText
     {
         private readonly List<IClassSourceText> classes;
         private readonly string namespaceName;
@@ -15,8 +16,6 @@ namespace FastProjector.MapGenerator.SourceGenerator.Core
             classes = new List<IClassSourceText>();
             usings = new List<string>();
         }
-
-        public string Text => BuildSource();
 
         public INamespaceSourceText AddClass(IClassSourceText classSource)
         {
@@ -29,7 +28,7 @@ namespace FastProjector.MapGenerator.SourceGenerator.Core
             return this;
         }
 
-        private string BuildSource()
+        protected override string BuildSource()
         {
             var sourceStringBuilder = new StringBuilder();
             foreach(var usingExpression in usings)

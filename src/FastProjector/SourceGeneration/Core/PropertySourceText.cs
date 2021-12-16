@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using FastProjector.SourceGeneration.Core;
 
-namespace FastProjector.MapGenerator.SourceGenerator.Interfaces
+namespace FastProjector.MapGenerator.SourceGeneration.Interfaces
 {   
-    internal class PropertySourceText: IPropertySourceText
+    internal class PropertySourceText: SourceTextBase, IPropertySourceText
     {
 
         
@@ -19,13 +20,11 @@ namespace FastProjector.MapGenerator.SourceGenerator.Interfaces
             
             this.accessModifier = accessModifier;
             this.type = type;
-            this.name = name;
+            this.name = name; 
             this.initializer = initializer;
         }
-
-        public string Text => BuildSource();
-
-        public string BuildSource()
+        
+        protected override string BuildSource()
         {
             var declaration =  $"{accessModifier} {type} {name}";
             if(initializer != null)

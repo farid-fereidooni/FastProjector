@@ -1,8 +1,11 @@
 using System.Collections.Generic;
-using FastProjector.MapGenerator.SourceGenerator.Core;
-using FastProjector.MapGenerator.SourceGenerator.Interfaces;
+using System.Text.RegularExpressions;
+using System.Xml.Xsl;
+using FastProjector.MapGenerator.SourceGeneration.Core;
+using FastProjector.MapGenerator.SourceGeneration.Interfaces;
+using FastProjector.SourceGeneration.Core;
 
-namespace FastProjector.MapGenerator.SourceGenerator
+namespace FastProjector.MapGenerator.SourceGeneration
 {
     internal class SourceGenerator
     {
@@ -34,6 +37,26 @@ namespace FastProjector.MapGenerator.SourceGenerator
         public IBlockSourceText CreateCodeBlock(string blockExpression)
         {
             return new BlockSourceText(blockExpression);
+        }
+
+        public IAssignmentSourceText CreateAssignment(ISourceText left, ISourceText right)
+        {
+            return new AssignmentSourceText(left, right);
+        }
+
+        public IMemberInitSourceText CreateMemberInit(params IAssignmentSourceText[] assignments)
+        {
+            return new MemberInitSourceText(assignments);
+        }
+        
+        public IMemberInitSourceText CreateMemberInit(IEnumerable<IAssignmentSourceText> assignments)
+        {
+            return new MemberInitSourceText(assignments);
+        }
+        
+        public ISourceText CreateSource(string source)
+        {
+            return new SourceText(source);
         }
 
     }
