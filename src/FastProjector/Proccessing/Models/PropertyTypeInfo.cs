@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using FastProjector.MapGenerator.Proccessing.Models;
 using Microsoft.CodeAnalysis;
@@ -12,12 +14,25 @@ namespace FastProjector.MapGenerator.Proccessing.Models
         {
             CreatePropertyType(prop);
         }
+        
+        private PropertyTypeInformation(
+            string fullname,
+            IEnumerable<SubTypeInformation> genericTypes,
+            PropertyTypeEnum propType,
+            PropertyTypeCategoryEnum propTypeCategory,
+            SubTypeInformation arrayType
+            )
+            : base(fullname, genericTypes)
+        {
+            Type = propType;
+            TypeCategory = propTypeCategory;
+            ArrayType = arrayType;
+        }
+
 
         public PropertyTypeEnum Type { get; private set; }
 
         public PropertyTypeCategoryEnum TypeCategory { get; private set; }
-
-        public IPropertySymbol PropertySymbol { get; private set; }
 
         public SubTypeInformation ArrayType { get; private set; }
 
@@ -37,7 +52,6 @@ namespace FastProjector.MapGenerator.Proccessing.Models
         {
             var typeMetadata = DeterminePropertyType(prop.Type);
             Type = typeMetadata.Type;
-            PropertySymbol = prop;
 
             // Enumerables:
             if (typeMetadata.IsEnumerable)
@@ -53,7 +67,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models
                 //other enumerable types
                 else
                 {
-                    collectionSymbol = GenericTypes.FirstOrDefault()?.TypeSymbol;
+                    collectionSymbol = GenericSymbols.FirstOrDefault();
                 }
 
                 var enumerableArgumentTypeInfo = DeterminePropertyType(collectionSymbol);
@@ -169,8 +183,13 @@ namespace FastProjector.MapGenerator.Proccessing.Models
             //unknown:
             return metadata;
         }
+        
+        public bool HasSameCollectionType(PropertyTypeInformation typeInfo)
+        {
+            return GetCollectionType().Equals(typeInfo.GetCollectionType());
+        }
 
-        protected class PropertyTypeMetadata
+        private class PropertyTypeMetadata
         {
             public string FullName { get; set; }
             public PropertyTypeEnum Type { get; set; }
@@ -180,5 +199,89 @@ namespace FastProjector.MapGenerator.Proccessing.Models
             public bool IsEnumerable { get; set; }
             public bool IsNonGenericClass { get; set; }
         }
+
+        public static PropertyTypeInformation CreatePrimitive(PrimitiveTypeEnum primitiveType)
+        {
+            if (!Enum.IsDefined(typeof(PrimitiveTypeEnum), primitiveType))
+                throw new InvalidEnumArgumentException(nameof(primitiveType), (int) primitiveType,
+                    typeof(PrimitiveTypeEnum));
+            
+            var propertyType = primitiveType.ConvertToPropertyTypeEnum();
+            
+            var fullName = propertyType.GetFullname();
+            return new PropertyTypeInformation(fullName, null, propertyType, PropertyTypeCategoryEnum.SinglePrimitive,
+                null);
+        }
+
+        public static PropertyTypeInformation CreateClass(string fullname)
+        {
+            return new PropertyTypeInformation(fullname, null, PropertyTypeEnum.Other,
+                PropertyTypeCategoryEnum.SingleNonGenenericClass, null);
+        }
+
+        public static PropertyTypeInformation CreateGenericClass(string fullname, IEnumerable<SubTypeInformation> genericTypes)
+        {
+                return new PropertyTypeInformation(fullname, genericTypes, PropertyTypeEnum.Other,
+                            PropertyTypeCategoryEnum.SingleGenericClass, null);
+        }
+        
+        public static PropertyTypeInformation CreatePrimitiveArray(PrimitiveTypeEnum arrayType)
+        {
+            if (!Enum.IsDefined(typeof(PrimitiveTypeEnum), arrayType))
+                throw new InvalidEnumArgumentException(nameof(arrayType), (int) arrayType,
+                    typeof(PrimitiveTypeEnum));
+
+            var propertyType = arrayType.ConvertToPropertyTypeEnum();
+            
+            var fullName = propertyType.GetFullname();
+
+            return new PropertyTypeInformation("System.Array", null, PropertyTypeEnum.System_Array,
+                PropertyTypeCategoryEnum.CollectionPrimitive, new SubTypeInformation(fullName));
+        }
+        
+        public static PropertyTypeInformation CreateObjectArray(string arrayTypeFullname)
+        {
+            return new PropertyTypeInformation("System.Array", null, PropertyTypeEnum.System_Array,
+                PropertyTypeCategoryEnum.CollectionObject, new SubTypeInformation(arrayTypeFullname));
+        }
+        
+        
+        public static PropertyTypeInformation CreatePrimitiveCollection(CollectionTypeEnum collectionCategoryType, PrimitiveTypeEnum collectionType)
+        {
+            if (!Enum.IsDefined(typeof(CollectionTypeEnum), collectionCategoryType))
+                throw new InvalidEnumArgumentException(nameof(collectionCategoryType), (int) collectionCategoryType,
+                    typeof(CollectionTypeEnum));
+            
+            if (!Enum.IsDefined(typeof(PrimitiveTypeEnum), collectionType))
+                throw new InvalidEnumArgumentException(nameof(collectionType), (int) collectionType,
+                    typeof(PrimitiveTypeEnum));
+
+            var categoryPropertyType = collectionCategoryType.ConvertToPropertyTypeEnum();
+            var genericPropertyType = collectionType.ConvertToPropertyTypeEnum();
+            
+            var categoryFullName = categoryPropertyType.GetFullname();
+            var genericFullName = genericPropertyType.GetFullname();
+            var genericType = new SubTypeInformation(genericFullName);
+
+            return new PropertyTypeInformation(categoryFullName, new []{ genericType }, categoryPropertyType,
+                PropertyTypeCategoryEnum.CollectionPrimitive, null);
+        }
+        
+        public static PropertyTypeInformation CreateObjectCollection(CollectionTypeEnum collectionCategoryType, string collectionTypeFullName)
+        {
+            if (!Enum.IsDefined(typeof(CollectionTypeEnum), collectionCategoryType))
+                throw new InvalidEnumArgumentException(nameof(collectionCategoryType), (int) collectionCategoryType,
+                    typeof(CollectionTypeEnum));
+
+            var categoryPropertyType = collectionCategoryType.ConvertToPropertyTypeEnum();
+
+            var categoryFullName = categoryPropertyType.GetFullname();
+            var genericType = new SubTypeInformation(collectionTypeFullName);
+
+
+            return new PropertyTypeInformation(categoryFullName, new []{ genericType }, categoryPropertyType,
+                PropertyTypeCategoryEnum.CollectionObject, null);
+        }
+        
     }
 }

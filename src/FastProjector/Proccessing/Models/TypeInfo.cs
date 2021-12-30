@@ -1,19 +1,32 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
 namespace FastProjector.MapGenerator.Proccessing.Models
 {
-    internal class TypeInformation :SubTypeInformation
+    internal class TypeInformation: SubTypeInformation
     {
+        public SubTypeInformation[] GenericTypes { get; }
+        
+        protected ITypeSymbol[] GenericSymbols { get; }
+
         public TypeInformation(ITypeSymbol typeSymbol)
-        :base(typeSymbol)
+            :base(typeSymbol)
         {
-            if (typeSymbol.IsGeneric())
-            {
-                GenericTypes = (typeSymbol as INamedTypeSymbol)?.TypeArguments.Select(sym => new SubTypeInformation(sym)).ToArray();
-            }
+            if (!typeSymbol.IsGeneric()) return;
+            
+            GenericSymbols = (typeSymbol as INamedTypeSymbol)?.TypeArguments.ToArray();
+            GenericTypes = GenericSymbols?.Select(sym => new SubTypeInformation(sym)).ToArray();
         }
+        
+        public TypeInformation(string fullName, IEnumerable<SubTypeInformation> genericTypes)
+            :base(fullName)
+        {
+            GenericTypes = genericTypes.ToArray();
+        }
+        
+        
 
         public bool IsSameAs(TypeInformation other)
         {
@@ -50,7 +63,5 @@ namespace FastProjector.MapGenerator.Proccessing.Models
             return false;
 
         }
-
-        public SubTypeInformation[] GenericTypes { get; }
     }
 }

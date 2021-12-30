@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using FastProjector.MapGenerator.Analyzing;
 using FastProjector.MapGenerator.DevTools;
 using FastProjector.MapGenerator.Proccessing.Models;
@@ -15,11 +17,14 @@ namespace FastProjector.MapGenerator.Proccessing
     {
         private readonly PropertyCasting _propertyCasting;
         private readonly MapCache _mapCache;
+        private readonly SourceGenerator _sourceGenerator;
 
         public RequestProcessing(CastMetaData metaData)
         {
             _propertyCasting = new PropertyCasting();
             _mapCache = new MapCache();
+            _sourceGenerator = new SourceGenerator();
+
         }
         public string ProcessProjectionRequest(IEnumerable<ProjectionRequest> requests)
         { 
@@ -30,102 +35,99 @@ namespace FastProjector.MapGenerator.Proccessing
             return "";
         }
 
-        private ModelMapMetaData CreateMappings(INamedTypeSymbol source, INamedTypeSymbol target, int level = 1)
+        private ModelMapMetaData CreateMappings(INamedTypeSymbol sourceSymbol, INamedTypeSymbol targetSymbol, int level = 1)
         {
 
-            var sourceType = source.ToTypeInformation();
-            var destinationType = target.ToTypeInformation();
+            var sourceType = sourceSymbol.ToTypeInformation();
+            var destinationType = targetSymbol.ToTypeInformation();
             
             //check if already cached
             var cached = _mapCache.Get(sourceType, destinationType);
             if (cached != null)
                 return cached;
             
-            var sourceGenerator = new SourceGenerator();
             var bindingSourceCode = new List<IAssignmentSourceText>();
-            var sourceProps = ExtractProps(source, PropertyAccessTypeEnum.HasPublicGet);
+            var sourceProps = ExtractProps(sourceSymbol, PropertyAccessTypeEnum.HasPublicGet);
             
-            var destinationProps = new HashSet<IPropertySymbol>(ExtractProps(target, PropertyAccessTypeEnum.HasPublicSet), SymbolEqualityComparer.Default);
+            var destinationProps = new HashSet<IPropertySymbol>(ExtractProps(targetSymbol, PropertyAccessTypeEnum.HasPublicSet), SymbolEqualityComparer.Default);
 
             
             foreach(var sourceProp in sourceProps)
             {
                 var destinationProp = destinationProps.FirstOrDefault(f => f.Name == sourceProp.Name);
-                if(destinationProp != null)
+                if (destinationProp == null)
+                    continue;
+                
+                var propAssignment = HandlePropertyMapping(level, destinationProp, sourceProp, bindingSourceCode);
+                if (propAssignment == null)
+                    continue;
+                
+                bindingSourceCode.Add(propAssignment);
+            }
+
+            return null;
+        }
+
+        private IAssignmentSourceText HandlePropertyMapping(int level, IPropertySymbol destinationProp, IPropertySymbol sourceProp,
+            List<IAssignmentSourceText> bindingSourceCode)
+        {
+            
+            var sourcePropMetadata = new PropertyMetaData(sourceProp);
+            var destinationPropMetaData = new PropertyMetaData(destinationProp);
+
+            var sourcePropType = sourcePropMetadata.PropertyTypeInformation;
+            var destinationPropType = destinationPropMetaData.PropertyTypeInformation;
+
+            if (sourcePropType.IsSameAs(destinationPropType))
+            {
+                if (sourcePropType.TypeCategory == PropertyTypeCategoryEnum.CollectionObject)
                 {
-                    var sourcePropType = new PropertyTypeInformation(sourceProp);
-                    var destinationPropType = new PropertyTypeInformation(destinationProp);
-                    
-                    if(sourcePropType.IsSameAs(destinationPropType))
-                    {
-                        if (sourcePropType.TypeCategory == PropertyTypeCategoryEnum.SinglePrimitive)
-                            bindingSourceCode.Add(sourceGenerator.CreateAssignment(
-                                sourceGenerator.CreateSource(sourceProp.Name),
-                                sourceGenerator.CreateSource(destinationProp.Name)
-                            ));
-                    }
-                    else
-                    {
-                        // try cast
-                        
-                    }
-                    // ==================================
+                    //project with map
+                }
+                else if (sourcePropType.TypeCategory == PropertyTypeCategoryEnum.CollectionPrimitive)
+                {
+                    return ReCreateCollection(level, sourcePropMetadata, destinationPropMetaData);
+                }
+                else if (sourcePropType.TypeCategory == PropertyTypeCategoryEnum.SinglePrimitive)
+                {
+                    return Bind(level, sourceProp.Name, destinationProp.Name);
+                }
+                else if (sourcePropType.TypeCategory == PropertyTypeCategoryEnum.SingleGenericClass)
+                {
+                    return Map(level, sourceProp, destinationProp);
+                }
+                else if (sourcePropType.TypeCategory == PropertyTypeCategoryEnum.SingleNonGenenericClass)
+                {
+                    return Map(level, sourceProp, destinationProp);
+                }
+            }
+            else
+            {
+                // tryCast
 
+                bool castResult;
 
-                    if (sourcePropType.IsSameAs(destinationPropType))
+                if (castResult)
+                {
+                    //bind
+                }
+                else
+                {
+                    if (sourcePropType.IsEnumerable() && destinationPropType.IsEnumerable())
                     {
-                        if (sourcePropType.TypeCategory == PropertyTypeCategoryEnum.CollectionObject)
-                        {
-                            //project with map
-                        }
-                        else if(sourcePropType.TypeCategory == PropertyTypeCategoryEnum.CollectionPrimitive)
-                        {
-                            Bind(level, bindingSourceCode, sourceGenerator, sourceProp, destinationProp);
-                        }
-                        else if (sourcePropType.TypeCategory == PropertyTypeCategoryEnum.SinglePrimitive)
-                        {
-                            Bind(level, bindingSourceCode, sourceGenerator, sourceProp, destinationProp);
-                        }
-                        else if (sourcePropType.TypeCategory == PropertyTypeCategoryEnum.SingleGenericClass)
-                        {
-                            Map(level, bindingSourceCode, sourceGenerator, sourceProp, destinationProp);
-                        }
-                        else if (sourcePropType.TypeCategory == PropertyTypeCategoryEnum.SingleNonGenenericClass)
-                        {
-                            Map(level, bindingSourceCode, sourceGenerator, sourceProp, destinationProp);
-                        }
-                        
-                    }
-                    else
-                    {
-                        // tryCast
+                        //try cast generic Type
+                        bool genericCastResult;
 
-                        bool castResult ;
-
-                        if (castResult)
+                        if (genericCastResult)
                         {
-                            //bind
+                            //project with cast
                         }
                         else
                         {
-                            if (sourcePropType.IsEnumerable() && destinationPropType.IsEnumerable())
+                            if (sourcePropType.IsCollectionObject() && destinationPropType.IsCollectionObject())
                             {
-                                //try cast generic Type
-                                bool genericCastResult;
-                                
-                                if (genericCastResult)
-                                {
-                                    //project with cast
-                                }
-                                else
-                                {
-                                    if (sourcePropType.IsCollectionObject() && destinationPropType.IsCollectionObject())
-                                    {
-                                        //store it for later cast
-                                    }
-                                }
+                                //store it for later cast
                             }
-                            
                         }
                     }
                 }
@@ -134,29 +136,65 @@ namespace FastProjector.MapGenerator.Proccessing
             return null;
         }
 
-        private void Map(int level, List<IAssignmentSourceText> bindingSourceCode, SourceGenerator sourceGenerator, IPropertySymbol sourceProp,
+        private IAssignmentSourceText ReCreateCollection(int level, PropertyMetaData sourcePropMetadata, PropertyMetaData destinationPropMetaData)
+        {
+            if (!sourcePropMetadata.PropertyTypeInformation.IsEnumerable() ||
+                destinationPropMetaData.PropertyTypeInformation.IsEnumerable())
+                throw new ArgumentException("properties must be collection");
+            
+            
+            var castResult = _propertyCasting.CastType(sourcePropMetadata.PropertyTypeInformation,
+                destinationPropMetaData.PropertyTypeInformation);
+            if (castResult.IsUnMapable)
+                return null;
+            var castExpression = castResult.Cast(destinationPropMetaData.PropertySymbol.Name);
+            
+            return Bind(level, sourcePropMetadata.PropertySymbol.Name, castExpression);
+        }
+
+        private IAssignmentSourceText Project(int level, PropertyMetaData sourcePropMetadata, PropertyMetaData destinationPropMetaData)
+        {
+            // var collectionTypeAssignment = HandlePropertyMapping(sourcePropMetadata.GetCollectionTypeSymbol(),
+            //     destinationPropMetaData.GetCollectionTypeSymbol());
+
+            var CollectionTypeMapping = CreateMappings(sourcePropMetadata.GetCollectionTypeSymbol(),
+                destinationPropMetaData.GetCollectionTypeSymbol(), level + 1);
+
+            if (CollectionTypeMapping == null)
+                return null;
+            
+            
+
+        }
+
+
+        private IAssignmentSourceText Map(int level, IPropertySymbol sourceProp,
             IPropertySymbol destinationProp)
         {
             var mappingResult = CreateMappings(sourceProp.Type as INamedTypeSymbol, destinationProp.Type as INamedTypeSymbol,
                 level + 1);
 
-            bindingSourceCode.Add(sourceGenerator.CreateAssignment(
-                sourceGenerator.CreateSource(sourceProp.Name),
+            return _sourceGenerator.CreateAssignment(
+                _sourceGenerator.CreateSource(sourceProp.Name),
                 mappingResult.ModelMappingSource
-            ));
+            );  
         }
 
-        private static void Bind(int level, ICollection<IAssignmentSourceText> bindingSourceCode, SourceGenerator sourceGenerator, ISymbol sourceProp,
-            ISymbol destinationProp)
+        private IAssignmentSourceText Bind(int level, string sourcePropName, string destinationPropName)
         {
-            bindingSourceCode.Add(
-                sourceGenerator.CreateAssignment(
-                    sourceGenerator.CreateSource(sourceProp.Name),
-                    sourceGenerator.CreateSource($"d{level}.{destinationProp.Name}")
-                )
+            return _sourceGenerator.CreateAssignment(
+                _sourceGenerator.CreateSource(sourcePropName),
+                _sourceGenerator.CreateSource($"d{level}.{destinationPropName}")
             );
         }
 
+        private ISourceText CreateSelectExpression(int level, ISourceText returnExpression)
+        {
+
+            Action a = () => { };
+            _sourceGenerator.CreateCall("Select")
+        }
+        
         public IEnumerable<IPropertySymbol> ExtractProps(INamedTypeSymbol classSymbol, PropertyAccessTypeEnum? propertyTypeToSearch = null )
         {
             var result = new List<IPropertySymbol>();

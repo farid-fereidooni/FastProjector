@@ -53,6 +53,12 @@ namespace FastProjector.MapGenerator.SourceGeneration
         {
             return new MemberInitSourceText(assignments);
         }
+
+        public ICallSourceText CreateCall(string methodName)
+        {
+            return new CallSourceText(methodName);
+        }
+        
         
         public ISourceText CreateSource(string source)
         {

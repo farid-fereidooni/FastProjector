@@ -17,9 +17,7 @@ namespace FastProjector.MapGenerator
     {
         public void Execute(GeneratorExecutionContext context)
         {
-
-            var s = SyntaxFactory.ParseTypeName("");
-            s.
+            
             try {
                 if(!(context.SyntaxReceiver is ProjectionSyntaxReceiver projectionSyntaxReceiver))
                     return;

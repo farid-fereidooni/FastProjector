@@ -1,9 +1,7 @@
 namespace FastProjector.MapGenerator.Proccessing.Models
 {
-    public enum PropertyTypeEnum: byte
+    public enum PrimitiveTypeEnum: byte
     {
-        Other = 0,
-        System_Enum,
         System_Boolean,
         System_Char,
         System_SByte,
@@ -21,10 +19,5 @@ namespace FastProjector.MapGenerator.Proccessing.Models
         System_IntPtr,
         System_UIntPtr,
         System_DateTime,
-        System_Array,
-        System_Collections_Generic_IEnumerable_T,
-        System_Collections_Generic_IList_T,
-        System_Collections_Generic_List_T,
-        System_Collections_Generic_ICollection_T,
     }
 }

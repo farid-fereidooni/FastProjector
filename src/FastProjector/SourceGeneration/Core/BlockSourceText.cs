@@ -15,6 +15,11 @@ namespace FastProjector.MapGenerator.SourceGeneration.Interfaces
             this.blockExpression = blockExpression;
             members = new List<ISourceText>();
         }
+        
+        public BlockSourceText()
+        {
+            members = new List<ISourceText>();
+        }
 
         protected override string BuildSource()
         {

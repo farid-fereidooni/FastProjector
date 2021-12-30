@@ -8,12 +8,15 @@ namespace FastProjector.MapGenerator.Proccessing.Models
 
         public SubTypeInformation(ITypeSymbol typeSymbol)
         {
-            TypeSymbol = typeSymbol;
             FullName = typeSymbol.GetFullName();
+        }
+        
+        public SubTypeInformation(string fullName)
+        {
+            FullName = fullName;
         }
         public string FullName { get; set; }
         
-        public ITypeSymbol TypeSymbol { get; set; }
         public override int GetHashCode()
         {
             return FullName.ToLower().GetHashCode();

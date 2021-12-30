@@ -73,13 +73,13 @@ namespace FastProjector.MapGenerator.Proccessing
 
             #region IEnumerable
             var iEnumerableCastableDict = new Dictionary<PropertyTypeEnum, Func<string, string>>();
-            static string CastToIEnumerable(string source) => source;
 
             _availableCasts.Add(PropertyTypeEnum.System_Collections_Generic_IEnumerable_T, iEnumerableCastableDict);
 
-            iEnumerableCastableDict.Add(PropertyTypeEnum.System_Array, CastToIEnumerable);
-            iEnumerableCastableDict.Add(PropertyTypeEnum.System_Collections_Generic_IList_T, CastToIEnumerable);
-            iEnumerableCastableDict.Add(PropertyTypeEnum.System_Collections_Generic_ICollection_T, CastToIEnumerable);
+            iEnumerableCastableDict.Add(PropertyTypeEnum.System_Array, source => source + ".ToArray()");
+            iEnumerableCastableDict.Add(PropertyTypeEnum.System_Collections_Generic_IList_T, source => source + ".ToList()");
+            iEnumerableCastableDict.Add(PropertyTypeEnum.System_Collections_Generic_ICollection_T, source => source + ".ToList()");
+            iEnumerableCastableDict.Add(PropertyTypeEnum.System_Collections_Generic_IEnumerable_T, source => source + ".ToList()");
 
             #endregion
 
@@ -90,6 +90,9 @@ namespace FastProjector.MapGenerator.Proccessing
             _availableCasts.Add(PropertyTypeEnum.System_Collections_Generic_IList_T, iListCastableDict);
 
             iListCastableDict.Add(PropertyTypeEnum.System_Collections_Generic_IEnumerable_T, CastToIList);
+            iListCastableDict.Add(PropertyTypeEnum.System_Collections_Generic_ICollection_T, CastToIList);
+            iListCastableDict.Add(PropertyTypeEnum.System_Collections_Generic_List_T, CastToIList);
+            iListCastableDict.Add(PropertyTypeEnum.System_Array, CastToIList);
 
             #endregion
 
@@ -128,7 +131,7 @@ namespace FastProjector.MapGenerator.Proccessing
                 if (sourceProp.TypeCategory == PropertyTypeCategoryEnum.CollectionPrimitive ||
                    sourceProp.TypeCategory == PropertyTypeCategoryEnum.CollectionObject)
                 {
-                    if (!sourceProp.HasSameGenerics(destinationProp))
+                    if (!sourceProp.HasSameCollectionType(destinationProp))
                     {
                         result.IsUnMapable = true;
                         result.Cast = null;

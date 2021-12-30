@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using FastProjector.MapGenerator.Proccessing.Models;
 
 namespace FastProjector.MapGenerator
 {
@@ -14,5 +16,6 @@ namespace FastProjector.MapGenerator
         {
             return enumerable != null && enumerable.Any(predict);
         }
+
     }
 }
