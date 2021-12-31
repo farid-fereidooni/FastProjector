@@ -59,6 +59,10 @@ namespace FastProjector.MapGenerator.SourceGeneration
             return new CallSourceText(methodName);
         }
         
+        public ILambdaExpressionSourceText CreateLambdaExpression()
+        {
+            return new LambdaExpressionSourceText();
+        }
         
         public ISourceText CreateSource(string source)
         {

@@ -80,57 +80,50 @@ namespace FastProjector.MapGenerator.Proccessing
 
             if (sourcePropType.IsSameAs(destinationPropType))
             {
-                if (sourcePropType.TypeCategory == PropertyTypeCategoryEnum.CollectionObject)
+                switch (sourcePropType.TypeCategory)
                 {
-                    //project with map
-                }
-                else if (sourcePropType.TypeCategory == PropertyTypeCategoryEnum.CollectionPrimitive)
-                {
-                    return ReCreateCollection(level, sourcePropMetadata, destinationPropMetaData);
-                }
-                else if (sourcePropType.TypeCategory == PropertyTypeCategoryEnum.SinglePrimitive)
-                {
-                    return Bind(level, sourceProp.Name, destinationProp.Name);
-                }
-                else if (sourcePropType.TypeCategory == PropertyTypeCategoryEnum.SingleGenericClass)
-                {
-                    return Map(level, sourceProp, destinationProp);
-                }
-                else if (sourcePropType.TypeCategory == PropertyTypeCategoryEnum.SingleNonGenenericClass)
-                {
-                    return Map(level, sourceProp, destinationProp);
+                    case PropertyTypeCategoryEnum.CollectionObject:
+                        return Project(level, sourcePropMetadata, destinationPropMetaData);
+                    case PropertyTypeCategoryEnum.CollectionPrimitive:
+                        return ReCreateCollection(level, sourcePropMetadata, destinationPropMetaData);
+                    case PropertyTypeCategoryEnum.SinglePrimitive:
+                        return Bind(level, sourceProp.Name, destinationProp.Name);
+                    case PropertyTypeCategoryEnum.SingleGenericClass:
+                        return Map(level, sourceProp, destinationProp);
+                    case PropertyTypeCategoryEnum.SingleNonGenenericClass:
+                        return Map(level, sourceProp, destinationProp);
                 }
             }
             else
             {
                 // tryCast
 
-                bool castResult;
-
-                if (castResult)
-                {
-                    //bind
-                }
-                else
-                {
-                    if (sourcePropType.IsEnumerable() && destinationPropType.IsEnumerable())
-                    {
-                        //try cast generic Type
-                        bool genericCastResult;
-
-                        if (genericCastResult)
-                        {
-                            //project with cast
-                        }
-                        else
-                        {
-                            if (sourcePropType.IsCollectionObject() && destinationPropType.IsCollectionObject())
-                            {
-                                //store it for later cast
-                            }
-                        }
-                    }
-                }
+                // bool castResult;
+                //
+                // if (castResult)
+                // {
+                //     //bind
+                // }
+                // else
+                // {
+                //     if (sourcePropType.IsEnumerable() && destinationPropType.IsEnumerable())
+                //     {
+                //         //try cast generic Type
+                //         bool genericCastResult;
+                //
+                //         if (genericCastResult)
+                //         {
+                //             //project with cast
+                //         }
+                //         else
+                //         {
+                //             if (sourcePropType.IsCollectionObject() && destinationPropType.IsCollectionObject())
+                //             {
+                //                 //store it for later cast
+                //             }
+                //         }
+                //     }
+                // }
             }
 
             return null;
@@ -157,14 +150,15 @@ namespace FastProjector.MapGenerator.Proccessing
             // var collectionTypeAssignment = HandlePropertyMapping(sourcePropMetadata.GetCollectionTypeSymbol(),
             //     destinationPropMetaData.GetCollectionTypeSymbol());
 
-            var CollectionTypeMapping = CreateMappings(sourcePropMetadata.GetCollectionTypeSymbol(),
-                destinationPropMetaData.GetCollectionTypeSymbol(), level + 1);
+            var collectionTypeMapping = CreateMappings(sourcePropMetadata.GetCollectionTypeSymbol(),
+                destinationPropMetaData.GetCollectionTypeSymbol(), level + 2);
 
-            if (CollectionTypeMapping == null)
+            if (collectionTypeMapping == null)
                 return null;
-            
-            
 
+            var selectExpression = CreateSelectExpression($"d{level + 1}", collectionTypeMapping.ModelMappingSource);
+
+            return Bind(level, sourcePropMetadata.PropertySymbol.Name, selectExpression.Text);
         }
 
 
@@ -188,11 +182,14 @@ namespace FastProjector.MapGenerator.Proccessing
             );
         }
 
-        private ISourceText CreateSelectExpression(int level, ISourceText returnExpression)
+        private ISourceText CreateSelectExpression(string paramName, ISourceText returnExpression)
         {
+            var selectExpression = _sourceGenerator.CreateLambdaExpression()
+                .AddParameter(paramName)
+                .AssignBodyExpression(returnExpression);
 
-            Action a = () => { };
-            _sourceGenerator.CreateCall("Select")
+            return _sourceGenerator.CreateCall("Select")
+                .AddArgument(selectExpression);
         }
         
         public IEnumerable<IPropertySymbol> ExtractProps(INamedTypeSymbol classSymbol, PropertyAccessTypeEnum? propertyTypeToSearch = null )
