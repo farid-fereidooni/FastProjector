@@ -39,5 +39,5 @@ namespace FastProjector.SourceGeneration.Core
             sourceStringBuilder.AppendLine("}");
             return sourceStringBuilder.ToString();
         }
-    }
+    }   
 }

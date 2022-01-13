@@ -43,5 +43,9 @@ namespace FastProjector.MapGenerator.Proccessing
 
             return propertyTypeEnum;
         }
+        
+    
+        
+        
     }
 }

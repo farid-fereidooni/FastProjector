@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using FastProjector.MapGenerator.Proccessing.Contracts;
 using FastProjector.MapGenerator.Proccessing.Models;
 using Microsoft.CodeAnalysis;
 
 namespace FastProjector.MapGenerator.Proccessing
 {
-    internal class PropertyCasting
+    internal class PropertyCasting : IPropertyCasting
     {
         private Dictionary<PropertyTypeEnum, Dictionary<PropertyTypeEnum, Func<string, string>>> _availableCasts;
         public PropertyCasting()

@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using FastProjector.MapGenerator.Proccessing.Contracts;
 using FastProjector.MapGenerator.Proccessing.Models;
 
 namespace FastProjector.MapGenerator.Proccessing
 {
-    internal class MapCache
+    internal class MapCache: IMapCache
     {
         private readonly Dictionary<string, Dictionary<string, ModelMapMetaData>> cachedMapMetaData;
 
