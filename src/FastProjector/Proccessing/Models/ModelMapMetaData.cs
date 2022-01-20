@@ -23,12 +23,12 @@ namespace FastProjector.MapGenerator.Proccessing.Models
             SourceType = sourceType;
             DestinationType = destinationType;
             ModelMappingSource = source;
-            _notMappedPropertiesMetaData = notMappedProps.ToList();
+            _notMappedProperties = notMappedProps.ToList();
             MapLevel = mapLevel;
             IsValid = true;
         }
 
-        public ModelMapMetaData(IMapCache mapCache, IPropertyCasting propertyCasting, INamedTypeSymbol sourceSymbol, INamedTypeSymbol targetSymbol)
+        public ModelMapMetaData(IMapCache mapCache, IPropertyCasting propertyCasting, ITypeSymbol sourceSymbol, ITypeSymbol targetSymbol)
         {
             _mapCache = mapCache;
             _propertyCasting = propertyCasting;
@@ -48,8 +48,8 @@ namespace FastProjector.MapGenerator.Proccessing.Models
         public TypeInformation DestinationType { get; private set; }
         public ISourceText ModelMappingSource { get; private set; }
 
-        private readonly List<PropertyMapMetaData> _notMappedPropertiesMetaData;
-        public IReadOnlyCollection<PropertyMapMetaData> NotMappedPropertiesMetaData => _notMappedPropertiesMetaData;
+        private readonly List<PropertyMapMetaData> _notMappedProperties;
+        public IReadOnlyCollection<PropertyMapMetaData> NotMappedProperties => _notMappedProperties;
         public bool IsValid { get; set; }
 
         private void CreateMapMetaData(ITypeSymbol sourceSymbol, ITypeSymbol targetSymbol, int level)
@@ -118,30 +118,21 @@ namespace FastProjector.MapGenerator.Proccessing.Models
                 var destinationCollectionType = new PropertyTypeInformation(destinationPropMetaData.GetCollectionTypeSymbol());
 
                 var castGenericTypes = _propertyCasting.CastType(sourceCollectionType, destinationCollectionType);
+                if (!castGenericTypes.IsUnMapable)
+                    Project(level, sourcePropMetadata, sourcePropMetadata, castGenericTypes.Cast);
+                return;
 
             }
-            
-            // else
-            // {
-            //     if (sourcePropType.IsEnumerable() && destinationPropType.IsEnumerable())
-            //     {
-            //         //try cast generic Type
-            //         bool genericCastResult;
-            //
-            //         if (genericCastResult)
-            //         {
-            //             //project with cast
-            //         }
-            //         else
-            //         {
-            //             if (sourcePropType.IsCollectionObject() && destinationPropType.IsCollectionObject())
-            //             {
-            //                 //store it for later cast
-            //             }
-            //         }
-            //     }
-            // }
+            if (sourcePropType.IsCollectionObject() && destinationPropType.IsCollectionObject())
+            {
+                _notMappedProperties.Add(new PropertyMapMetaData(sourcePropMetadata , destinationPropMetaData));
+            }
 
+            if (sourcePropType.IsNonGenericClass() && destinationPropType.IsNonGenericClass())
+            {
+                _notMappedProperties.Add(new PropertyMapMetaData(sourcePropMetadata , destinationPropMetaData));
+            }
+            
         }
         
         private void AssignSamePropertyType(PropertyTypeCategoryEnum propertyType, int level, PropertyMetaData sourcePropMetadata, PropertyMetaData destinationPropMetadata)
@@ -184,9 +175,6 @@ namespace FastProjector.MapGenerator.Proccessing.Models
         private IAssignmentSourceText Project(int level, PropertyMetaData sourcePropMetadata,
             PropertyMetaData destinationPropMetaData, Func<string, string> cast = null)
         {
-            var test = sourcePropMetadata.GetCollectionTypeSymbol();
-            
-                
             var collectionTypeMapping = new ModelMapMetaData(_mapCache,_propertyCasting,sourcePropMetadata.GetCollectionTypeSymbol(),destinationPropMetaData.GetCollectionTypeSymbol(),level +2);
             if (!collectionTypeMapping.IsValid)
                 return null;

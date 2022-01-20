@@ -15,6 +15,11 @@ namespace FastProjector.MapGenerator.Proccessing
         {
             return prop.TypeCategory == PropertyTypeCategoryEnum.CollectionObject;
         }
+        
+        public static bool IsNonGenericClass(this PropertyTypeInformation prop)
+        {
+            return prop.TypeCategory == PropertyTypeCategoryEnum.SingleNonGenenericClass;
+        }
 
         public static bool HasGenericTypes(this TypeInformation prop)
         {

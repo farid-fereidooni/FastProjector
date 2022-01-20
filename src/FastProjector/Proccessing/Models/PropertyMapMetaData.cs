@@ -1,10 +1,13 @@
-using Microsoft.CodeAnalysis;
-
 namespace FastProjector.MapGenerator.Proccessing.Models
 {
     internal class PropertyMapMetaData
     {
-        public IPropertySymbol SourceProperty { get; set; }
-        public IPropertySymbol DestinationProperty { get; set; }
+        public PropertyMapMetaData(PropertyMetaData sourceProperty, PropertyMetaData destinationProperty)
+        {
+            SourceProperty = sourceProperty;
+            DestinationProperty = destinationProperty;
+        }
+        public PropertyMetaData SourceProperty { get; }
+        public PropertyMetaData DestinationProperty { get; }
     }
 }
