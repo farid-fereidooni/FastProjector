@@ -51,7 +51,7 @@ namespace FastProjector.MapGenerator.Proccessing
         }
         
         
-        public static IEnumerable<IPropertySymbol> ExtractProps(this INamedTypeSymbol classSymbol)
+        public static IEnumerable<IPropertySymbol> ExtractProps(this ITypeSymbol classSymbol)
         {
             if (classSymbol.TypeKind != TypeKind.Class)
             {

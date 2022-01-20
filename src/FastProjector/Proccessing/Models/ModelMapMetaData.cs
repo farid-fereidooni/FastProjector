@@ -35,7 +35,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models
             CreateMapMetaData(sourceSymbol, targetSymbol, 1);
         }
 
-        private ModelMapMetaData(IMapCache mapCache, IPropertyCasting propertyCasting, INamedTypeSymbol sourceSymbol, INamedTypeSymbol targetSymbol,
+        private ModelMapMetaData(IMapCache mapCache, IPropertyCasting propertyCasting, ITypeSymbol sourceSymbol, ITypeSymbol targetSymbol,
             int level)
         {
             _mapCache = mapCache;
@@ -52,7 +52,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models
         public IReadOnlyCollection<PropertyMapMetaData> NotMappedPropertiesMetaData => _notMappedPropertiesMetaData;
         public bool IsValid { get; set; }
 
-        private void CreateMapMetaData(INamedTypeSymbol sourceSymbol, INamedTypeSymbol targetSymbol, int level)
+        private void CreateMapMetaData(ITypeSymbol sourceSymbol, ITypeSymbol targetSymbol, int level)
         {
             SourceType = sourceSymbol.ToTypeInformation();
             DestinationType = targetSymbol.ToTypeInformation();
@@ -100,38 +100,48 @@ namespace FastProjector.MapGenerator.Proccessing.Models
             if (sourcePropType.IsSameAs(destinationPropType))
             {
                 AssignSamePropertyType(sourcePropType.TypeCategory, level, sourcePropMetadata, destinationPropMetaData);
+                return;
             }
-            else
-            {
-                // tryCast
+            
+            // tryCast
+            var castResult = _propertyCasting.CastType(sourcePropType, destinationPropType);
 
-                // bool castResult;
-                //
-                // if (castResult)
-                // {
-                //     //bind
-                // }
-                // else
-                // {
-                //     if (sourcePropType.IsEnumerable() && destinationPropType.IsEnumerable())
-                //     {
-                //         //try cast generic Type
-                //         bool genericCastResult;
-                //
-                //         if (genericCastResult)
-                //         {
-                //             //project with cast
-                //         }
-                //         else
-                //         {
-                //             if (sourcePropType.IsCollectionObject() && destinationPropType.IsCollectionObject())
-                //             {
-                //                 //store it for later cast
-                //             }
-                //         }
-                //     }
-                // }
+            if (!castResult.IsUnMapable)
+            {
+                Bind(level, sourceProp.Name, castResult.Cast(destinationProp.Name));
+                return;
             }
+
+            if (sourcePropType.IsEnumerable() && destinationPropType.IsEnumerable())
+            {
+                var sourceCollectionType = new PropertyTypeInformation(sourcePropMetadata.GetCollectionTypeSymbol());
+                var destinationCollectionType = new PropertyTypeInformation(destinationPropMetaData.GetCollectionTypeSymbol());
+
+                var castGenericTypes = _propertyCasting.CastType(sourceCollectionType, destinationCollectionType);
+
+            }
+            
+            // else
+            // {
+            //     if (sourcePropType.IsEnumerable() && destinationPropType.IsEnumerable())
+            //     {
+            //         //try cast generic Type
+            //         bool genericCastResult;
+            //
+            //         if (genericCastResult)
+            //         {
+            //             //project with cast
+            //         }
+            //         else
+            //         {
+            //             if (sourcePropType.IsCollectionObject() && destinationPropType.IsCollectionObject())
+            //             {
+            //                 //store it for later cast
+            //             }
+            //         }
+            //     }
+            // }
+
         }
         
         private void AssignSamePropertyType(PropertyTypeCategoryEnum propertyType, int level, PropertyMetaData sourcePropMetadata, PropertyMetaData destinationPropMetadata)
@@ -140,14 +150,14 @@ namespace FastProjector.MapGenerator.Proccessing.Models
             {
                 PropertyTypeCategoryEnum.CollectionObject =>
                     Project(level, sourcePropMetadata, destinationPropMetadata),
-                PropertyTypeCategoryEnum.CollectionPrimitive => ReCreateCollection(level, sourcePropMetadata,
-                    destinationPropMetadata),
-                PropertyTypeCategoryEnum.SinglePrimitive => Bind(level, sourcePropMetadata.PropertySymbol.Name,
-                    destinationPropMetadata.PropertySymbol.Name),
-                PropertyTypeCategoryEnum.SingleGenericClass => Map(level, sourcePropMetadata.PropertySymbol,
-                    destinationPropMetadata.PropertySymbol),
-                PropertyTypeCategoryEnum.SingleNonGenenericClass => Map(level, sourcePropMetadata.PropertySymbol,
-                    destinationPropMetadata.PropertySymbol),
+                PropertyTypeCategoryEnum.CollectionPrimitive => 
+                    ReCreateCollection(level, sourcePropMetadata, destinationPropMetadata),
+                PropertyTypeCategoryEnum.SinglePrimitive => 
+                    Bind(level, sourcePropMetadata.PropertySymbol.Name, destinationPropMetadata.PropertySymbol.Name),
+                PropertyTypeCategoryEnum.SingleGenericClass => 
+                    Map(level, sourcePropMetadata.PropertySymbol, destinationPropMetadata.PropertySymbol),
+                PropertyTypeCategoryEnum.SingleNonGenenericClass => 
+                    Map(level, sourcePropMetadata.PropertySymbol, destinationPropMetadata.PropertySymbol),
                 _ => null
             };
             
@@ -172,17 +182,20 @@ namespace FastProjector.MapGenerator.Proccessing.Models
         }
 
         private IAssignmentSourceText Project(int level, PropertyMetaData sourcePropMetadata,
-            PropertyMetaData destinationPropMetaData)
+            PropertyMetaData destinationPropMetaData, Func<string, string> cast = null)
         {
-            // var collectionTypeAssignment = HandlePropertyMapping(sourcePropMetadata.GetCollectionTypeSymbol(),
-            //     destinationPropMetaData.GetCollectionTypeSymbol());
-
+            var test = sourcePropMetadata.GetCollectionTypeSymbol();
+            
+                
             var collectionTypeMapping = new ModelMapMetaData(_mapCache,_propertyCasting,sourcePropMetadata.GetCollectionTypeSymbol(),destinationPropMetaData.GetCollectionTypeSymbol(),level +2);
-
             if (!collectionTypeMapping.IsValid)
                 return null;
 
-            var selectExpression = CreateSelectExpression($"d{level + 1}", collectionTypeMapping.ModelMappingSource);
+            var mappingSource = cast != null
+                ? SourceGenerator.CreateSource(cast(collectionTypeMapping.ModelMappingSource.Text))
+                : collectionTypeMapping.ModelMappingSource;
+
+            var selectExpression = CreateSelectExpression($"d{level + 1}", mappingSource);
 
             return Bind(level, sourcePropMetadata.PropertySymbol.Name, selectExpression.Text);
         }
@@ -230,7 +243,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models
         }
 
 
-        private bool CheckIfMappingPossible(INamedTypeSymbol sourceSymbol, INamedTypeSymbol targetSymbol)
+        private bool CheckIfMappingPossible(ITypeSymbol sourceSymbol, ITypeSymbol targetSymbol)
         {
             
             if (targetSymbol.TypeKind != TypeKind.Class && sourceSymbol.TypeKind != TypeKind.Class)

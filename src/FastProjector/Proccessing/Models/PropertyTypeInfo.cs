@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using FastProjector.MapGenerator.Proccessing.Models;
 using Microsoft.CodeAnalysis;
 
 namespace FastProjector.MapGenerator.Proccessing.Models
@@ -12,7 +11,13 @@ namespace FastProjector.MapGenerator.Proccessing.Models
         public PropertyTypeInformation(IPropertySymbol prop)
             : base(prop.Type)
         {
-            CreatePropertyType(prop);
+            CreatePropertyType(prop.Type as INamedTypeSymbol);
+        }
+        
+        public PropertyTypeInformation(ITypeSymbol type)
+            : base(type)
+        {
+            CreatePropertyType(type);
         }
         
         private PropertyTypeInformation(
@@ -48,9 +53,9 @@ namespace FastProjector.MapGenerator.Proccessing.Models
         }
 
 
-        private void CreatePropertyType(IPropertySymbol prop)
+        private void CreatePropertyType(ITypeSymbol type)
         {
-            var typeMetadata = DeterminePropertyType(prop.Type);
+            var typeMetadata = DeterminePropertyType(type);
             Type = typeMetadata.Type;
 
             // Enumerables:
@@ -61,7 +66,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models
                 // array:
                 if (typeMetadata.Type == PropertyTypeEnum.System_Array)
                 {
-                    collectionSymbol = ((IArrayTypeSymbol) prop.Type).ElementType;
+                    collectionSymbol = ((IArrayTypeSymbol) type).ElementType;
                     ArrayType = new SubTypeInformation(collectionSymbol);
                 }
                 //other enumerable types
