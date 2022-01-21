@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using FastProjector.MapGenerator.Analyzing;
 using FastProjector.MapGenerator.DevTools;
@@ -51,10 +52,22 @@ namespace FastProjector.MapGenerator
 
         public void Initialize(GeneratorInitializationContext context)
         {
-                
             
-             Logger.RemoveFile();
-
+            #if DEBUG
+                if (!Debugger.IsAttached)
+                {
+                    Debugger.Launch();
+                }
+            
+                while (!Debugger.IsAttached)
+                {
+                    //Debugger.Launch();
+                    System.Threading.Thread.Sleep(500);
+                }
+            #endif
+            
+            Logger.RemoveFile();
+             Logger.Log("started");
             context.RegisterForSyntaxNotifications(() => new ProjectionSyntaxReceiver());
         }
     }

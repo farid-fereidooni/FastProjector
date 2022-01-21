@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using FastProjector.MapGenerator.Proccessing.Models;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace FastProjector.MapGenerator.Proccessing
 {
@@ -58,37 +57,17 @@ namespace FastProjector.MapGenerator.Proccessing
                 throw new Exception("symbol is not class");
             }
 
-            var members = classSymbol.GetMembers();
-            foreach (var member in members)
-            {
-                if (!(member is IPropertySymbol propSymbol)) continue;
-
-                yield return propSymbol;
-            }
+            return classSymbol.GetMembers().OfType<IPropertySymbol>();
         }
 
         public static bool IsPublic(this IPropertySymbol property)
         {
-            var node = GetNodeOfSymbol(property);
-
-            if (node is PropertyDeclarationSyntax propertyNode)
-            {
-                return propertyNode.Modifiers.Any(a => a.ValueText == "public");
-            }
-            return false;
+            return property.DeclaredAccessibility == Accessibility.Public;
         }
         
         public static bool IsSettable(this IPropertySymbol property)
         {
-            if(IsPublic(property) && !property.IsReadOnly && property.SetMethod != null)
-            {
-                var node = GetNodeOfSymbol(property.SetMethod);
-                if(node is AccessorDeclarationSyntax setterNode)
-                {
-                    return !setterNode.Modifiers.Any();
-                }
-            }
-            return false;
+            return IsPublic(property) && !property.IsReadOnly && property.SetMethod != null;
         }
         
         private static SyntaxNode GetNodeOfSymbol(ISymbol symbol)

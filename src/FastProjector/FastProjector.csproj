@@ -2,9 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>8.0</LangVersion>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild> <!-- Generates a package at build -->
+    <LangVersion>9.0</LangVersion>
+<!--        <GeneratePackageOnBuild>true</GeneratePackageOnBuild> &lt;!&ndash; Generates a package at build &ndash;&gt;-->
     <IncludeBuildOutput>false</IncludeBuildOutput> <!-- Do not include the generator as a lib dependency -->
+    <IsRoslynComponent>True</IsRoslynComponent>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,9 +13,9 @@
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" PrivateAssets="all" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
-  </PropertyGroup>
+<!--  <PropertyGroup>-->
+<!--    <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>-->
+<!--  </PropertyGroup>-->
 
   <ItemGroup>
     <PackageReference Include="ObjectDumper.NET" Version="3.0.20251.1" GeneratePathProperty="true" PrivateAssets="all" />
@@ -22,23 +23,23 @@
   </ItemGroup>
 
 
-  <ItemGroup>
+<!--  <ItemGroup>-->
 
-    <ProjectReference Include="..\FastProjector.Shared\FastProjector.Shared.csproj" />
-    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+<!--    <ProjectReference Include="..\FastProjector.Shared\FastProjector.Shared.csproj" />-->
+<!--    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />-->
 
-    <!-- <None Include="$(PkgFastProjector_Shared)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" /> -->
+<!--    &lt;!&ndash; <None Include="$(PkgFastProjector_Shared)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" /> &ndash;&gt;-->
 
-     <!-- Package the ObjectDumper.NET dependency alongside the generator assembly -->
-    <None Include="$(PkgObjectDumper_NET)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-  </ItemGroup>
+<!--     &lt;!&ndash; Package the ObjectDumper.NET dependency alongside the generator assembly &ndash;&gt;-->
+<!--    <None Include="$(PkgObjectDumper_NET)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />-->
+<!--  </ItemGroup>-->
 
-    <Target Name="GetDependencyTargetPaths">
-    <ItemGroup>
-        <TargetPathWithTargetPlatformMoniker Include="$(PKGObjectDumper_NET)\lib\*.dll" IncludeRuntimeDependency="false" />
-        <TargetPathWithTargetPlatformMoniker Include="$(PKGNewtonsoft_Json)\lib\netstandard2.0\Newtonsoft.Json.dll" IncludeRuntimeDependency="false" />
+<!--    <Target Name="GetDependencyTargetPaths">-->
+<!--    <ItemGroup>-->
+<!--        <TargetPathWithTargetPlatformMoniker Include="$(PKGObjectDumper_NET)\lib\*.dll" IncludeRuntimeDependency="false" />-->
+<!--        <TargetPathWithTargetPlatformMoniker Include="$(PKGNewtonsoft_Json)\lib\netstandard2.0\Newtonsoft.Json.dll" IncludeRuntimeDependency="false" />-->
 
-    </ItemGroup>
-  </Target>
+<!--    </ItemGroup>-->
+<!--  </Target>-->
 
 </Project>

@@ -8,7 +8,7 @@ namespace FastProjector.MapGenerator.Proccessing
 {
     internal class PropertyCasting : IPropertyCasting
     {
-        private Dictionary<PropertyTypeEnum, Dictionary<PropertyTypeEnum, Func<string, string>>> _availableCasts;
+        private readonly Dictionary<PropertyTypeEnum, Dictionary<PropertyTypeEnum, Func<string, string>>> _availableCasts;
         public PropertyCasting()
         {
             _availableCasts = new Dictionary<PropertyTypeEnum, Dictionary<PropertyTypeEnum, Func<string, string>>>();
@@ -17,20 +17,20 @@ namespace FastProjector.MapGenerator.Proccessing
 
         private void InitializeCasts()
         {
-            static string toStringFunc(string source) => source + ".ToString()";
+            static string ToStringFunc(string source) => source + ".ToString()";
 
             #region string
             var stringCastableDict = new Dictionary<PropertyTypeEnum, Func<string, string>>();
             _availableCasts.Add(PropertyTypeEnum.System_String, stringCastableDict);
 
-            stringCastableDict.Add(PropertyTypeEnum.System_Boolean, toStringFunc);
-            stringCastableDict.Add(PropertyTypeEnum.System_Byte, toStringFunc);
-            stringCastableDict.Add(PropertyTypeEnum.System_Int16, toStringFunc);
-            stringCastableDict.Add(PropertyTypeEnum.System_Int32, toStringFunc);
-            stringCastableDict.Add(PropertyTypeEnum.System_Int64, toStringFunc);
-            stringCastableDict.Add(PropertyTypeEnum.System_Single, toStringFunc);
-            stringCastableDict.Add(PropertyTypeEnum.System_Double, toStringFunc);
-            stringCastableDict.Add(PropertyTypeEnum.System_Decimal, toStringFunc);
+            stringCastableDict.Add(PropertyTypeEnum.System_Boolean, ToStringFunc);
+            stringCastableDict.Add(PropertyTypeEnum.System_Byte, ToStringFunc);
+            stringCastableDict.Add(PropertyTypeEnum.System_Int16, ToStringFunc);
+            stringCastableDict.Add(PropertyTypeEnum.System_Int32, ToStringFunc);
+            stringCastableDict.Add(PropertyTypeEnum.System_Int64, ToStringFunc);
+            stringCastableDict.Add(PropertyTypeEnum.System_Single, ToStringFunc);
+            stringCastableDict.Add(PropertyTypeEnum.System_Double, ToStringFunc);
+            stringCastableDict.Add(PropertyTypeEnum.System_Decimal, ToStringFunc);
 
 
             #endregion
@@ -63,7 +63,7 @@ namespace FastProjector.MapGenerator.Proccessing
             var longCastableDict = new Dictionary<PropertyTypeEnum, Func<string, string>>();
             static string CastToLong(string source) => "(long)" + source;
 
-            _availableCasts.Add(PropertyTypeEnum.System_Int32, longCastableDict);
+            _availableCasts.Add(PropertyTypeEnum.System_Int64, longCastableDict);
 
             longCastableDict.Add(PropertyTypeEnum.System_Byte, CastToLong);
             longCastableDict.Add(PropertyTypeEnum.System_Int16, CastToLong);
@@ -139,9 +139,7 @@ namespace FastProjector.MapGenerator.Proccessing
                     }
                 }
 
-                var availableCast = _availableCasts[destinationProp.Type];
-
-                var castingFunc = availableCast?[sourceProp.Type];
+                var castingFunc = GetAvailableCast(sourceProp.Type, destinationProp.Type);
                 
                 if (castingFunc != null)
                 {
@@ -154,7 +152,20 @@ namespace FastProjector.MapGenerator.Proccessing
             result.IsUnMapable = true;
             result.Cast = null;
             return result;
+            
+        }
+
+        private Func<string, string> GetAvailableCast(PropertyTypeEnum sourcePropType, PropertyTypeEnum destinationPropType)
+        {
+            if (_availableCasts.TryGetValue(destinationPropType, out var availableCast))
+            {
+                return availableCast.TryGetValue(sourcePropType, out var cast) ? cast : null;
+            }
+
+            return null;
         }
 
     }
+    
+    
 }

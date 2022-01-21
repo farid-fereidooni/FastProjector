@@ -65,11 +65,9 @@ namespace FastProjector.MapGenerator.Proccessing.Models
 
             if (!CheckIfMappingPossible(sourceSymbol, targetSymbol))
             {
-                IsValid = true;
                 return;
             }
 
-            var propertyAssignment = new List<IAssignmentSourceText>();
             var sourceProps = sourceSymbol.ExtractProps().Where(w => w.IsPublic());
 
             var destinationProps = new HashSet<IPropertySymbol>(
@@ -81,15 +79,16 @@ namespace FastProjector.MapGenerator.Proccessing.Models
                 if (destinationProp == null)
                     continue;
 
-                HandlePropertyMapping(level, destinationProp, sourceProp, propertyAssignment);
+                HandlePropertyMapping(level, destinationProp, sourceProp);
             }
 
-            ModelMappingSource = SourceGenerator.CreateSource("new " + SourceGenerator.CreateMemberInit(propertyAssignment).Text);
-        }
+            var instantiatingExpression = $"new {DestinationType.FullName} ";
 
+            ModelMappingSource = SourceGenerator.CreateSource(instantiatingExpression + SourceGenerator.CreateMemberInit(_propertyAssignments).Text);
+            IsValid = true;
+        }
         
-        private void HandlePropertyMapping(int level, IPropertySymbol destinationProp, IPropertySymbol sourceProp,
-            List<IAssignmentSourceText> bindingSourceCode)
+        private void HandlePropertyMapping(int level, IPropertySymbol destinationProp, IPropertySymbol sourceProp)
         {
             var sourcePropMetadata = new PropertyMetaData(sourceProp);
             var destinationPropMetaData = new PropertyMetaData(destinationProp);
