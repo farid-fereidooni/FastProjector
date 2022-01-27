@@ -7,30 +7,32 @@ using FastProjector.MapGenerator.Proccessing.Models;
 namespace FastProjector.MapGenerator.Proccessing
 {
     
-    internal class RequestProcessing
+    internal class ProjectionRequestProcessor : IProjectionRequestProcessor
     {
-        private readonly IPropertyCasting _propertyCasting;
-        private readonly IMapCache _mapCache;
+        private readonly ICastingService _castingService;
+        private readonly IMapCache _mapService;
 
-        public RequestProcessing(IMapCache mapCache, IPropertyCasting propertyCasting)
+        public ProjectionRequestProcessor(IMapCache mapService, ICastingService castingService)
         {
-            _propertyCasting = new PropertyCasting();
-            _mapCache = mapCache;
-            _propertyCasting = propertyCasting;
+            _castingService = new CastingService();
+            _mapService = mapService;
+            _castingService = castingService;
         }
         public string ProcessProjectionRequest(IEnumerable<ProjectionRequest> requests)
         {
             var mappings = new List<ModelMapMetaData>();
+            
             foreach(var item in requests)
             {
-                var mapping = new ModelMapMetaData(_mapCache,_propertyCasting, item.ProjectionSource, item.ProjectionTarget);
+                var mapping = new ModelMapMetaData(_mapService, _castingService, item.ProjectionSource,
+                    item.ProjectionTarget);
                 
                 if(!mapping.IsValid)
                     continue;
                 
                 mappings.Add(mapping);
             }
-            
+
             return CreateAllMappingSource(mappings);
         }
 

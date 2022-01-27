@@ -6,10 +6,10 @@ using Microsoft.CodeAnalysis;
 
 namespace FastProjector.MapGenerator.Proccessing
 {
-    internal class PropertyCasting : IPropertyCasting
+    internal class CastingService : ICastingService
     {
         private readonly Dictionary<PropertyTypeEnum, Dictionary<PropertyTypeEnum, Func<string, string>>> _availableCasts;
-        public PropertyCasting()
+        public CastingService()
         {
             _availableCasts = new Dictionary<PropertyTypeEnum, Dictionary<PropertyTypeEnum, Func<string, string>>>();
             InitializeCasts();

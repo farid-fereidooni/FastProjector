@@ -4,25 +4,26 @@ using System.Diagnostics;
 using System.Text;
 using FastProjector.MapGenerator.Analyzing;
 using FastProjector.MapGenerator.DevTools;
+using FastProjector.MapGenerator.Ioc;
 using FastProjector.MapGenerator.Proccessing;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FastProjector.MapGenerator
 {
     [Generator]
     public class SourceAnalyzer : ISourceGenerator
     {
-        private readonly RequestProcessing requestProcessing;
+        private readonly IServiceProvider _serviceProvider;
         public SourceAnalyzer()
         {
-            var mapCache = new MapCache();
-            var propertyCasting = new PropertyCasting();
-            requestProcessing = new RequestProcessing(mapCache, propertyCasting);
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.AddServices();
+            _serviceProvider = serviceCollection.BuildServiceProvider();
         }
         public void Execute(GeneratorExecutionContext context)
         {
-            
             try {
                 if(!(context.SyntaxReceiver is ProjectionSyntaxReceiver projectionSyntaxReceiver))
                     return;
@@ -39,7 +40,10 @@ namespace FastProjector.MapGenerator
                     { }
                 }
 
-                var finalSource = requestProcessing.ProcessProjectionRequest(requests);
+                using var scope = _serviceProvider.CreateScope();
+                var projectionProcessor = scope.ServiceProvider.GetRequiredService<IProjectionRequestProcessor>();
+
+                var finalSource = projectionProcessor.ProcessProjectionRequest(requests);
                 context.AddSource("Projections.cs", SourceText.From(finalSource, Encoding.UTF8));
             }
             catch (Exception ex) {

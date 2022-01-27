@@ -11,7 +11,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models
     internal class ModelMapMetaData
     {
         private readonly IMapCache _mapCache;
-        private readonly IPropertyCasting _propertyCasting;
+        private readonly ICastingService _castingService;
         private List<IAssignmentSourceText> _propertyAssignments;
 
         public ModelMapMetaData(TypeInformation sourceType,
@@ -28,18 +28,18 @@ namespace FastProjector.MapGenerator.Proccessing.Models
             IsValid = true;
         }
 
-        public ModelMapMetaData(IMapCache mapCache, IPropertyCasting propertyCasting, ITypeSymbol sourceSymbol, ITypeSymbol targetSymbol)
+        public ModelMapMetaData(IMapCache mapCache, ICastingService castingService, ITypeSymbol sourceSymbol, ITypeSymbol targetSymbol)
         {
             _mapCache = mapCache;
-            _propertyCasting = propertyCasting;
+            _castingService = castingService;
             CreateMapMetaData(sourceSymbol, targetSymbol, 1);
         }
 
-        private ModelMapMetaData(IMapCache mapCache, IPropertyCasting propertyCasting, ITypeSymbol sourceSymbol, ITypeSymbol targetSymbol,
+        private ModelMapMetaData(IMapCache mapCache, ICastingService castingService, ITypeSymbol sourceSymbol, ITypeSymbol targetSymbol,
             int level)
         {
             _mapCache = mapCache;
-            _propertyCasting = propertyCasting;
+            _castingService = castingService;
             CreateMapMetaData(sourceSymbol, targetSymbol, level);
         }
         
@@ -103,7 +103,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models
             }
             
             // tryCast
-            var castResult = _propertyCasting.CastType(sourcePropType, destinationPropType);
+            var castResult = _castingService.CastType(sourcePropType, destinationPropType);
 
             if (!castResult.IsUnMapable)
             {
@@ -116,7 +116,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models
                 var sourceCollectionType = new PropertyTypeInformation(sourcePropMetadata.GetCollectionTypeSymbol());
                 var destinationCollectionType = new PropertyTypeInformation(destinationPropMetaData.GetCollectionTypeSymbol());
 
-                var castGenericTypes = _propertyCasting.CastType(sourceCollectionType, destinationCollectionType);
+                var castGenericTypes = _castingService.CastType(sourceCollectionType, destinationCollectionType);
                 if (!castGenericTypes.IsUnMapable)
                     Project(level, sourcePropMetadata, sourcePropMetadata, castGenericTypes.Cast);
                 return;
@@ -162,7 +162,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models
                 throw new ArgumentException("properties must be collection");
 
 
-            var castResult = _propertyCasting.CastType(sourcePropMetadata.PropertyTypeInformation,
+            var castResult = _castingService.CastType(sourcePropMetadata.PropertyTypeInformation,
                 destinationPropMetaData.PropertyTypeInformation);
             if (castResult.IsUnMapable)
                 return null;
@@ -174,7 +174,9 @@ namespace FastProjector.MapGenerator.Proccessing.Models
         private IAssignmentSourceText Project(int level, PropertyMetaData sourcePropMetadata,
             PropertyMetaData destinationPropMetaData, Func<string, string> cast = null)
         {
-            var collectionTypeMapping = new ModelMapMetaData(_mapCache,_propertyCasting,sourcePropMetadata.GetCollectionTypeSymbol(),destinationPropMetaData.GetCollectionTypeSymbol(),level +2);
+            var collectionTypeMapping = new ModelMapMetaData(_mapCache, _castingService,
+                sourcePropMetadata.GetCollectionTypeSymbol(), destinationPropMetaData.GetCollectionTypeSymbol(),
+                level + 2);
             if (!collectionTypeMapping.IsValid)
                 return null;
 
@@ -191,8 +193,8 @@ namespace FastProjector.MapGenerator.Proccessing.Models
         private IAssignmentSourceText Map(int level, IPropertySymbol sourceProp,
             IPropertySymbol destinationProp)
         {
-            var mappingResult = new ModelMapMetaData(_mapCache,_propertyCasting,sourceProp.Type as INamedTypeSymbol,
-                destinationProp.Type as INamedTypeSymbol,level + 1);
+            var mappingResult = new ModelMapMetaData(_mapCache, _castingService, sourceProp.Type as INamedTypeSymbol,
+                destinationProp.Type as INamedTypeSymbol, level + 1);
 
             if (!mappingResult.IsValid)
                 return null;
