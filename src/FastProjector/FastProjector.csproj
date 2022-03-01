@@ -23,6 +23,14 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" GeneratePathProperty="true" PrivateAssets="all" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="SourceGeneration" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SourceCreationHelper\SourceCreationHelper.csproj" />
+  </ItemGroup>
+
 
 <!--  <ItemGroup>-->
 

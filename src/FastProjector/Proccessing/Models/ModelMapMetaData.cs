@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using FastProjector.MapGenerator.Proccessing.Contracts;
-using FastProjector.MapGenerator.SourceGeneration;
-using FastProjector.MapGenerator.SourceGeneration.Interfaces;
 using Microsoft.CodeAnalysis;
+using SourceCreationHelper;
+using SourceCreationHelper.Interfaces;
 
+[assembly:InternalsVisibleTo("FastProjector.Test")]
 namespace FastProjector.MapGenerator.Proccessing.Models
 {
     internal class ModelMapMetaData
@@ -83,8 +85,8 @@ namespace FastProjector.MapGenerator.Proccessing.Models
             }
 
             var instantiatingExpression = $"new {DestinationType.FullName} ";
-
-            ModelMappingSource = SourceGenerator.CreateSource(instantiatingExpression + SourceGenerator.CreateMemberInit(_propertyAssignments).Text);
+            
+            ModelMappingSource = SourceCreator.CreateSource(instantiatingExpression + SourceCreator.CreateMemberInit(_propertyAssignments).Text);
             IsValid = true;
         }
         
@@ -181,7 +183,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models
                 return null;
 
             var mappingSource = cast != null
-                ? SourceGenerator.CreateSource(cast(collectionTypeMapping.ModelMappingSource.Text))
+                ? SourceCreator.CreateSource(cast(collectionTypeMapping.ModelMappingSource.Text))
                 : collectionTypeMapping.ModelMappingSource;
 
             var selectExpression = CreateSelectExpression($"d{level + 1}", mappingSource);
@@ -199,27 +201,27 @@ namespace FastProjector.MapGenerator.Proccessing.Models
             if (!mappingResult.IsValid)
                 return null;
             
-            return SourceGenerator.CreateAssignment(
-                SourceGenerator.CreateSource(sourceProp.Name),
+            return SourceCreator.CreateAssignment(
+                SourceCreator.CreateSource(sourceProp.Name),
                 mappingResult.ModelMappingSource
             );
         }
 
         private IAssignmentSourceText Bind(int level, string sourcePropName, string destinationPropName)
         {
-            return SourceGenerator.CreateAssignment(
-                SourceGenerator.CreateSource(sourcePropName),
-                SourceGenerator.CreateSource($"d{level}.{destinationPropName}")
+            return SourceCreator.CreateAssignment(
+                SourceCreator.CreateSource(sourcePropName),
+                SourceCreator.CreateSource($"d{level}.{destinationPropName}")
             );
         }
 
         private ISourceText CreateSelectExpression(string paramName, ISourceText returnExpression)
         {
-            var selectExpression = SourceGenerator.CreateLambdaExpression()
+            var selectExpression = SourceCreator.CreateLambdaExpression()
                 .AddParameter(paramName)
                 .AssignBodyExpression(returnExpression);
 
-            return SourceGenerator.CreateCall("Select")
+            return SourceCreator.CreateCall("Select")
                 .AddArgument(selectExpression);
         }
 

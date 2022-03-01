@@ -11,7 +11,7 @@ namespace FastProjector.MapGenerator.Proccessing
         public static string GetFullNamespace(this ISymbol symbol)
         {
             if ((symbol.ContainingNamespace == null) ||
-                 string.IsNullOrEmpty(symbol.ContainingNamespace.Name))
+                string.IsNullOrEmpty(symbol.ContainingNamespace.Name))
             {
                 return null;
             }
@@ -30,12 +30,13 @@ namespace FastProjector.MapGenerator.Proccessing
 
         public static string GetFullName(this ISymbol symbol)
         {
-           var fullNameSpace = symbol.GetFullNamespace();
-           if(fullNameSpace != null)
-           {
-               return $"{fullNameSpace}.{symbol.Name}";
-           }
-           return null;
+            var fullNameSpace = symbol.GetFullNamespace();
+            if (fullNameSpace != null)
+            {
+                return $"{fullNameSpace}.{symbol.Name}";
+            }
+
+            return null;
         }
 
         public static bool IsGeneric(this ITypeSymbol typeSymbol)
@@ -48,8 +49,8 @@ namespace FastProjector.MapGenerator.Proccessing
         {
             return new TypeInformation(typeSymbol);
         }
-        
-        
+
+
         public static IEnumerable<IPropertySymbol> ExtractProps(this ITypeSymbol classSymbol)
         {
             if (classSymbol.TypeKind != TypeKind.Class)
@@ -64,20 +65,19 @@ namespace FastProjector.MapGenerator.Proccessing
         {
             return property.DeclaredAccessibility == Accessibility.Public;
         }
-        
+
         public static bool IsSettable(this IPropertySymbol property)
         {
             return IsPublic(property) && !property.IsReadOnly && property.SetMethod != null;
         }
-        
+
         private static SyntaxNode GetNodeOfSymbol(ISymbol symbol)
         {
-            
+
             var location = symbol.Locations.FirstOrDefault();
             return location != null ? location.SourceTree?.GetRoot()?.FindNode(location.SourceSpan) : null;
         }
         
 
-        
     }
 }
