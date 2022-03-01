@@ -15,7 +15,7 @@ namespace FastProjector.MapGenerator
     [Generator]
     public class SourceAnalyzer : ISourceGenerator
     {
-        private readonly IServiceProvider _serviceProvider;
+        private  IServiceProvider _serviceProvider;
         public SourceAnalyzer()
         {
             var serviceCollection = new ServiceCollection();
@@ -42,7 +42,7 @@ namespace FastProjector.MapGenerator
 
                 using var scope = _serviceProvider.CreateScope();
                 var projectionProcessor = scope.ServiceProvider.GetRequiredService<IProjectionRequestProcessor>();
-
+                
                 var finalSource = projectionProcessor.ProcessProjectionRequest(requests);
                 context.AddSource("Projections.cs", SourceText.From(finalSource, Encoding.UTF8));
             }
@@ -71,7 +71,7 @@ namespace FastProjector.MapGenerator
             #endif
             
             Logger.RemoveFile();
-             Logger.Log("started");
+            Logger.Log("started");
             context.RegisterForSyntaxNotifications(() => new ProjectionSyntaxReceiver());
         }
     }

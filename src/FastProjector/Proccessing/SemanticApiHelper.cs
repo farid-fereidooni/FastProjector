@@ -53,7 +53,7 @@ namespace FastProjector.MapGenerator.Proccessing
 
         public static IEnumerable<IPropertySymbol> ExtractProps(this ITypeSymbol classSymbol)
         {
-            if (classSymbol.TypeKind != TypeKind.Class)
+            if (!classSymbol.IsClass())
             {
                 throw new Exception("symbol is not class");
             }
@@ -71,12 +71,28 @@ namespace FastProjector.MapGenerator.Proccessing
             return IsPublic(property) && !property.IsReadOnly && property.SetMethod != null;
         }
 
+        public static bool IsClass(this ITypeSymbol symbol)
+        {
+            return symbol.TypeKind == TypeKind.Class;
+        }
+        
+        public static bool HasParemeterLessConstructor(this ITypeSymbol symbol)
+        {
+            if (!symbol.IsClass())
+                throw new Exception("symbol is not class");
+
+            var members = symbol.GetMembers();
+            return false;
+        }
+        
+
         private static SyntaxNode GetNodeOfSymbol(ISymbol symbol)
         {
 
             var location = symbol.Locations.FirstOrDefault();
             return location != null ? location.SourceTree?.GetRoot()?.FindNode(location.SourceSpan) : null;
         }
+        
         
 
     }

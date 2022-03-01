@@ -10,12 +10,11 @@ namespace FastProjector.MapGenerator.Proccessing
     internal class ProjectionRequestProcessor : IProjectionRequestProcessor
     {
         private readonly ICastingService _castingService;
-        private readonly IMapCache _mapService;
+        private readonly IMapCache _mapCache;
 
-        public ProjectionRequestProcessor(IMapCache mapService, ICastingService castingService)
+        public ProjectionRequestProcessor(IMapCache mapCache, ICastingService castingService)
         {
-            _castingService = new CastingService();
-            _mapService = mapService;
+            _mapCache = mapCache;
             _castingService = castingService;
         }
         public string ProcessProjectionRequest(IEnumerable<ProjectionRequest> requests)
@@ -24,7 +23,7 @@ namespace FastProjector.MapGenerator.Proccessing
             
             foreach(var item in requests)
             {
-                var mapping = new ModelMapMetaData(_mapService, _castingService, item.ProjectionSource,
+                var mapping = new ModelMapMetaData(_mapCache, _castingService, item.ProjectionSource,
                     item.ProjectionTarget);
                 
                 if(!mapping.IsValid)

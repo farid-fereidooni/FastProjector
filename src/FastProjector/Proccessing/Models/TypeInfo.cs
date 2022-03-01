@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -26,13 +25,6 @@ namespace FastProjector.MapGenerator.Proccessing.Models
             GenericTypes = genericTypes.ToArray();
         }
         
-        
-
-        public bool IsSameAs(TypeInformation other)
-        {
-            return Equals(other);
-        }
-
         public override bool Equals(object obj)
         {
             if (obj is TypeInformation other)

@@ -98,7 +98,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models
             var sourcePropType = sourcePropMetadata.PropertyTypeInformation;
             var destinationPropType = destinationPropMetaData.PropertyTypeInformation;
 
-            if (sourcePropType.IsSameAs(destinationPropType))
+            if (sourcePropType.Equals(destinationPropType))
             {
                 AssignSamePropertyType(sourcePropType.TypeCategory, level, sourcePropMetadata, destinationPropMetaData);
                 return;
@@ -225,22 +225,13 @@ namespace FastProjector.MapGenerator.Proccessing.Models
                 .AddArgument(selectExpression);
         }
 
-     
-
-        public bool Is(PropertyTypeInformation sourceType, PropertyTypeInformation destinationType)
-        {
-            return SourceType.IsSameAs(sourceType) &&
-                   DestinationType.IsSameAs(destinationType);
-        }
-
-
         private bool CheckIfMappingPossible(ITypeSymbol sourceSymbol, ITypeSymbol targetSymbol)
         {
-            
-            if (targetSymbol.TypeKind != TypeKind.Class && sourceSymbol.TypeKind != TypeKind.Class)
-                return false;
+            return targetSymbol.IsClass()
+                   && sourceSymbol.IsClass()
+                   && targetSymbol.HasParemeterLessConstructor();
 
-            return true;
+
         }
     }
 }
