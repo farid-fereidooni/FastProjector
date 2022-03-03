@@ -138,25 +138,29 @@ namespace FastProjector.MapGenerator.Proccessing.Models
         
         private void AssignSamePropertyType(PropertyTypeCategoryEnum propertyType, int level, PropertyMetaData sourcePropMetadata, PropertyMetaData destinationPropMetadata)
         {
-            var assignment = propertyType switch
+            switch (propertyType)
             {
-                PropertyTypeCategoryEnum.CollectionObject =>
-                    Project(level, sourcePropMetadata, destinationPropMetadata),
-                PropertyTypeCategoryEnum.CollectionPrimitive => 
-                    ReCreateCollection(level, sourcePropMetadata, destinationPropMetadata),
-                PropertyTypeCategoryEnum.SinglePrimitive => 
-                    Bind(level, sourcePropMetadata.PropertySymbol.Name, destinationPropMetadata.PropertySymbol.Name),
-                PropertyTypeCategoryEnum.SingleGenericClass => 
-                    Map(level, sourcePropMetadata.PropertySymbol, destinationPropMetadata.PropertySymbol),
-                PropertyTypeCategoryEnum.SingleNonGenenericClass => 
-                    Map(level, sourcePropMetadata.PropertySymbol, destinationPropMetadata.PropertySymbol),
-                _ => null
-            };
-            
-            if(assignment != null)
-                _propertyAssignments.Add(assignment);
+                case PropertyTypeCategoryEnum.CollectionObject:
+                    Project(level, sourcePropMetadata, destinationPropMetadata);
+                    break;
+                case PropertyTypeCategoryEnum.CollectionPrimitive:
+                    ReCreateCollection(level, sourcePropMetadata, destinationPropMetadata);
+                    break;
+                case PropertyTypeCategoryEnum.SinglePrimitive:
+                    Bind(level, sourcePropMetadata.PropertySymbol.Name, destinationPropMetadata.PropertySymbol.Name);
+                    break;
+                case PropertyTypeCategoryEnum.SingleGenericClass:
+                    Map(level, sourcePropMetadata.PropertySymbol, destinationPropMetadata.PropertySymbol);
+                    break;
+                case PropertyTypeCategoryEnum.SingleNonGenenericClass:
+                    Map(level, sourcePropMetadata.PropertySymbol, destinationPropMetadata.PropertySymbol);
+                    break;
+                case PropertyTypeCategoryEnum.Unknown:
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(propertyType), propertyType, null);
+            }
         }
-        private IAssignmentSourceText ReCreateCollection(int level, PropertyMetaData sourcePropMetadata,
+        private void ReCreateCollection(int level, PropertyMetaData sourcePropMetadata,
             PropertyMetaData destinationPropMetaData)
         {
             if (!sourcePropMetadata.PropertyTypeInformation.IsEnumerable() ||
@@ -167,20 +171,20 @@ namespace FastProjector.MapGenerator.Proccessing.Models
             var castResult = _castingService.CastType(sourcePropMetadata.PropertyTypeInformation,
                 destinationPropMetaData.PropertyTypeInformation);
             if (castResult.IsUnMapable)
-                return null;
+                return;
             var castExpression = castResult.Cast(destinationPropMetaData.PropertySymbol.Name);
 
-            return Bind(level, sourcePropMetadata.PropertySymbol.Name, castExpression);
+            Bind(level, sourcePropMetadata.PropertySymbol.Name, castExpression);
         }
 
-        private IAssignmentSourceText Project(int level, PropertyMetaData sourcePropMetadata,
+        private void Project(int level, PropertyMetaData sourcePropMetadata,
             PropertyMetaData destinationPropMetaData, Func<string, string> cast = null)
         {
             var collectionTypeMapping = new ModelMapMetaData(_mapCache, _castingService,
                 sourcePropMetadata.GetCollectionTypeSymbol(), destinationPropMetaData.GetCollectionTypeSymbol(),
                 level + 2);
             if (!collectionTypeMapping.IsValid)
-                return null;
+                return;
 
             var mappingSource = cast != null
                 ? SourceCreator.CreateSource(cast(collectionTypeMapping.ModelMappingSource.Text))
@@ -188,31 +192,32 @@ namespace FastProjector.MapGenerator.Proccessing.Models
 
             var selectExpression = CreateSelectExpression($"d{level + 1}", mappingSource);
 
-            return Bind(level, sourcePropMetadata.PropertySymbol.Name, selectExpression.Text);
+            Bind(level, sourcePropMetadata.PropertySymbol.Name, selectExpression.Text);
         }
 
 
-        private IAssignmentSourceText Map(int level, IPropertySymbol sourceProp,
+        private void Map(int level, IPropertySymbol sourceProp,
             IPropertySymbol destinationProp)
         {
             var mappingResult = new ModelMapMetaData(_mapCache, _castingService, sourceProp.Type as INamedTypeSymbol,
                 destinationProp.Type as INamedTypeSymbol, level + 1);
 
             if (!mappingResult.IsValid)
-                return null;
-            
-            return SourceCreator.CreateAssignment(
-                SourceCreator.CreateSource(sourceProp.Name),
-                mappingResult.ModelMappingSource
-            );
+                return;
+            _propertyAssignments.Add(
+                SourceCreator.CreateAssignment(
+                    SourceCreator.CreateSource(sourceProp.Name),
+                    mappingResult.ModelMappingSource
+                ));
         }
 
-        private IAssignmentSourceText Bind(int level, string sourcePropName, string destinationPropName)
+        private void Bind(int level, string sourcePropName, string destinationPropName)
         {
-            return SourceCreator.CreateAssignment(
-                SourceCreator.CreateSource(sourcePropName),
-                SourceCreator.CreateSource($"d{level}.{destinationPropName}")
-            );
+            _propertyAssignments.Add(
+                SourceCreator.CreateAssignment(
+                    SourceCreator.CreateSource(sourcePropName),
+                    SourceCreator.CreateSource($"d{level}.{destinationPropName}")
+                ));
         }
 
         private ISourceText CreateSelectExpression(string paramName, ISourceText returnExpression)
