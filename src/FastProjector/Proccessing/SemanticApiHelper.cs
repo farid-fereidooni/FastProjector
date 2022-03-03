@@ -76,7 +76,7 @@ namespace FastProjector.MapGenerator.Proccessing
             return symbol.TypeKind == TypeKind.Class;
         }
         
-        public static bool HasParemeterLessConstructor(this ITypeSymbol symbol)
+        public static bool HasParameterlessConstructor(this ITypeSymbol symbol)
         {
             if (!symbol.IsClass())
                 throw new Exception("symbol is not class");

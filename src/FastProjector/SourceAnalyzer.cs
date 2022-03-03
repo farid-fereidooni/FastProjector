@@ -4,28 +4,26 @@ using System.Diagnostics;
 using System.Text;
 using FastProjector.MapGenerator.Analyzing;
 using FastProjector.MapGenerator.DevTools;
-using FastProjector.MapGenerator.Ioc;
 using FastProjector.MapGenerator.Proccessing;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace FastProjector.MapGenerator
 {
     [Generator]
     public class SourceAnalyzer : ISourceGenerator
     {
-        private  IServiceProvider _serviceProvider;
+        private readonly IProjectionRequestProcessor _requestProcessor; 
+        
         public SourceAnalyzer()
         {
-            var serviceCollection = new ServiceCollection();
-            serviceCollection.AddServices();
-            _serviceProvider = serviceCollection.BuildServiceProvider();
+            _requestProcessor = new ProjectionRequestProcessor(new MapCache(), new CastingService());
         }
+
         public void Execute(GeneratorExecutionContext context)
-        {
+        {        
             try {
-                if(!(context.SyntaxReceiver is ProjectionSyntaxReceiver projectionSyntaxReceiver))
+                if(context.SyntaxReceiver is not ProjectionSyntaxReceiver projectionSyntaxReceiver)
                     return;
 
                 if (!projectionSyntaxReceiver.ProjectionCandidates.NotNullAny()) return;
@@ -39,11 +37,8 @@ namespace FastProjector.MapGenerator
                     catch (ArgumentException)
                     { }
                 }
-
-                using var scope = _serviceProvider.CreateScope();
-                var projectionProcessor = scope.ServiceProvider.GetRequiredService<IProjectionRequestProcessor>();
                 
-                var finalSource = projectionProcessor.ProcessProjectionRequest(requests);
+                var finalSource = _requestProcessor.ProcessProjectionRequest(requests);
                 context.AddSource("Projections.cs", SourceText.From(finalSource, Encoding.UTF8));
             }
             catch (Exception ex) {
@@ -56,7 +51,7 @@ namespace FastProjector.MapGenerator
 
         public void Initialize(GeneratorInitializationContext context)
         {
-            
+
             #if DEBUG
                 if (!Debugger.IsAttached)
                 {
@@ -70,9 +65,11 @@ namespace FastProjector.MapGenerator
                 }
             #endif
             
-            Logger.RemoveFile();
+           // Logger.RemoveFile();
             Logger.Log("started");
             context.RegisterForSyntaxNotifications(() => new ProjectionSyntaxReceiver());
         }
+   
     }
+ 
 }

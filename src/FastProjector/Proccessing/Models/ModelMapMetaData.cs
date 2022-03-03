@@ -229,7 +229,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models
         {
             return targetSymbol.IsClass()
                    && sourceSymbol.IsClass()
-                   && targetSymbol.HasParemeterLessConstructor();
+                   && targetSymbol.HasParameterlessConstructor();
 
 
         }

@@ -22,6 +22,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\FastProjector\FastProjector.csproj" />
+      <ProjectReference Include="..\SourceCreationHelper\SourceCreationHelper.csproj" />
     </ItemGroup>
 
 </Project>
