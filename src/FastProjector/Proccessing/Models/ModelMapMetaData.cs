@@ -42,6 +42,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models
         {
             _mapCache = mapCache;
             _castingService = castingService;
+            _notMappedProperties = new List<PropertyMapMetaData>();
             CreateMapMetaData(sourceSymbol, targetSymbol, level);
         }
         

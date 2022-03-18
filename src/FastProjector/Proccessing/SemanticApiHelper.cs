@@ -81,10 +81,16 @@ namespace FastProjector.MapGenerator.Proccessing
             if (!symbol.IsClass())
                 throw new Exception("symbol is not class");
 
-            var members = symbol.GetMembers();
-            return false;
+            var constructors = symbol.GetConstructors().ToList();
+            return !constructors.Any() || constructors.Any(a => !a.Parameters.Any());
         }
-        
+
+
+        private static IEnumerable<IMethodSymbol> GetConstructors(this ITypeSymbol symbol)
+        {
+            return symbol.GetMembers().OfType<IMethodSymbol>()
+                .Where(w => w.MethodKind == MethodKind.Constructor);
+        }
 
         private static SyntaxNode GetNodeOfSymbol(ISymbol symbol)
         {

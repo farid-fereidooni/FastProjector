@@ -4,6 +4,7 @@ using FastProjector.MapGenerator.Proccessing.Models;
 using FastProjector.Test.Helpers;
 using SourceCreationHelper.Core;
 using Xunit;
+using static FastProjector.Test.Helpers.RegexHelper;
 
 namespace FastProjector.Test.PropertyMappingTests;
 
@@ -76,17 +77,14 @@ public class BindTest
 
         sourceBuilder.AddClass("Category")
             .AddProperty(AccessModifier.@public, "string", "Name");
-        
-        sourceBuilder.AddClass("CategoryModel")
-            .AddProperty(AccessModifier.@public, "string", "Name");
-        
+
         sourceBuilder.AddClass("Product")
             .AddProperty(AccessModifier.@public, "int", "Price")
             .AddProperty(AccessModifier.@public, "Category", "Category");
             
         sourceBuilder.AddClass("ProductModel")
             .AddProperty(AccessModifier.@public, "DateTime", "Price")
-            .AddProperty(AccessModifier.@public, "CategoryModel", "Category");
+            .AddProperty(AccessModifier.@public, "Category", "Category");
         
         var compilation = sourceBuilder.GetCompilation();
         
@@ -98,7 +96,13 @@ public class BindTest
         
         //Assert
         Assert.True(mapMetadata.IsValid);
-        Assert.DoesNotMatch(@"Price\s*=\s*\w\d+\.Price", mapMetadata.ModelMappingSource.Text);
+        Assert.Matches(
+            $@"Category = new {AnyNamespace}Category 
+                                            {{ 
+                                                {Anything}
+                                                Name = {AnyNamespace}Name
+                            ".ReplaceSpaceWithAnySpace()
+            , mapMetadata.ModelMappingSource.Text);
     }
 }
 
