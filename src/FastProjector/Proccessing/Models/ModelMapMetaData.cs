@@ -16,26 +16,9 @@ namespace FastProjector.MapGenerator.Proccessing.Models
         private readonly ICastingService _castingService;
         private List<IAssignmentSourceText> _propertyAssignments;
 
-        public ModelMapMetaData(TypeInformation sourceType,
-            TypeInformation destinationType,
-            ISourceText source,
-            IEnumerable<PropertyMapMetaData> notMappedProps,
-            int mapLevel)
-        {
-            SourceType = sourceType;
-            DestinationType = destinationType;
-            ModelMappingSource = source;
-            _notMappedProperties = notMappedProps.ToList();
-            MapLevel = mapLevel;
-            IsValid = true;
-        }
-
         public ModelMapMetaData(IMapCache mapCache, ICastingService castingService, ITypeSymbol sourceSymbol, ITypeSymbol targetSymbol)
-        {
-            _mapCache = mapCache;
-            _castingService = castingService;
-            CreateMapMetaData(sourceSymbol, targetSymbol, 1);
-        }
+            :this(mapCache, castingService, sourceSymbol, targetSymbol, 1)
+        { }
 
         private ModelMapMetaData(IMapCache mapCache, ICastingService castingService, ITypeSymbol sourceSymbol, ITypeSymbol targetSymbol,
             int level)
@@ -59,11 +42,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models
         {
             SourceType = sourceSymbol.ToTypeInformation();
             DestinationType = targetSymbol.ToTypeInformation();
-            
-            // //check if already cached
-            // var cached = mapCache.Get(sourceType, destinationType);
-            // if (cached != null)
-            //     return cached;
+
             _propertyAssignments = new List<IAssignmentSourceText>();
 
             if (!CheckIfMappingPossible(sourceSymbol, targetSymbol))
@@ -181,9 +160,10 @@ namespace FastProjector.MapGenerator.Proccessing.Models
         private void Project(int level, PropertyMetaData sourcePropMetadata,
             PropertyMetaData destinationPropMetaData, Func<string, string> cast = null)
         {
-            var collectionTypeMapping = new ModelMapMetaData(_mapCache, _castingService,
-                sourcePropMetadata.GetCollectionTypeSymbol(), destinationPropMetaData.GetCollectionTypeSymbol(),
+            var collectionTypeMapping = CreateOrFetchFromCache(sourcePropMetadata.GetCollectionTypeSymbol(),
+                destinationPropMetaData.GetCollectionTypeSymbol(),
                 level + 2);
+            
             if (!collectionTypeMapping.IsValid)
                 return;
 
@@ -200,7 +180,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models
         private void Map(int level, IPropertySymbol sourceProp,
             IPropertySymbol destinationProp)
         {
-            var mappingResult = new ModelMapMetaData(_mapCache, _castingService, sourceProp.Type as INamedTypeSymbol,
+            var mappingResult = CreateOrFetchFromCache(sourceProp.Type as INamedTypeSymbol,
                 destinationProp.Type as INamedTypeSymbol, level + 1);
 
             if (!mappingResult.IsValid)
@@ -236,8 +216,13 @@ namespace FastProjector.MapGenerator.Proccessing.Models
             return targetSymbol.IsClass()
                    && sourceSymbol.IsClass()
                    && targetSymbol.HasParameterlessConstructor();
-
-
         }
+        
+        private ModelMapMetaData CreateOrFetchFromCache(ITypeSymbol sourceType, ITypeSymbol destinationType, int level)
+        {
+             return  _mapCache.Get(sourceType.ToTypeInformation(), destinationType.ToTypeInformation()) ??
+                     new ModelMapMetaData(_mapCache, _castingService, sourceType, destinationType);
+        }
+        
     }
 }

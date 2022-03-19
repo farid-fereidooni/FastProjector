@@ -23,6 +23,7 @@ namespace FastProjector.MapGenerator.Proccessing
             
             foreach(var item in requests)
             {
+                
                 var mapping = new ModelMapMetaData(_mapCache, _castingService, item.ProjectionSource,
                     item.ProjectionTarget);
                 
