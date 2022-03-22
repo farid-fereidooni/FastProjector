@@ -17,6 +17,7 @@ namespace FastProjector.MapGenerator
         
         public SourceAnalyzer()
         {
+            
             _requestProcessor = new ProjectionRequestProcessor(new MapCache(), new CastingService());
         }
 

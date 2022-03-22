@@ -17,8 +17,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" PrivateAssets="all" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" PrivateAssets="all" GeneratePathProperty="true" />
+<!--    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" PrivateAssets="all" GeneratePathProperty="true" />-->
+<!--    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" PrivateAssets="all" GeneratePathProperty="true" />-->
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" GeneratePathProperty="true" PrivateAssets="all" />
 
     <!-- Package the generator in the analyzer directory of the nuget package -->
@@ -26,8 +26,8 @@
 
     <!-- Package the Newtonsoft.Json dependency alongside the generator assembly -->
     <None Include="$(PKGNewtonsoft_Json)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-    <None Include="$(PKGMicrosoft_Extensions_DependencyInjection)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-    <None Include="$(PKGMicrosoft_Extensions_DependencyInjection_Abstractions)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+<!--    <None Include="$(PKGMicrosoft_Extensions_DependencyInjection)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />-->
+<!--    <None Include="$(PKGMicrosoft_Extensions_DependencyInjection_Abstractions)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />-->
   </ItemGroup>
 
   <ItemGroup>
@@ -38,8 +38,8 @@
   <Target Name="GetDependencyTargetPaths">
     <ItemGroup>
         <TargetPathWithTargetPlatformMoniker Include="$(PKGNewtonsoft_Json)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />
-        <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Extensions_DependencyInjection)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />
-        <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Extensions_DependencyInjection_Abstractions)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />
+<!--        <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Extensions_DependencyInjection)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />-->
+<!--        <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Extensions_DependencyInjection_Abstractions)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />-->
 
     </ItemGroup>
   </Target>

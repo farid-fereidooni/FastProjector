@@ -98,24 +98,6 @@ namespace FastProjector.MapGenerator.Proccessing
 
         }
 
-        public PropertyCastResult CastType(IPropertySymbol sourceProp, IPropertySymbol destinationProp)
-        {
-            return CastType(new PropertyTypeInformation(sourceProp), new PropertyTypeInformation(destinationProp));
-        }
-
-        public PropertyCastResult CastType(PropertyTypeInformation sourceProp, IPropertySymbol destinationProp)
-        {
-
-            return CastType(sourceProp, new PropertyTypeInformation(destinationProp));
-
-
-        }
-
-        public PropertyCastResult CastType(IPropertySymbol sourceProp, PropertyTypeInformation destinationProp)
-        {
-            return CastType(new PropertyTypeInformation(sourceProp), destinationProp);
-        }
-
         public PropertyCastResult CastType(PropertyTypeInformation sourceProp, PropertyTypeInformation destinationProp)
         {
             var result = new PropertyCastResult()
@@ -125,13 +107,12 @@ namespace FastProjector.MapGenerator.Proccessing
             };
 
             //same category types, might be castable
-            if (sourceProp.TypeCategory == destinationProp.TypeCategory)
+            if (sourceProp.GetType() == destinationProp.GetType()) //Not necessary
             {
                 //collections:
-                if (sourceProp.TypeCategory == PropertyTypeCategoryEnum.CollectionPrimitive ||
-                   sourceProp.TypeCategory == PropertyTypeCategoryEnum.CollectionObject)
+                if (sourceProp is CollectionPropertyTypeInformation collectionType)
                 {
-                    if (!sourceProp.HasSameCollectionType(destinationProp))
+                    if (!collectionType.HasSameCollectionType(destinationProp as CollectionPropertyTypeInformation))
                     {
                         result.IsUnMapable = true;
                         result.Cast = null;
