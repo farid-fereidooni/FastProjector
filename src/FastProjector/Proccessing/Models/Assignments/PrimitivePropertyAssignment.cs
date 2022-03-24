@@ -8,16 +8,18 @@ namespace FastProjector.MapGenerator.Proccessing.Models.Assignments
     {
         private readonly PrimitivePropertyMetaData _sourceProperty;
         private readonly PrimitivePropertyMetaData _destinationProperty;
+        private readonly ICastingService _castingService;
         private readonly int _level;
 
-        public PrimitivePropertyAssignment(PrimitivePropertyMetaData sourceProperty, PrimitivePropertyMetaData destinationProperty, int level)
+        public PrimitivePropertyAssignment(PrimitivePropertyMetaData sourceProperty, PrimitivePropertyMetaData destinationProperty,ICastingService castingService, int level)
         {
             _sourceProperty = sourceProperty;
             _destinationProperty = destinationProperty;
+            _castingService = castingService;
             _level = level;
         }
 
-        public override IAssignmentSourceText CreateAssignment(ICastingService castingService)
+        public override IAssignmentSourceText CreateAssignment()
         {
 
             if (_sourceProperty.Equals(_destinationProperty))
@@ -29,7 +31,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models.Assignments
             }
             
             // try cast
-            var castResult = castingService.CastType(_sourceProperty.PropertyTypeInformation,
+            var castResult = _castingService.CastType(_sourceProperty.PropertyTypeInformation,
                                                      _destinationProperty.PropertyTypeInformation);
             
             if(!castResult.IsUnMapable)

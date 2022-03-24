@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 
 namespace FastProjector.MapGenerator.Proccessing.Models
 {
-    internal class PropertyTypeInformationFactory
+    internal class PropertyTypeInformationFactory : IPropertyTypeInformationFactory
     {
         public PropertyTypeInformation CreatePropertyTypeInformation(ITypeSymbol typeSymbol)
         {
@@ -27,7 +27,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models
 
             if (typeSymbol.IsGeneric())
             {
-                var genericType = GetGenericCollctionType(typeSymbol.GetFullName());
+                var genericType = GetGenericCollectionType(typeSymbol.GetFullName());
 
                 //Generic Enumerable
                 if (genericType != PropertyTypeEnum.Other)
@@ -54,7 +54,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models
             return CreatePropertyTypeInformation(propertySymbol?.Type);
         }
 
-        private PropertyTypeEnum GetPrimitiveType(ITypeSymbol typeSymbol) =>
+        private static PropertyTypeEnum GetPrimitiveType(ITypeSymbol typeSymbol) =>
             typeSymbol.SpecialType switch
             {
                 SpecialType.System_Enum => PropertyTypeEnum.System_Enum,
@@ -79,7 +79,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models
             };
         
         
-    private PropertyTypeEnum GetGenericCollctionType(string typeFullName) =>
+    private static PropertyTypeEnum GetGenericCollectionType(string typeFullName) =>
         typeFullName switch
         {
             "System.Collections.Generic.List" => PropertyTypeEnum.System_Collections_Generic_List_T,

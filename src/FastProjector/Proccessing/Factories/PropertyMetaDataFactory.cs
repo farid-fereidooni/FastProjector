@@ -3,11 +3,11 @@ using Microsoft.CodeAnalysis;
 
 namespace FastProjector.MapGenerator.Proccessing.Models
 {
-    internal class PropertyMetaDataFactory
+    internal class PropertyMetaDataFactory : IPropertyMetaDataFactory
     {
-        private readonly PropertyTypeInformationFactory _propertyTypeFactory;
+        private readonly IPropertyTypeInformationFactory _propertyTypeFactory;
 
-        public PropertyMetaDataFactory(PropertyTypeInformationFactory propertyTypeFactory)
+        public PropertyMetaDataFactory(IPropertyTypeInformationFactory propertyTypeFactory)
         {
             _propertyTypeFactory = propertyTypeFactory;
         }

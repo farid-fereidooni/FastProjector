@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using FastProjector.MapGenerator.Analyzing;
 using FastProjector.MapGenerator.Proccessing.Contracts;
 using FastProjector.MapGenerator.Proccessing.Models;
+using FastProjector.MapGenerator.Proccessing.Services;
 
 namespace FastProjector.MapGenerator.Proccessing
 {
     
     internal class ProjectionRequestProcessor : IProjectionRequestProcessor
     {
-        private readonly ICastingService _castingService;
-        private readonly IMapCache _mapCache;
+        private readonly IModelMapService _mapService;
 
-        public ProjectionRequestProcessor(IMapCache mapCache, ICastingService castingService)
+        public ProjectionRequestProcessor(IModelMapService mapService)
         {
-            _mapCache = mapCache;
-            _castingService = castingService;
+            _mapService = mapService;
         }
         public string ProcessProjectionRequest(IEnumerable<ProjectionRequest> requests)
         {
@@ -24,8 +23,8 @@ namespace FastProjector.MapGenerator.Proccessing
             foreach(var item in requests)
             {
                 
-                var mapping = new ModelMapMetaData(_mapCache, _castingService, item.ProjectionSource,
-                    item.ProjectionTarget);
+                var mapping = _mapService.CreateOrFetchFromCache(item.ProjectionSource,
+                    item.ProjectionTarget, 1);
                 
                 if(!mapping.IsValid)
                     continue;

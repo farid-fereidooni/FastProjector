@@ -1,10 +1,17 @@
 using System;
+using FastProjector.MapGenerator.Proccessing.Contracts;
 using Microsoft.CodeAnalysis;
 
 namespace FastProjector.MapGenerator.Proccessing.Models.Assignments
 {
-    internal class PropertyAssignmentFactory
+    internal class PropertyAssignmentFactory : IPropertyAssignmentFactory
     {
+        private readonly ICastingService _castingService;
+
+        public PropertyAssignmentFactory(ICastingService castingService)
+        {
+            _castingService = castingService;
+        }
         public PropertyAssignment CreateAssignmentMetadata(PropertyMetaData sourceProperty,
             PropertyMetaData destinationProperty, int level)
         {
@@ -16,7 +23,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models.Assignments
             return sourceProperty switch
             {
                 PrimitivePropertyMetaData primitiveSource => new PrimitivePropertyAssignment(primitiveSource,
-                    destinationProperty as PrimitivePropertyMetaData, level),
+                    destinationProperty as PrimitivePropertyMetaData, _castingService, level),
 
                 _ => null
             };

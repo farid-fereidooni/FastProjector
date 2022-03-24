@@ -6,7 +6,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models.Assignments
 {
     internal abstract class PropertyAssignment
     {
-        public abstract IAssignmentSourceText CreateAssignment(ICastingService castingService);
+        public abstract IAssignmentSourceText CreateAssignment();
 
         public abstract bool CanMapLater();
 

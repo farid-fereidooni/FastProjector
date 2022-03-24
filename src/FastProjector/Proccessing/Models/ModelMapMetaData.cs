@@ -13,17 +13,13 @@ namespace FastProjector.MapGenerator.Proccessing.Models
 {
     internal class ModelMapMetaData
     {
-        private readonly IMapCache _mapCache;
-        private readonly ICastingService _castingService;
-        private readonly PropertyMetaDataFactory _metaDataFactory;
-        private readonly PropertyAssignmentFactory _assignmentFactory;
+        private readonly IPropertyMetaDataFactory _metaDataFactory;
+        private readonly IPropertyAssignmentFactory _assignmentFactory;
         private List<IAssignmentSourceText> _propertyAssignments;
    
-        public ModelMapMetaData(IMapCache mapCache, ICastingService castingService, ITypeSymbol sourceSymbol, ITypeSymbol targetSymbol,
-            PropertyMetaDataFactory metaDataFactory, PropertyAssignmentFactory assignmentFactory, int level = 1)
+        public ModelMapMetaData(ITypeSymbol sourceSymbol, ITypeSymbol targetSymbol,
+            IPropertyMetaDataFactory metaDataFactory, IPropertyAssignmentFactory assignmentFactory, int level = 1)
         {
-            _mapCache = mapCache;
-            _castingService = castingService;
             _metaDataFactory = metaDataFactory;
             _assignmentFactory = assignmentFactory;
             _notMappedProperties = new List<PropertyAssignment>();
@@ -79,7 +75,7 @@ namespace FastProjector.MapGenerator.Proccessing.Models
             var assigmentMetaData =
                 _assignmentFactory.CreateAssignmentMetadata(sourcePropMetadata, destinationPropMetaData, level);
 
-            var assignment = assigmentMetaData.CreateAssignment(_castingService);
+            var assignment = assigmentMetaData.CreateAssignment();
 
             if (assignment != null)
             {
@@ -230,12 +226,5 @@ namespace FastProjector.MapGenerator.Proccessing.Models
                    && sourceSymbol.IsClass()
                    && targetSymbol.HasParameterlessConstructor();
         }
-        
-        // private ModelMapMetaData CreateOrFetchFromCache(ITypeSymbol sourceType, ITypeSymbol destinationType, int level)
-        // {
-        //      return  _mapCache.Get(sourceType.ToTypeInformation(), destinationType.ToTypeInformation()) ??
-        //              new ModelMapMetaData(_mapCache, _castingService, sourceType, destinationType);
-        // }
-        
     }
 }
