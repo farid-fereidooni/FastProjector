@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using FastProjector.MapGenerator.Analyzing;
-using FastProjector.MapGenerator.Proccessing.Contracts;
-using FastProjector.MapGenerator.Proccessing.Models;
-using FastProjector.MapGenerator.Proccessing.Services;
+using FastProjector.Analyzing;
+using FastProjector.Contracts;
+using FastProjector.Models;
 
-namespace FastProjector.MapGenerator.Proccessing
+namespace FastProjector.Proccessing
 {
     
     internal class ProjectionRequestProcessor : IProjectionRequestProcessor
@@ -22,12 +21,10 @@ namespace FastProjector.MapGenerator.Proccessing
             
             foreach(var item in requests)
             {
-                
-                var mapping = _mapService.CreateOrFetchFromCache(item.ProjectionSource,
+                //TODO: check if already done
+
+                var mapping = new ModelMapMetaData(item.ProjectionSource,
                     item.ProjectionTarget, 1);
-                
-                if(!mapping.IsValid)
-                    continue;
                 
                 mappings.Add(mapping);
             }

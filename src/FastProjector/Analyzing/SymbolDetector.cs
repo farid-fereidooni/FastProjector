@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace FastProjector.MapGenerator.Analyzing
+namespace FastProjector.Analyzing
 {
     internal static class SymbolDetector
     {

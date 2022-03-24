@@ -2,8 +2,7 @@ using System;
 using System.IO;
 using Newtonsoft.Json;
 
-
-namespace FastProjector.MapGenerator.DevTools
+namespace FastProjector.DevTools
 {
     internal static class Logger
     {

@@ -1,6 +1,6 @@
-using FastProjector.MapGenerator.Proccessing;
-using FastProjector.MapGenerator.Proccessing.Contracts;
-using FastProjector.MapGenerator.Proccessing.Models;
+using FastProjector.Contracts;
+using FastProjector.Models;
+using FastProjector.Services;
 using FastProjector.Test.Helpers;
 using SourceCreationHelper.Core;
 using Xunit;
@@ -10,12 +10,11 @@ namespace FastProjector.Test.PropertyMappingTests;
 
 public class CastTest
 {
-  private readonly IMapCache _mapCache;
-    private readonly ICastingService _castingService;
+    private readonly IModelMapService _mapService;
+
     public CastTest()
     {
-        _castingService = new CastingService();
-        _mapCache = new MapCache();
+        _mapService = new ModelMapService(new MapCache(), new CastingService());
     }
     
     
@@ -41,11 +40,10 @@ public class CastTest
         var productModelSymbol = compilation.GetClassSymbol("ProductModel");
         
         //Act
-        var mapMetadata = new ModelMapMetaData(_mapCache, _castingService, productSymbol, productModelSymbol);
+        var mapMetadata = new ModelMapMetaData(productSymbol, productModelSymbol);
         
         //Assert
-        Assert.True(mapMetadata.IsValid);
-        Assert.Matches($@"Price = {AnyNamespace}Price.ToString()".ReplaceSpaceWithAnySpace(), mapMetadata.ModelMappingSource.Text);
+        Assert.Matches($@"Price = {AnyNamespace}Price.ToString()".ReplaceSpaceWithAnySpace(), mapMetadata.CreateMappingSource(_mapService).Text);
     }
     
     
@@ -68,11 +66,10 @@ public class CastTest
         var productModelSymbol = compilation.GetClassSymbol("ProductModel");
         
         //Act
-        var mapMetadata = new ModelMapMetaData(_mapCache, _castingService, productSymbol, productModelSymbol);
+        var mapMetadata = new ModelMapMetaData( productSymbol, productModelSymbol);
         
         //Assert
-        Assert.True(mapMetadata.IsValid);
-        Assert.Matches($@"Price = (int){AnyNamespace}Price".ReplaceSpaceWithAnySpace(), mapMetadata.ModelMappingSource.Text);
+        Assert.Matches($@"Price = (int){AnyNamespace}Price".ReplaceSpaceWithAnySpace(), mapMetadata.CreateMappingSource(_mapService).Text);
     }
     
 }

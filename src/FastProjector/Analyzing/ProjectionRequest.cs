@@ -1,7 +1,6 @@
-using System;
 using Microsoft.CodeAnalysis;
 
-namespace FastProjector.MapGenerator.Analyzing
+namespace FastProjector.Analyzing
 {
     internal class ProjectionRequest
     {

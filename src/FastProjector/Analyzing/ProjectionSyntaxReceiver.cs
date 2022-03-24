@@ -1,11 +1,8 @@
-using FastProjector.MapGenerator.DevTools;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace FastProjector.MapGenerator.Analyzing
+namespace FastProjector.Analyzing
 {
     internal class ProjectionSyntaxReceiver : ISyntaxReceiver
     {

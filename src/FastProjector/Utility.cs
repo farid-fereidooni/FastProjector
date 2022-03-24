@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using FastProjector.MapGenerator.Proccessing.Models;
 
-namespace FastProjector.MapGenerator
+namespace FastProjector
 {
     internal static class Utility
     {

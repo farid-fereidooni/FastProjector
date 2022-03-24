@@ -2,16 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using FastProjector.MapGenerator.Analyzing;
-using FastProjector.MapGenerator.DevTools;
-using FastProjector.MapGenerator.Proccessing;
-using FastProjector.MapGenerator.Proccessing.Models;
-using FastProjector.MapGenerator.Proccessing.Models.Assignments;
-using FastProjector.MapGenerator.Proccessing.Services;
+using FastProjector.Analyzing;
+using FastProjector.Contracts;
+using FastProjector.DevTools;
+using FastProjector.Proccessing;
+using FastProjector.Services;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-namespace FastProjector.MapGenerator
+namespace FastProjector
 {
     [Generator]
     public class SourceAnalyzer : ISourceGenerator
@@ -20,9 +19,8 @@ namespace FastProjector.MapGenerator
         
         public SourceAnalyzer()
         {
-            var propertyMetaDataFactory = new PropertyMetaDataFactory(new PropertyTypeInformationFactory());
-            var assignmentFactory = new PropertyAssignmentFactory(new CastingService());
-            var mapService = new ModelMapService(new MapCache(), propertyMetaDataFactory, assignmentFactory);
+
+            var mapService = new ModelMapService(new MapCache(), new CastingService());
             
             _requestProcessor = new ProjectionRequestProcessor(mapService);
         }

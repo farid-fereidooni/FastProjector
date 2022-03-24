@@ -1,6 +1,5 @@
-using FastProjector.MapGenerator.Proccessing;
-using FastProjector.MapGenerator.Proccessing.Contracts;
-using FastProjector.MapGenerator.Proccessing.Models;
+using FastProjector.Models;
+using FastProjector.Services;
 using FastProjector.Test.Helpers;
 using SourceCreationHelper.Core;
 using Xunit;
@@ -10,12 +9,11 @@ namespace FastProjector.Test.PropertyMappingTests;
 
 public class BindTest
 {
-    private readonly IMapCache _mapCache;
-    private readonly ICastingService _castingService;
+    private readonly ModelMapService _mapService;
+
     public BindTest()
     {
-        _castingService = new CastingService();
-        _mapCache = new MapCache();
+        _mapService = new ModelMapService(new MapCache(), new CastingService());
     }
     [Fact]
     public void ModelMapMetaDataCreation_simpleSameTypeBind_IsSuccessful()
@@ -36,12 +34,11 @@ public class BindTest
         var productModelSymbol = compilation.GetClassSymbol("ProductModel");
         
         //Act
-        var mapMetadata = new ModelMapMetaData(_mapCache, _castingService, productSymbol, productModelSymbol);
+        var mapMetadata = new ModelMapMetaData( productSymbol, productModelSymbol);
         
         //Assert
-        Assert.True(mapMetadata.IsValid);
-        Assert.Matches(@"Name\s*=\s*\w\d+\.Name", mapMetadata.ModelMappingSource.Text);
-        Assert.Matches(@"Price\s*=\s*\w\d+\.Price", mapMetadata.ModelMappingSource.Text);
+        Assert.Matches(@"Name\s*=\s*\w\d+\.Name", mapMetadata.CreateMappingSource(_mapService).Text);
+        Assert.Matches(@"Price\s*=\s*\w\d+\.Price", mapMetadata.CreateMappingSource(_mapService).Text);
 
     }
     
@@ -62,11 +59,10 @@ public class BindTest
         var productModelSymbol = compilation.GetClassSymbol("ProductModel");
         
         //Act
-        var mapMetadata = new ModelMapMetaData(_mapCache, _castingService, productSymbol, productModelSymbol);
+        var mapMetadata = new ModelMapMetaData( productSymbol, productModelSymbol);
         
         //Assert
-        Assert.True(mapMetadata.IsValid);
-        Assert.DoesNotMatch(@"Price\s*=\s*\w\d+\.Price", mapMetadata.ModelMappingSource.Text);
+        Assert.DoesNotMatch(@"Price\s*=\s*\w\d+\.Price", mapMetadata.CreateMappingSource(_mapService).Text);
     }
     
     [Fact]
@@ -92,17 +88,16 @@ public class BindTest
         var productModelSymbol = compilation.GetClassSymbol("ProductModel");
         
         //Act
-        var mapMetadata = new ModelMapMetaData(_mapCache, _castingService, productSymbol, productModelSymbol);
+        var mapMetadata = new ModelMapMetaData( productSymbol, productModelSymbol);
         
         //Assert
-        Assert.True(mapMetadata.IsValid);
         Assert.Matches(
             $@"Category = new {AnyNamespace}Category 
                                             {{ 
                                                 {Anything}
                                                 Name = {AnyNamespace}Name
                             ".ReplaceSpaceWithAnySpace()
-            , mapMetadata.ModelMappingSource.Text);
+            , mapMetadata.CreateMappingSource(_mapService).Text);
     }
 }
 
