@@ -8,9 +8,8 @@ namespace FastProjector.Contracts
     internal interface IModelMapService
     {
         ISourceText FetchFromCache(PropertyTypeInformation sourceType, PropertyTypeInformation destinationType);
-
-        ModelMapMetaData CreateSameTypeMap(ITypeSymbol type, int level);
-        
+        ModelMapMetaData CreateSameTypeMap(ITypeSymbol type);
         PropertyCastResult CastType(PropertyTypeInformation sourceType, PropertyTypeInformation destinationType);
+        string GetNewProjectionVariableName();
     }
 }

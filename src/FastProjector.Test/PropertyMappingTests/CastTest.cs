@@ -14,7 +14,7 @@ public class CastTest
 
     public CastTest()
     {
-        _mapService = new ModelMapService(new MapCache(), new CastingService());
+        _mapService = new ModelMapService(new MapCache(), new CastingService(), new VariableNameGenerator());
     }
     
     

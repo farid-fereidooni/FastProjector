@@ -9,23 +9,21 @@ namespace FastProjector.Models.Assignments
     {
         private readonly PrimitivePropertyMetaData _sourceProperty;
         private readonly PrimitivePropertyMetaData _destinationProperty;
-        private readonly int _level;
 
-        public PrimitivePropertyAssignment(PrimitivePropertyMetaData sourceProperty, PrimitivePropertyMetaData destinationProperty, int level)
+        public PrimitivePropertyAssignment(PrimitivePropertyMetaData sourceProperty, PrimitivePropertyMetaData destinationProperty)
         {
             _sourceProperty = sourceProperty;
             _destinationProperty = destinationProperty;
-            _level = level;
         }
 
         public override IAssignmentSourceText CreateAssignment(IModelMapService mapService)
         {
-
+            var parameterName = mapService.GetNewProjectionVariableName();
             if (_sourceProperty.Equals(_destinationProperty))
             {
                 return SourceCreator.CreateAssignment(
                     SourceCreator.CreateSource(_sourceProperty.GetPropertyName()),
-                    SourceCreator.CreateSource($"d{_level}.{_destinationProperty.GetPropertyName()}")
+                    SourceCreator.CreateSource($"{parameterName}.{_destinationProperty.GetPropertyName()}")
                 );
             }
             
@@ -36,7 +34,7 @@ namespace FastProjector.Models.Assignments
             if(!castResult.IsUnMapable)
                 return SourceCreator.CreateAssignment(
                     SourceCreator.CreateSource(_destinationProperty.GetPropertyName()),
-                    SourceCreator.CreateSource(castResult.Cast($"d{_level}.{_sourceProperty.GetPropertyName()}"))
+                    SourceCreator.CreateSource(castResult.Cast($"{parameterName}.{_sourceProperty.GetPropertyName()}"))
                 );
 
             return null;

@@ -17,10 +17,9 @@ namespace FastProjector.Models
     {
         private readonly ITypeSymbol _sourceSymbol;
         private readonly ITypeSymbol _targetSymbol;
-        private readonly int _level;
         private List<IAssignmentSourceText> _propertyAssignments;
    
-        public ModelMapMetaData(ITypeSymbol sourceSymbol, ITypeSymbol targetSymbol, int level = 1)
+        public ModelMapMetaData(ITypeSymbol sourceSymbol, ITypeSymbol targetSymbol)
         {
             if (!CheckIfMappingPossible(sourceSymbol, targetSymbol))
             {
@@ -29,7 +28,6 @@ namespace FastProjector.Models
 
             _sourceSymbol = sourceSymbol;
             _targetSymbol = targetSymbol;
-            _level = level;
             _notMappedProperties = new List<PropertyAssignment>();
         }
         
@@ -60,7 +58,7 @@ namespace FastProjector.Models
                 if (destinationProp == null)
                     continue;
 
-                HandlePropertyMapping(_level, destinationProp, sourceProp, mapService);
+                HandlePropertyMapping(destinationProp, sourceProp, mapService);
             }
 
             var instantiatingExpression = $"new {DestinationType.FullName} ";
@@ -68,13 +66,13 @@ namespace FastProjector.Models
             return SourceCreator.CreateSource(instantiatingExpression + SourceCreator.CreateMemberInit(_propertyAssignments).Text);
         }
         
-        private void HandlePropertyMapping(int level, IPropertySymbol destinationProp, IPropertySymbol sourceProp, IModelMapService mapService)
+        private void HandlePropertyMapping(IPropertySymbol destinationProp, IPropertySymbol sourceProp, IModelMapService mapService)
         {
             var sourcePropMetadata = PropertyMetaData.CreatePropertyMetaData(sourceProp);
             var destinationPropMetaData = PropertyMetaData.CreatePropertyMetaData(destinationProp);
 
             var assigmentMetaData = 
-                PropertyAssignment.CreateAssignmentMetadata(sourcePropMetadata, destinationPropMetaData, level);
+                PropertyAssignment.CreateAssignmentMetadata(sourcePropMetadata, destinationPropMetaData);
 
             var assignment = assigmentMetaData.CreateAssignment(mapService);
 

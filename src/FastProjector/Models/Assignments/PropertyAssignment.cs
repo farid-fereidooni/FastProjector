@@ -11,7 +11,7 @@ namespace FastProjector.Models.Assignments
         public abstract bool CanMapLater();
         
         public static PropertyAssignment CreateAssignmentMetadata(PropertyMetaData sourceProperty,
-            PropertyMetaData destinationProperty, int level)
+            PropertyMetaData destinationProperty)
         {
             if (!SameCategoryType(sourceProperty, destinationProperty))
             {
@@ -21,7 +21,7 @@ namespace FastProjector.Models.Assignments
             return sourceProperty switch
             {
                 PrimitivePropertyMetaData primitiveSource => new PrimitivePropertyAssignment(primitiveSource,
-                    destinationProperty as PrimitivePropertyMetaData, level),
+                    destinationProperty as PrimitivePropertyMetaData),
 
                 _ => null
             };

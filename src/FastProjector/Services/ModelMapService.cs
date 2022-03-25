@@ -11,11 +11,13 @@ namespace FastProjector.Services
     {
         private readonly IMapCache _mapCache;
         private readonly ICastingService _castingService;
+        private readonly IVariableNameGenerator _nameGenerator;
 
-        public ModelMapService(IMapCache mapCache, ICastingService castingService)
+        public ModelMapService(IMapCache mapCache, ICastingService castingService, IVariableNameGenerator nameGenerator)
         {
             _mapCache = mapCache;
             _castingService = castingService;
+            _nameGenerator = nameGenerator;
         }
 
         
@@ -24,7 +26,7 @@ namespace FastProjector.Services
             return _mapCache.Get(sourceType, destinationType);
         }
         
-        public ModelMapMetaData CreateSameTypeMap(ITypeSymbol type, int level)
+        public ModelMapMetaData CreateSameTypeMap(ITypeSymbol type)
         {
             return new ModelMapMetaData(type, type);
         }
@@ -33,6 +35,11 @@ namespace FastProjector.Services
             PropertyTypeInformation destinationType)
         {
             return _castingService.CastType(sourceType, destinationType);
+        }
+
+        public string GetNewProjectionVariableName()
+        {
+            return _nameGenerator.GetNew();
         }
     }
 }

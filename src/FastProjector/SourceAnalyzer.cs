@@ -5,7 +5,8 @@ using System.Text;
 using FastProjector.Analyzing;
 using FastProjector.Contracts;
 using FastProjector.DevTools;
-using FastProjector.Proccessing;
+using FastProjector.Ioc;
+using FastProjector.Processing;
 using FastProjector.Services;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
@@ -19,10 +20,10 @@ namespace FastProjector
         
         public SourceAnalyzer()
         {
-
-            var mapService = new ModelMapService(new MapCache(), new CastingService());
-            
-            _requestProcessor = new ProjectionRequestProcessor(mapService);
+            IContainer container = new IocContainer();
+            container.AddServices();
+            var scope =  container.CreateScope();
+            _requestProcessor = scope.GetService<IProjectionRequestProcessor>();
         }
 
         public void Execute(GeneratorExecutionContext context)

@@ -4,7 +4,7 @@ using FastProjector.Analyzing;
 using FastProjector.Contracts;
 using FastProjector.Models;
 
-namespace FastProjector.Proccessing
+namespace FastProjector.Processing
 {
     
     internal class ProjectionRequestProcessor : IProjectionRequestProcessor
@@ -24,7 +24,7 @@ namespace FastProjector.Proccessing
                 //TODO: check if already done
 
                 var mapping = new ModelMapMetaData(item.ProjectionSource,
-                    item.ProjectionTarget, 1);
+                    item.ProjectionTarget);
                 
                 mappings.Add(mapping);
             }

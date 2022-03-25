@@ -13,7 +13,7 @@ public class BindTest
 
     public BindTest()
     {
-        _mapService = new ModelMapService(new MapCache(), new CastingService());
+        _mapService = new ModelMapService(new MapCache(), new CastingService(), new VariableNameGenerator());
     }
     [Fact]
     public void ModelMapMetaDataCreation_simpleSameTypeBind_IsSuccessful()
