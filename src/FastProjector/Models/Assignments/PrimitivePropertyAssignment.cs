@@ -16,9 +16,8 @@ namespace FastProjector.Models.Assignments
             _destinationProperty = destinationProperty;
         }
 
-        public override IAssignmentSourceText CreateAssignment(IModelMapService mapService)
+        public override IAssignmentSourceText CreateAssignmentSource(IModelMapService mapService, ISourceText parameterName)
         {
-            var parameterName = mapService.GetNewProjectionVariableName();
             if (_sourceProperty.Equals(_destinationProperty))
             {
                 return SourceCreator.CreateAssignment(

@@ -38,10 +38,6 @@
     <Folder Include="Factories" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Models\Assignments\ClassPropertyAssignment.cs" />
-  </ItemGroup>
-
   
   <Target Name="GetDependencyTargetPaths">
     <ItemGroup>

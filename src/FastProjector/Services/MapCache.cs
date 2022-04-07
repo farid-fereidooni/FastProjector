@@ -10,17 +10,17 @@ namespace FastProjector.Services
 {
     internal class MapCache: IMapCache
     {
-        private readonly Dictionary<string, Dictionary<string, ISourceText>> _cachedMapMetaData;
+        private readonly Dictionary<string, Dictionary<string, ModelMap>> _cachedMapMetaData;
 
         public MapCache()
         {
-            _cachedMapMetaData = new Dictionary<string, Dictionary<string, ISourceText>>();
+            _cachedMapMetaData = new Dictionary<string, Dictionary<string, ModelMap>>();
         }
 
-        public void Add(TypeInformation sourceType, TypeInformation destinationType, ISourceText sourceText)
+        public void Add(ModelMap map)
         {
-            var sourceTypeKey = GenerateKey(sourceType);
-            var destinationTypeKey = GenerateKey(destinationType);
+            var sourceTypeKey = GenerateKey(map.SourceType);
+            var destinationTypeKey = GenerateKey(map.DestinationType);
 
             var existence = Exists(sourceTypeKey, destinationTypeKey);
             if (existence.sourceExistence && existence.destinationExistence)
@@ -28,16 +28,16 @@ namespace FastProjector.Services
 
             if(existence.sourceExistence)
             {
-                _cachedMapMetaData[sourceTypeKey].Add(destinationTypeKey, sourceText);
+                _cachedMapMetaData[sourceTypeKey].Add(destinationTypeKey, map);
             }
 
-            _cachedMapMetaData[sourceTypeKey] = new Dictionary<string, ISourceText>
+            _cachedMapMetaData[sourceTypeKey] = new Dictionary<string, ModelMap>
             {
-                {destinationTypeKey, sourceText}
+                {destinationTypeKey, map}
             };
         }
 
-        public ISourceText Get(TypeInformation sourceType, TypeInformation destinationType)
+        public ModelMap Get(TypeInformation sourceType, TypeInformation destinationType)
         {
             return Get(
                 GenerateKey(sourceType),
@@ -45,11 +45,11 @@ namespace FastProjector.Services
             );
         }
 
-        private ISourceText Get(string sourceTypeKey, string destinationTypeKey)
+        private ModelMap Get(string sourceTypeKey, string destinationTypeKey)
         {
             if (!_cachedMapMetaData.TryGetValue(sourceTypeKey, out var destinationTypes)) return null;
             
-            return destinationTypes.TryGetValue(destinationTypeKey, out var source) ? source : null;
+            return destinationTypes.TryGetValue(destinationTypeKey, out var metaData) ? metaData : null;
         }
         
 

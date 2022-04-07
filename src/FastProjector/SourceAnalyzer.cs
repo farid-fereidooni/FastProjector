@@ -57,7 +57,7 @@ namespace FastProjector
 
         public void Initialize(GeneratorInitializationContext context)
         {
-
+/*
             #if DEBUG
                 if (!Debugger.IsAttached)
                 {
@@ -70,6 +70,7 @@ namespace FastProjector
                     System.Threading.Thread.Sleep(500);
                 }
             #endif
+            */
             
            // Logger.RemoveFile();
             Logger.Log("started");

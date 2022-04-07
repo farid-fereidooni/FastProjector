@@ -6,11 +6,11 @@ namespace FastProjector.Models.Assignments
 {
     internal abstract class PropertyAssignment
     {
-        public abstract IAssignmentSourceText CreateAssignment(IModelMapService mapService);
+        public abstract IAssignmentSourceText CreateAssignmentSource(IModelMapService mapService, ISourceText parameterName);
 
         public abstract bool CanMapLater();
         
-        public static PropertyAssignment CreateAssignmentMetadata(PropertyMetaData sourceProperty,
+        public static PropertyAssignment Create(PropertyMetaData sourceProperty,
             PropertyMetaData destinationProperty)
         {
             if (!SameCategoryType(sourceProperty, destinationProperty))
@@ -22,6 +22,9 @@ namespace FastProjector.Models.Assignments
             {
                 PrimitivePropertyMetaData primitiveSource => new PrimitivePropertyAssignment(primitiveSource,
                     destinationProperty as PrimitivePropertyMetaData),
+                
+                ClassPropertyMetaData classSource => new ClassPropertyAssignment(classSource,
+                    destinationProperty as ClassPropertyMetaData),
 
                 _ => null
             };

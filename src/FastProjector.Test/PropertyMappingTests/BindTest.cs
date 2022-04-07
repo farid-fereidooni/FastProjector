@@ -1,6 +1,7 @@
 using FastProjector.Models;
 using FastProjector.Services;
 using FastProjector.Test.Helpers;
+using SourceCreationHelper;
 using SourceCreationHelper.Core;
 using Xunit;
 using static FastProjector.Test.Helpers.RegexHelper;
@@ -34,11 +35,13 @@ public class BindTest
         var productModelSymbol = compilation.GetClassSymbol("ProductModel");
         
         //Act
-        var mapMetadata = new ModelMapMetaData( productSymbol, productModelSymbol);
+        var modelMap = new ModelMapMetaData( productSymbol, productModelSymbol)
+            .CreateModelMap(_mapService);
+        var sourceText = modelMap.CreateMappingSource(_mapService, SourceCreator.CreateSource("a")).Text;
         
         //Assert
-        Assert.Matches(@"Name\s*=\s*\w\d+\.Name", mapMetadata.CreateMappingSource(_mapService).Text);
-        Assert.Matches(@"Price\s*=\s*\w\d+\.Price", mapMetadata.CreateMappingSource(_mapService).Text);
+        Assert.Matches(@"Name\s*=\s*a\.Name", sourceText);
+        Assert.Matches(@"Price\s*=\s*a\.Price", sourceText);
 
     }
     
@@ -59,10 +62,12 @@ public class BindTest
         var productModelSymbol = compilation.GetClassSymbol("ProductModel");
         
         //Act
-        var mapMetadata = new ModelMapMetaData( productSymbol, productModelSymbol);
+        var source = new ModelMapMetaData(productSymbol, productModelSymbol)
+            .CreateModelMap(_mapService)
+            .CreateMappingSource(_mapService,  SourceCreator.CreateSource("a"));
         
         //Assert
-        Assert.DoesNotMatch(@"Price\s*=\s*\w\d+\.Price", mapMetadata.CreateMappingSource(_mapService).Text);
+        Assert.DoesNotMatch(@"Price\s*=\s*a\.Price", source.Text);
     }
     
     [Fact]
@@ -88,7 +93,10 @@ public class BindTest
         var productModelSymbol = compilation.GetClassSymbol("ProductModel");
         
         //Act
-        var mapMetadata = new ModelMapMetaData( productSymbol, productModelSymbol);
+        var source = new ModelMapMetaData( productSymbol, productModelSymbol)
+            .CreateModelMap(_mapService)
+            .CreateMappingSource(_mapService, SourceCreator.CreateSource("a"));
+        
         
         //Assert
         Assert.Matches(
@@ -97,7 +105,7 @@ public class BindTest
                                                 {Anything}
                                                 Name = {AnyNamespace}Name
                             ".ReplaceSpaceWithAnySpace()
-            , mapMetadata.CreateMappingSource(_mapService).Text);
+            , source.Text);
     }
 }
 

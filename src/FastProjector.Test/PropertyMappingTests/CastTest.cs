@@ -2,6 +2,7 @@ using FastProjector.Contracts;
 using FastProjector.Models;
 using FastProjector.Services;
 using FastProjector.Test.Helpers;
+using SourceCreationHelper;
 using SourceCreationHelper.Core;
 using Xunit;
 using static FastProjector.Test.Helpers.RegexHelper;
@@ -40,10 +41,12 @@ public class CastTest
         var productModelSymbol = compilation.GetClassSymbol("ProductModel");
         
         //Act
-        var mapMetadata = new ModelMapMetaData(productSymbol, productModelSymbol);
+        var modelMap = new ModelMapMetaData(productSymbol, productModelSymbol)
+            .CreateModelMap(_mapService);
         
         //Assert
-        Assert.Matches($@"Price = {AnyNamespace}Price.ToString()".ReplaceSpaceWithAnySpace(), mapMetadata.CreateMappingSource(_mapService).Text);
+        Assert.Matches($@"Price = {AnyNamespace}Price.ToString()".ReplaceSpaceWithAnySpace(), 
+            modelMap.CreateMappingSource(_mapService, SourceCreator.CreateSource("a")).Text);
     }
     
     
@@ -66,10 +69,12 @@ public class CastTest
         var productModelSymbol = compilation.GetClassSymbol("ProductModel");
         
         //Act
-        var mapMetadata = new ModelMapMetaData( productSymbol, productModelSymbol);
+        var modelMap = new ModelMapMetaData(productSymbol, productModelSymbol)
+            .CreateModelMap(_mapService);
         
         //Assert
-        Assert.Matches($@"Price = (int){AnyNamespace}Price".ReplaceSpaceWithAnySpace(), mapMetadata.CreateMappingSource(_mapService).Text);
+        Assert.Matches($@"Price = \(int\){AnyNamespace}Price".ReplaceSpaceWithAnySpace(),
+            modelMap.CreateMappingSource(_mapService, SourceCreator.CreateSource("a")).Text);
     }
     
 }

@@ -21,15 +21,16 @@ namespace FastProjector.Services
         }
 
         
-        public ISourceText FetchFromCache(PropertyTypeInformation sourceType, PropertyTypeInformation destinationType)
+        public ModelMap FetchFromCache(PropertyTypeInformation sourceType, PropertyTypeInformation destinationType)
         {
             return _mapCache.Get(sourceType, destinationType);
         }
-        
-        public ModelMapMetaData CreateSameTypeMap(ITypeSymbol type)
+
+        public void AddToCache(ModelMap modelMap)
         {
-            return new ModelMapMetaData(type, type);
+            _mapCache.Add(modelMap);
         }
+
 
         public PropertyCastResult CastType(PropertyTypeInformation sourceType,
             PropertyTypeInformation destinationType)

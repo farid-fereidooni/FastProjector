@@ -44,7 +44,7 @@ namespace FastProjector.Models.PropertyMetaDatas
         //         : (PropertySymbol.Type as INamedTypeSymbol)?.TypeArguments.First();
         // }
         
-        public static PropertyMetaData CreatePropertyMetaData(IPropertySymbol propertySymbol)
+        public static PropertyMetaData Create(IPropertySymbol propertySymbol)
         {
             var propertyTypeInformation = PropertyTypeInformation.CreatePropertyTypeInformation(propertySymbol);
             if (propertyTypeInformation is null)
@@ -52,7 +52,7 @@ namespace FastProjector.Models.PropertyMetaDatas
 
             return propertyTypeInformation switch
             {
-                ClassPropertyTypeInformation classType => null,
+                ClassPropertyTypeInformation classType => new ClassPropertyMetaData(propertySymbol, classType),
                 ArrayPropertyTypeInformation arrayType => null,
                 GenericCollectionPropertyTypeInformation genericCollectionType => null,
                 GenericClassPropertyTypeInformation genericClassType => null,
