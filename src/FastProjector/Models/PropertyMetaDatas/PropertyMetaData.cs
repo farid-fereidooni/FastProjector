@@ -6,7 +6,6 @@ namespace FastProjector.Models.PropertyMetaDatas
 {
     internal abstract class PropertyMetaData
     {
-
         public PropertyMetaData(IPropertySymbol propertySymbol)
         {
             PropertySymbol = propertySymbol ?? throw new ArgumentNullException(nameof(propertySymbol));
@@ -14,7 +13,7 @@ namespace FastProjector.Models.PropertyMetaDatas
 
         public IPropertySymbol PropertySymbol { get; }
         public abstract PropertyTypeInformation PropertyTypeInformation { get; }
-    
+
         public string GetPropertyName()
         {
             return PropertySymbol.Name;
@@ -26,6 +25,7 @@ namespace FastProjector.Models.PropertyMetaDatas
             {
                 return PropertyTypeInformation.Equals(other.PropertyTypeInformation);
             }
+
             return false;
         }
 
@@ -33,7 +33,7 @@ namespace FastProjector.Models.PropertyMetaDatas
         {
             return PropertyTypeInformation.GetHashCode();
         }
-    
+
         // public ITypeSymbol GetCollectionTypeSymbol()
         // {
         //     if (!PropertyTypeInformation.IsEnumerable())
@@ -43,7 +43,7 @@ namespace FastProjector.Models.PropertyMetaDatas
         //         ((IArrayTypeSymbol) PropertySymbol.Type).ElementType
         //         : (PropertySymbol.Type as INamedTypeSymbol)?.TypeArguments.First();
         // }
-        
+
         public static PropertyMetaData Create(IPropertySymbol propertySymbol)
         {
             var propertyTypeInformation = PropertyTypeInformation.CreatePropertyTypeInformation(propertySymbol);
@@ -54,7 +54,8 @@ namespace FastProjector.Models.PropertyMetaDatas
             {
                 ClassPropertyTypeInformation classType => new ClassPropertyMetaData(propertySymbol, classType),
                 ArrayPropertyTypeInformation arrayType => null,
-                GenericCollectionPropertyTypeInformation genericCollectionType => null,
+                GenericCollectionPropertyTypeInformation genericCollectionType => new GenericClassPropertyMetaData(
+                    propertySymbol, genericCollectionType),
                 GenericClassPropertyTypeInformation genericClassType => null,
                 PrimitivePropertyTypeInformation primitiveType => new PrimitivePropertyMetaData(propertySymbol,
                     primitiveType),
