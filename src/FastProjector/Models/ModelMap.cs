@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using FastProjector.Contracts;
 using FastProjector.Helpers;
 using FastProjector.Models.Assignments;
-using FastProjector.Models.PropertyMetaDatas;
+using FastProjector.Models.TypeInformations;
 using Microsoft.CodeAnalysis;
 using SourceCreationHelper;
 using SourceCreationHelper.Interfaces;

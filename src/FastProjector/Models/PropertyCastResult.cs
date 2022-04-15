@@ -1,5 +1,5 @@
 using System;
-using FastProjector.Models.PropertyTypeInformations;
+using FastProjector.Models.TypeInformations;
 
 namespace FastProjector.Models
 {
@@ -7,8 +7,8 @@ namespace FastProjector.Models
     {
         
         public bool IsUnMapable {get;set;}
-        public PropertyTypeInformation SourceProperyTypeInfo {get;set;}
-        public PropertyTypeInformation DestinationProperyTypeInfo {get;set;}
+        public TypeInformation SourceProperyTypeInfo {get;set;}
+        public TypeInformation DestinationProperyTypeInfo {get;set;}
         public Func<string, string> Cast {get;set;}
     }
 }

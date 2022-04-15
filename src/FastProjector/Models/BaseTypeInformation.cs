@@ -1,36 +1,38 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FastProjector.Helpers;
+using FastProjector.Models.TypeInformations;
 using Microsoft.CodeAnalysis;
 
 namespace FastProjector.Models
 {
-    internal class TypeInformation: SubTypeInformation
+    internal abstract class BaseTypeInformation
     {
-        public SubTypeInformation[] GenericTypes { get; }
-        
-        protected ITypeSymbol[] GenericSymbols { get; }
+        public string FullName { get; }
+        public TypeInformation[] GenericTypes { get; }
 
-        public TypeInformation(ITypeSymbol typeSymbol)
-            :base(typeSymbol)
+
+        protected BaseTypeInformation(ITypeSymbol typeSymbol)
         {
-            if (!typeSymbol.IsGeneric()) return;
+            FullName = typeSymbol.GetFullName();
             
-            GenericSymbols = (typeSymbol as INamedTypeSymbol)?.TypeArguments.ToArray();
-            GenericTypes = GenericSymbols?.Select(sym => new SubTypeInformation(sym)).ToArray();
+            if (!typeSymbol.IsGeneric()) return;
+            var genericSymbols = (typeSymbol as INamedTypeSymbol)?.TypeArguments.ToArray();
+            GenericTypes = genericSymbols?.Select(TypeInformation.Create).ToArray();
         }
-        
-        public TypeInformation(string fullName, IEnumerable<SubTypeInformation> genericTypes)
-            :base(fullName)
+
+        protected BaseTypeInformation(string fullName, IEnumerable<TypeInformation> genericTypes)
         {
+            FullName = fullName;
             GenericTypes = genericTypes.ToArray();
         }
         
         public override bool Equals(object obj)
         {
-            if (obj is TypeInformation other)
+            if (obj is BaseTypeInformation res)
             {
-                return base.Equals(other) && HasSameGenerics(other);
+                return string.Equals(FullName, res.FullName, StringComparison.CurrentCultureIgnoreCase);
             }
             return false;
         }

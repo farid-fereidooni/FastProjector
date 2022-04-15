@@ -1,15 +1,15 @@
-using FastProjector.Models.PropertyMetaDatas;
+using FastProjector.Models.TypeMetaDatas;
 
 namespace FastProjector.Models
 {
     internal class PropertyMapMetaData
     {
-        public PropertyMapMetaData(PropertyMetaData sourceProperty, PropertyMetaData destinationProperty)
+        public PropertyMapMetaData(TypeMetaData sourceType, TypeMetaData destinationType)
         {
-            SourceProperty = sourceProperty;
-            DestinationProperty = destinationProperty;
+            SourceType = sourceType;
+            DestinationType = destinationType;
         }
-        public PropertyMetaData SourceProperty { get; }
-        public PropertyMetaData DestinationProperty { get; }
+        public TypeMetaData SourceType { get; }
+        public TypeMetaData DestinationType { get; }
     }
 }

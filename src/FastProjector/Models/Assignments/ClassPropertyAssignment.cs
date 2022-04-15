@@ -1,6 +1,7 @@
 using System;
 using FastProjector.Contracts;
-using FastProjector.Models.PropertyMetaDatas;
+using FastProjector.Models.PropertyMetadatas;
+using FastProjector.Models.TypeMetaDatas;
 using Microsoft.CodeAnalysis;
 using SourceCreationHelper;
 using SourceCreationHelper.Interfaces;
@@ -9,24 +10,24 @@ namespace FastProjector.Models.Assignments
 {
     internal class ClassPropertyAssignment: MapBasedPropertyAssignments
     {
-        private readonly ClassPropertyMetaData _sourceProperty;
-        private readonly ClassPropertyMetaData _destinationProperty;
+        private readonly ClassPropertyMetadata _sourceType;
+        private readonly ClassPropertyMetadata _destinationType;
 
-        public ClassPropertyAssignment(ClassPropertyMetaData sourceProperty, ClassPropertyMetaData destinationProperty)
+        public ClassPropertyAssignment(ClassPropertyMetadata sourceType, ClassPropertyMetadata destinationType)
         {
-            _sourceProperty = sourceProperty;
-            _destinationProperty = destinationProperty;
+            _sourceType = sourceType;
+            _destinationType = destinationType;
         }
         
         public override IAssignmentSourceText CreateAssignmentSource(IModelMapService mapService, ISourceText parameterName)
         {
-            var fullParamName = SourceCreator.CreateSource($"{parameterName}.{_sourceProperty.GetPropertyName()}");
+            var fullParamName = SourceCreator.CreateSource($"{parameterName}.{_sourceType.PropertyName}");
 
             if (ModelMap is not null)
                 return CreateAssignment(ModelMap.CreateMappingSource(mapService, fullParamName));
             
-            var cachedMapping = mapService.FetchFromCache(_sourceProperty.PropertyTypeInformation,
-                _destinationProperty.PropertyTypeInformation);
+            var cachedMapping = mapService.FetchFromCache(_sourceType.TypeMetaData.TypeInformation,
+                _destinationType.TypeMetaData.TypeInformation);
 
             if (cachedMapping is not null)
                 return CreateAssignment(cachedMapping.CreateMappingSource(mapService, fullParamName));
@@ -36,8 +37,8 @@ namespace FastProjector.Models.Assignments
             if (sameTypeMap is not null)
                 return CreateAssignment(sameTypeMap.CreateMappingSource(mapService, fullParamName));
 
-            var castResult = mapService.CastType(_sourceProperty.PropertyTypeInformation,
-                _destinationProperty.PropertyTypeInformation);
+            var castResult = mapService.CastType(_sourceType.TypeMetaData.TypeInformation,
+                _destinationType.TypeMetaData.TypeInformation);
 
             if (!castResult.IsUnMapable)
             {
@@ -50,11 +51,11 @@ namespace FastProjector.Models.Assignments
 
         private ModelMap TryCreateSameTypeMap(IModelMapService mapService)
         {
-            if (!_sourceProperty.PropertyTypeInformation.Equals(_destinationProperty.PropertyTypeInformation))
+            if (!_sourceType.TypeMetaData.TypeInformation.Equals(_destinationType.TypeMetaData.TypeInformation))
                 return null;
             
-            var modelMap = new ModelMapMetaData(_sourceProperty.PropertySymbol.Type,
-                _destinationProperty.PropertySymbol.Type).CreateModelMap(mapService);
+            var modelMap = new ModelMapMetaData(_sourceType.TypeMetaData.TypeSymbol,
+                _destinationType.TypeMetaData.TypeSymbol).CreateModelMap(mapService);
             
             return modelMap.CheckIfMappingPossible() ? modelMap : null;
         }
@@ -62,14 +63,14 @@ namespace FastProjector.Models.Assignments
         private IAssignmentSourceText CreateAssignment(ISourceText mapSourceText)
         {
             return SourceCreator.CreateAssignment(
-                SourceCreator.CreateSource(_destinationProperty.GetPropertyName()),
+                SourceCreator.CreateSource(_destinationType.PropertyName),
                 mapSourceText
             );
         }
 
         public override bool CanMapLater()
         {
-            return !_sourceProperty.Equals(_destinationProperty);
+            return !_sourceType.Equals(_destinationType);
         }
 
         protected override void ValidateMap()
@@ -77,10 +78,10 @@ namespace FastProjector.Models.Assignments
             if(ModelMap is null)
                 return;
             
-            if (!ModelMap.SourceType.Equals(_sourceProperty.PropertyTypeInformation))
+            if (!ModelMap.SourceType.Equals(_sourceType.TypeMetaData.TypeInformation))
                 throw new ArgumentException("Invalid Metadata passed");
             
-            if (!ModelMap.DestinationType.Equals(_destinationProperty.PropertyTypeInformation))
+            if (!ModelMap.DestinationType.Equals(_destinationType.TypeMetaData.TypeInformation))
                 throw new ArgumentException("Invalid Metadata passed");
         }
     }

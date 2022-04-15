@@ -4,6 +4,7 @@ using System.Text;
 using FastProjector.Contracts;
 using FastProjector.Helpers;
 using FastProjector.Models;
+using FastProjector.Models.TypeInformations;
 using SourceCreationHelper.Interfaces;
 
 namespace FastProjector.Services

@@ -1,5 +1,5 @@
 using FastProjector.Models;
-using FastProjector.Models.PropertyTypeInformations;
+using FastProjector.Models.TypeInformations;
 using Microsoft.CodeAnalysis;
 using SourceCreationHelper.Interfaces;
 
@@ -7,9 +7,9 @@ namespace FastProjector.Contracts
 {
     internal interface IModelMapService
     {
-        ModelMap FetchFromCache(PropertyTypeInformation sourceType, PropertyTypeInformation destinationType);
+        ModelMap FetchFromCache(TypeInformation sourceType, TypeInformation destinationType);
         void AddToCache(ModelMap modelMap);
-        PropertyCastResult CastType(PropertyTypeInformation sourceType, PropertyTypeInformation destinationType);
+        PropertyCastResult CastType(TypeInformation sourceType, TypeInformation destinationType);
         string GetNewProjectionVariableName();
     }
 }
