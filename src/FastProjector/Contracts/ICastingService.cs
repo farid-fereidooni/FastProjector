@@ -1,10 +1,10 @@
 using FastProjector.Models;
-using FastProjector.Models.PropertyTypeInformations;
+using FastProjector.Models.TypeInformations;
 
 namespace FastProjector.Contracts
 {
     internal interface ICastingService
     {
-        PropertyCastResult CastType(PropertyTypeInformation sourceProp, PropertyTypeInformation destinationProp);
+        PropertyCastResult CastType(TypeInformation sourceProp, TypeInformation destinationProp);
     }
 }

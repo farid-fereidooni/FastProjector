@@ -2,29 +2,29 @@ using System;
 using FastProjector.Helpers;
 using Microsoft.CodeAnalysis;
 
-namespace FastProjector.Models.PropertyTypeInformations
+namespace FastProjector.Models.TypeInformations
 {
-    internal abstract class PropertyTypeInformation : TypeInformation
+    internal abstract class TypeInformation : BaseTypeInformation
     {
 
-        public PropertyTypeInformation(ITypeSymbol type)
+        public TypeInformation(ITypeSymbol type)
             : base(type)
         { }
         
         public abstract PropertyTypeEnum Type { get; }
         
-        public static PropertyTypeInformation CreatePropertyTypeInformation(IPropertySymbol propertySymbol)
+        public static TypeInformation Create(IPropertySymbol propertySymbol)
         {
-            return CreatePropertyTypeInformation(propertySymbol?.Type);
+            return Create(propertySymbol?.Type);
         }
-        public static PropertyTypeInformation CreatePropertyTypeInformation(ITypeSymbol typeSymbol)
+        public static TypeInformation Create(ITypeSymbol typeSymbol)
         {
             if(typeSymbol == null) throw new ArgumentNullException(nameof(typeSymbol));
 
             //if array:
             if (typeSymbol is IArrayTypeSymbol)
             {
-                return new ArrayPropertyTypeInformation(typeSymbol);
+                return new ArrayTypeInformation(typeSymbol);
             }
 
             // primitive:
@@ -32,7 +32,7 @@ namespace FastProjector.Models.PropertyTypeInformations
 
             if (primitiveType != PropertyTypeEnum.Other)
             {
-                return new PrimitivePropertyTypeInformation(typeSymbol, primitiveType);
+                return new PrimitiveTypeInformation(typeSymbol, primitiveType);
             }
 
             //Generics:
@@ -44,17 +44,17 @@ namespace FastProjector.Models.PropertyTypeInformations
                 //Generic Enumerable
                 if (genericType != PropertyTypeEnum.Other)
                 {
-                    return new GenericCollectionPropertyTypeInformation(typeSymbol, genericType);
+                    return new GenericCollectionTypeInformation(typeSymbol, genericType);
                 }
 
                 //Generic class
-                return new GenericClassPropertyTypeInformation(typeSymbol);
+                return new GenericClassTypeInformation(typeSymbol);
             }
 
             //class:
             if (typeSymbol.SpecialType == SpecialType.None && typeSymbol.TypeKind == TypeKind.Class)
             {
-                return new ClassPropertyTypeInformation(typeSymbol);
+                return new ClassTypeInformation(typeSymbol);
             }
 
             //unknown:

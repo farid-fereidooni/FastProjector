@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FastProjector.Models;
+using FastProjector.Models.TypeInformations;
 using Microsoft.CodeAnalysis;
 
 namespace FastProjector.Helpers
@@ -47,7 +48,7 @@ namespace FastProjector.Helpers
 
         public static TypeInformation ToTypeInformation(this ITypeSymbol typeSymbol)
         {
-            return new TypeInformation(typeSymbol);
+            return TypeInformation.Create(typeSymbol);
         }
 
 

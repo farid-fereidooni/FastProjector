@@ -1,11 +1,11 @@
 using System;
-using FastProjector.Models.PropertyMetaDatas;
+using FastProjector.Models.TypeMetaDatas;
 
 namespace FastProjector.Models.Assignments
 {
     internal abstract class MapBasedPropertyAssignments : PropertyAssignment
     {
-        private readonly ClassPropertyMetaData _sourceProperty;
+        private readonly ClassTypeMetaData _sourceType;
 
  
         protected ModelMap ModelMap { get; set; }

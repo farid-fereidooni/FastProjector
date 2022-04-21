@@ -1,5 +1,6 @@
 using FastProjector.Contracts;
-using FastProjector.Models.PropertyMetaDatas;
+using FastProjector.Models.PropertyMetadatas;
+using FastProjector.Models.TypeMetaDatas;
 using SourceCreationHelper.Interfaces;
 
 namespace FastProjector.Models.Assignments
@@ -10,30 +11,30 @@ namespace FastProjector.Models.Assignments
 
         public abstract bool CanMapLater();
         
-        public static PropertyAssignment Create(PropertyMetaData sourceProperty,
-            PropertyMetaData destinationProperty)
+        public static PropertyAssignment Create(PropertyMetadata sourceType,
+            PropertyMetadata destinationType)
         {
-            if (!SameCategoryType(sourceProperty, destinationProperty))
+            if (!SameCategoryType(sourceType, destinationType))
             {
                 return null;
             }
             
-            return sourceProperty switch
+            return sourceType switch
             {
-                PrimitivePropertyMetaData primitiveSource => new PrimitivePropertyAssignment(primitiveSource,
-                    destinationProperty as PrimitivePropertyMetaData),
+                PrimitivePropertyMetadata primitiveSource => new PrimitivePropertyAssignment(primitiveSource,
+                    destinationType as PrimitivePropertyMetadata),
                 
-                ClassPropertyMetaData classSource => new ClassPropertyAssignment(classSource,
-                    destinationProperty as ClassPropertyMetaData),
+                ClassPropertyMetadata classSource => new ClassPropertyAssignment(classSource,
+                    destinationType as ClassPropertyMetadata), 
 
                 _ => null
             };
 
         }
 
-        private static bool SameCategoryType(PropertyMetaData sourceProperty, PropertyMetaData destinationProperty)
+        private static bool SameCategoryType(PropertyMetadata sourceType, PropertyMetadata destinationType)
         {
-            return sourceProperty.GetType() == destinationProperty.GetType();
+            return sourceType.TypeMetaData.GetType() == destinationType.TypeMetaData.GetType();
         }
 
     }

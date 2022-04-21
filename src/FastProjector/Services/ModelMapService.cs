@@ -1,7 +1,7 @@
 using FastProjector.Contracts;
 using FastProjector.Helpers;
 using FastProjector.Models;
-using FastProjector.Models.PropertyTypeInformations;
+using FastProjector.Models.TypeInformations;
 using Microsoft.CodeAnalysis;
 using SourceCreationHelper.Interfaces;
 
@@ -21,7 +21,7 @@ namespace FastProjector.Services
         }
 
         
-        public ModelMap FetchFromCache(PropertyTypeInformation sourceType, PropertyTypeInformation destinationType)
+        public ModelMap FetchFromCache(TypeInformation sourceType, TypeInformation destinationType)
         {
             return _mapCache.Get(sourceType, destinationType);
         }
@@ -32,8 +32,8 @@ namespace FastProjector.Services
         }
 
 
-        public PropertyCastResult CastType(PropertyTypeInformation sourceType,
-            PropertyTypeInformation destinationType)
+        public PropertyCastResult CastType(TypeInformation sourceType,
+            TypeInformation destinationType)
         {
             return _castingService.CastType(sourceType, destinationType);
         }

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using FastProjector.Contracts;
 using FastProjector.Models;
-using FastProjector.Models.PropertyTypeInformations;
+using FastProjector.Models.TypeInformations;
 
 namespace FastProjector.Services
 {
@@ -98,7 +98,7 @@ namespace FastProjector.Services
 
         }
 
-        public PropertyCastResult CastType(PropertyTypeInformation sourceProp, PropertyTypeInformation destinationProp)
+        public PropertyCastResult CastType(TypeInformation sourceProp, TypeInformation destinationProp)
         {
             var result = new PropertyCastResult()
             {
@@ -110,9 +110,9 @@ namespace FastProjector.Services
             if (sourceProp.GetType() == destinationProp.GetType()) //Not necessary
             {
                 //collections:
-                if (sourceProp is CollectionPropertyTypeInformation collectionType)
+                if (sourceProp is CollectionTypeInformation collectionType)
                 {
-                    if (!collectionType.HasSameCollectionType(destinationProp as CollectionPropertyTypeInformation))
+                    if (!collectionType.HasSameCollectionType(destinationProp as CollectionTypeInformation))
                     {
                         result.IsUnMapable = true;
                         result.Cast = null;

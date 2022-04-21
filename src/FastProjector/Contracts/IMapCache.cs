@@ -1,4 +1,5 @@
 using FastProjector.Models;
+using FastProjector.Models.TypeInformations;
 using SourceCreationHelper.Interfaces;
 
 namespace FastProjector.Contracts

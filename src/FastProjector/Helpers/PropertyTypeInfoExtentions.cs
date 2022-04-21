@@ -1,6 +1,6 @@
 using System;
 using FastProjector.Models;
-using FastProjector.Models.PropertyTypeInformations;
+using FastProjector.Models.TypeInformations;
 
 namespace FastProjector.Helpers
 {
