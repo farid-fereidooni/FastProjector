@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using FastProjector.Helpers;
 using Microsoft.CodeAnalysis;
 
@@ -6,9 +7,12 @@ namespace FastProjector.Models.TypeInformations
 {
     internal abstract class TypeInformation : BaseTypeInformation
     {
-
-        public TypeInformation(ITypeSymbol type)
+        protected TypeInformation(ITypeSymbol type)
             : base(type)
+        { }
+        
+        protected TypeInformation(string fullname, IEnumerable<TypeInformation> genericTypes)
+            : base(fullname, genericTypes)
         { }
         
         public abstract PropertyTypeEnum Type { get; }

@@ -5,7 +5,6 @@ namespace FastProjector.Models.TypeMetaDatas
 {
     internal abstract class TypeMetaData
     {
-
         protected TypeMetaData(ITypeSymbol typeSymbol)
         {
             TypeSymbol = typeSymbol;
@@ -26,16 +25,6 @@ namespace FastProjector.Models.TypeMetaDatas
         {
             return TypeInformation.GetHashCode();
         }
-    
-        // public ITypeSymbol GetCollectionTypeSymbol()
-        // {
-        //     if (!PropertyTypeInformation.IsEnumerable())
-        //         throw new Exception("Property isn't collection");
-        //
-        //     return  PropertyTypeInformation.Type == PropertyTypeEnum.System_Array ? 
-        //         ((IArrayTypeSymbol) PropertySymbol.Type).ElementType
-        //         : (PropertySymbol.Type as INamedTypeSymbol)?.TypeArguments.First();
-        // }
         
         public static TypeMetaData Create(ITypeSymbol typeSymbol)
         {
@@ -46,8 +35,8 @@ namespace FastProjector.Models.TypeMetaDatas
             return propertyTypeInformation switch
             {
                 ClassTypeInformation classType => new ClassTypeMetaData(typeSymbol, classType),
-                ArrayTypeInformation arrayType => null,
-                GenericCollectionTypeInformation genericCollectionType => null,
+                ArrayTypeInformation arrayType => new ArrayTypeMetaData(typeSymbol, arrayType),
+                GenericCollectionTypeInformation genericCollectionType => new GenericCollectionTypeMetaData(typeSymbol, genericCollectionType),
                 GenericClassTypeInformation genericClassType => null,
                 PrimitiveTypeInformation primitiveType => new PrimitiveTypeMetaData(typeSymbol, primitiveType),
                 _ => null

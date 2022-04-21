@@ -12,7 +12,6 @@ namespace FastProjector.Models
         public string FullName { get; }
         public TypeInformation[] GenericTypes { get; }
 
-
         protected BaseTypeInformation(ITypeSymbol typeSymbol)
         {
             FullName = typeSymbol.GetFullName();

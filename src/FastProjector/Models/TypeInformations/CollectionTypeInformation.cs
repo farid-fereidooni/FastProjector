@@ -7,6 +7,14 @@ namespace FastProjector.Models.TypeInformations
         protected CollectionTypeInformation(ITypeSymbol type) : base(type)
         {
         }
+        
+        protected CollectionTypeInformation(string fullname)
+            : base(fullname, null)
+        { }
+
+        protected CollectionTypeInformation(string fullname, TypeInformation genericType)
+            : base(fullname, new[] {genericType})
+        { }
 
         public abstract TypeInformation GetCollectionType();
 

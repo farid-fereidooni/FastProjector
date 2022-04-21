@@ -6,22 +6,6 @@ namespace FastProjector.Helpers
 {
     internal static class PropertyTypeInfoExtentions
     {
-        // public static bool IsEnumerable(this PropertyTypeInformation prop)
-        // {
-        //     return prop.TypeCategory == PropertyTypeCategoryEnum.CollectionObject ||
-        //            prop.TypeCategory == PropertyTypeCategoryEnum.CollectionPrimitive;
-        // }
-        //
-        // public static bool IsCollectionObject(this PropertyTypeInformation prop)
-        // {
-        //     return prop.TypeCategory == PropertyTypeCategoryEnum.CollectionObject;
-        // }
-        //
-        // public static bool IsNonGenericClass(this PropertyTypeInformation prop)
-        // {
-        //     return prop.TypeCategory == PropertyTypeCategoryEnum.SingleNonGenenericClass;
-        // }
-
         public static bool HasGenericTypes(this TypeInformation prop)
         {
             return prop.GenericTypes.NotNullAny();
@@ -45,13 +29,9 @@ namespace FastProjector.Helpers
         private static PropertyTypeEnum ConvertAnyToPropertyTypeEnum(Enum anyEnum)
         {
             if (!Enum.TryParse(anyEnum.ToString(), true, out PropertyTypeEnum propertyTypeEnum))
-                throw new Exception("Invalid primitive Type");
+                throw new ArgumentException("Invalid Type");
 
             return propertyTypeEnum;
         }
-        
-    
-        
-        
     }
 }
