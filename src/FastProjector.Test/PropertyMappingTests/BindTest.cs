@@ -1,4 +1,5 @@
 using FastProjector.Models;
+using FastProjector.Models.Casting;
 using FastProjector.Services;
 using FastProjector.Test.Helpers;
 using SourceCreationHelper;
@@ -14,7 +15,7 @@ public class BindTest
 
     public BindTest()
     {
-        _mapService = new ModelMapService(new MapCache(), new CastingService(), new VariableNameGenerator());
+        _mapService = new ModelMapService(new MapCache(), new CastingService(DefaultCastingConfigurations.GetConfigurations()), new VariableNameGenerator());
     }
     [Fact]
     public void ModelMapMetaDataCreation_simpleSameTypeBind_IsSuccessful()

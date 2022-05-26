@@ -1,3 +1,4 @@
+using FastProjector.Helpers;
 using Microsoft.CodeAnalysis;
 
 namespace FastProjector.Models.TypeInformations
@@ -9,9 +10,12 @@ namespace FastProjector.Models.TypeInformations
         public PrimitiveTypeInformation(ITypeSymbol type, PropertyTypeEnum typeEnum) : base(type)
         {
             Type = typeEnum;
+        }
+        
+        public PrimitiveTypeInformation(PrimitiveTypeEnum typeEnum) : base(typeEnum.ConvertToPropertyTypeEnum().GetFullname(), null)
+        {
+            Type = typeEnum.ConvertToPropertyTypeEnum();
             
         }
-
     }
-    
 }

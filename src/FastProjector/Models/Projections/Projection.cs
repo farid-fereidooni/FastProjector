@@ -9,7 +9,7 @@ namespace FastProjector.Models.Projections
     {
         public abstract ISourceText CreateProjection(IModelMapService mapService, ISourceText parameterName);
         
-        protected ICallSourceText CreateSelectExpression(string paramName, ISourceText returnExpression)
+        protected static ICallSourceText CreateSelectExpression(string paramName, ISourceText returnExpression)
         {
             var selectExpression = SourceCreator.CreateLambdaExpression()
                 .AddParameter(paramName)
@@ -19,7 +19,7 @@ namespace FastProjector.Models.Projections
                 .AddArgument(selectExpression);
         }
 
-        protected TypeInformation CreateIEnumerableTypeInformation(TypeInformation genericType)
+        protected static TypeInformation CreateIEnumerableTypeInformation(TypeInformation genericType)
         {
             return new GenericCollectionTypeInformation(CollectionTypeEnum.System_Collections_Generic_IEnumerable_T,
                 genericType);

@@ -15,7 +15,7 @@ namespace FastProjector.Models
         protected BaseTypeInformation(ITypeSymbol typeSymbol)
         {
             FullName = typeSymbol.GetFullName();
-            
+
             if (!typeSymbol.IsGeneric()) return;
             var genericSymbols = (typeSymbol as INamedTypeSymbol)?.TypeArguments.ToArray();
             GenericTypes = genericSymbols?.Select(TypeInformation.Create).ToArray();
@@ -24,24 +24,22 @@ namespace FastProjector.Models
         protected BaseTypeInformation(string fullName, IEnumerable<TypeInformation> genericTypes)
         {
             FullName = fullName;
-            GenericTypes = genericTypes.ToArray();
+            GenericTypes = genericTypes?.ToArray();
         }
-        
+
         public override bool Equals(object obj)
         {
             if (obj is BaseTypeInformation res)
             {
                 return string.Equals(FullName, res.FullName, StringComparison.CurrentCultureIgnoreCase);
             }
+
             return false;
         }
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                return (base.GetHashCode() * 397) ^ (GenericTypes != null ? GenericTypes.GetHashCode() : 0);
-            }
+            return FullName.GetHashCode() ^ (GenericTypes != null ? GenericTypes.GetHashCode() : 0);
         }
 
         public bool HasSameGenerics(TypeInformation typeInfo)
@@ -55,7 +53,6 @@ namespace FastProjector.Models
             }
 
             return false;
-
         }
     }
 }
