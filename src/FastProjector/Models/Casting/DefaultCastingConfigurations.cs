@@ -13,90 +13,83 @@ namespace FastProjector.Models.Casting
             yield return ShortCasts();
             yield return IntCasts();
             yield return LongCasts();
-            yield return IEnumerableCasts();
-            yield return IListCasts();
-            yield return ListCasts();
+            foreach (var castingConfiguration in ToListCasts()) yield return castingConfiguration;
+            yield return ArrayCasts();
         }
 
         private static CastingConfiguration StringCasts()
         {
             return CastConfigurationBuilder.CreateCast()
-                .From(PropertyTypeEnum.System_Boolean)
-                .From(PropertyTypeEnum.System_Byte)
-                .From(PropertyTypeEnum.System_Int16)
-                .From(PropertyTypeEnum.System_Int32)
-                .From(PropertyTypeEnum.System_Int64)
-                .From(PropertyTypeEnum.System_Single)
-                .From(PropertyTypeEnum.System_Double)
-                .From(PropertyTypeEnum.System_Decimal)
-                .To(PropertyTypeEnum.System_String)
+                .From(PropertyType.System_Boolean)
+                .From(PropertyType.System_Byte)
+                .From(PropertyType.System_Int16)
+                .From(PropertyType.System_Int32)
+                .From(PropertyType.System_Int64)
+                .From(PropertyType.System_Single)
+                .From(PropertyType.System_Double)
+                .From(PropertyType.System_Decimal)
+                .To(PropertyType.System_String)
                 .With((string source) => source + ".ToString()");
         }
 
         private static CastingConfiguration ShortCasts()
         {
             return CastConfigurationBuilder.CreateCast()
-                .From(PropertyTypeEnum.System_Int16)
-                .From(PropertyTypeEnum.System_Byte)
-                .To(PropertyTypeEnum.System_Int16)
+                .From(PropertyType.System_Int16)
+                .From(PropertyType.System_Byte)
+                .To(PropertyType.System_Int16)
                 .With((string source) => "(short)" + source);
         }
 
         private static CastingConfiguration IntCasts()
         {
             return CastConfigurationBuilder.CreateCast()
-                .From(PropertyTypeEnum.System_Int16)
-                .From(PropertyTypeEnum.System_Byte)
-                .From(PropertyTypeEnum.System_Int16)
-                .To(PropertyTypeEnum.System_Int32)
+                .From(PropertyType.System_Int16)
+                .From(PropertyType.System_Byte)
+                .From(PropertyType.System_Int16)
+                .To(PropertyType.System_Int32)
                 .With((string source) => "(int)" + source);
         }
 
         private static CastingConfiguration LongCasts()
         {
             return CastConfigurationBuilder.CreateCast()
-                .From(PropertyTypeEnum.System_Int16)
-                .From(PropertyTypeEnum.System_Byte)
-                .From(PropertyTypeEnum.System_Int16)
-                .From(PropertyTypeEnum.System_Int32)
-                .To(PropertyTypeEnum.System_Int64)
+                .From(PropertyType.System_Int16)
+                .From(PropertyType.System_Byte)
+                .From(PropertyType.System_Int16)
+                .From(PropertyType.System_Int32)
+                .To(PropertyType.System_Int64)
                 .With((string source) => "(long)" + source);
         }
 
-        private static CastingConfiguration IEnumerableCasts()
+        private static IEnumerable<CastingConfiguration> ToListCasts()
         {
             return CastConfigurationBuilder.CreateCast()
-                .From(PropertyTypeEnum.System_Array)
-                .From(PropertyTypeEnum.System_Collections_Generic_IList_T)
-                .From(PropertyTypeEnum.System_Collections_Generic_List_T)
-                .From(PropertyTypeEnum.System_Collections_Generic_ICollection_T)
-                .From(PropertyTypeEnum.System_Collections_Generic_IEnumerable_T)
-                .To(PropertyTypeEnum.System_Collections_Generic_IEnumerable_T)
+                .From(PropertyType.System_Array)
+                .From(PropertyType.System_Collections_Generic_IList_T)
+                .From(PropertyType.System_Collections_Generic_List_T)
+                .From(PropertyType.System_Collections_Generic_ICollection_T)
+                .From(PropertyType.System_Collections_Generic_IEnumerable_T)
+                .From(PropertyType.System_Collections_Generic_HashSet_T)
+                .To(PropertyType.System_Collections_Generic_IEnumerable_T)
+                .To(PropertyType.System_Collections_Generic_IList_T)
+                .To(PropertyType.System_Collections_Generic_List_T)
+                .To(PropertyType.System_Collections_Generic_ICollection_T)
+                .To(PropertyType.System_Collections_Generic_HashSet_T)
                 .With((string source) => source + ".ToList()");
-        }
-
-        private static CastingConfiguration IListCasts()
-        {
-            return CastConfigurationBuilder.CreateCast()
-                .From(PropertyTypeEnum.System_Array)
-                .From(PropertyTypeEnum.System_Collections_Generic_IList_T)
-                .From(PropertyTypeEnum.System_Collections_Generic_List_T)
-                .From(PropertyTypeEnum.System_Collections_Generic_ICollection_T)
-                .From(PropertyTypeEnum.System_Collections_Generic_IEnumerable_T)
-                .To(PropertyTypeEnum.System_Collections_Generic_IList_T)
-                .With((string source) => source + ".ToList()");
-        }
+        } 
         
-        private static CastingConfiguration ListCasts()
+        private static CastingConfiguration ArrayCasts()
         {
             return CastConfigurationBuilder.CreateCast()
-                .From(PropertyTypeEnum.System_Array)
-                .From(PropertyTypeEnum.System_Collections_Generic_IList_T)
-                .From(PropertyTypeEnum.System_Collections_Generic_List_T)
-                .From(PropertyTypeEnum.System_Collections_Generic_ICollection_T)
-                .From(PropertyTypeEnum.System_Collections_Generic_IEnumerable_T)
-                .To(PropertyTypeEnum.System_Collections_Generic_List_T)
-                .With((string source) => source + ".ToList()");
+                .From(PropertyType.System_Array)
+                .From(PropertyType.System_Collections_Generic_IList_T)
+                .From(PropertyType.System_Collections_Generic_List_T)
+                .From(PropertyType.System_Collections_Generic_ICollection_T)
+                .From(PropertyType.System_Collections_Generic_IEnumerable_T)
+                .From(PropertyType.System_Collections_Generic_HashSet_T)
+                .To(PropertyType.System_Array)
+                .With((string source) => source + ".ToArray()");
         }
     }
 }
