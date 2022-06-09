@@ -15,6 +15,7 @@ namespace FastProjector.Models.Casting
             yield return LongCasts();
             yield return IEnumerableCasts();
             yield return IListCasts();
+            yield return ListCasts();
         }
 
         private static CastingConfiguration StringCasts()
@@ -83,6 +84,18 @@ namespace FastProjector.Models.Casting
                 .From(PropertyTypeEnum.System_Collections_Generic_ICollection_T)
                 .From(PropertyTypeEnum.System_Collections_Generic_IEnumerable_T)
                 .To(PropertyTypeEnum.System_Collections_Generic_IList_T)
+                .With((string source) => source + ".ToList()");
+        }
+        
+        private static CastingConfiguration ListCasts()
+        {
+            return CastConfigurationBuilder.CreateCast()
+                .From(PropertyTypeEnum.System_Array)
+                .From(PropertyTypeEnum.System_Collections_Generic_IList_T)
+                .From(PropertyTypeEnum.System_Collections_Generic_List_T)
+                .From(PropertyTypeEnum.System_Collections_Generic_ICollection_T)
+                .From(PropertyTypeEnum.System_Collections_Generic_IEnumerable_T)
+                .To(PropertyTypeEnum.System_Collections_Generic_List_T)
                 .With((string source) => source + ".ToList()");
         }
     }

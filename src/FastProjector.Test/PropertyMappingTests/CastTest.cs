@@ -1,6 +1,9 @@
+using System.Linq;
 using FastProjector.Contracts;
+using FastProjector.Helpers;
 using FastProjector.Models;
 using FastProjector.Models.Casting;
+using FastProjector.Models.TypeInformations;
 using FastProjector.Services;
 using FastProjector.Test.Helpers;
 using SourceCreationHelper;
@@ -13,10 +16,12 @@ namespace FastProjector.Test.PropertyMappingTests;
 public class CastTest
 {
     private readonly IModelMapService _mapService;
+    private readonly ICastingService _castingService;
 
     public CastTest()
     {
-        _mapService = new ModelMapService(new MapCache(), new CastingService(DefaultCastingConfigurations.GetConfigurations()), new VariableNameGenerator());
+        _castingService = new CastingService(DefaultCastingConfigurations.GetConfigurations());
+        _mapService = new ModelMapService(new MapCache(),_castingService , new VariableNameGenerator());
     }
     
     
@@ -76,6 +81,39 @@ public class CastTest
         //Assert
         Assert.Matches($@"Price = \(int\){AnyNamespace}Price".ReplaceSpaceWithAnySpace(),
             modelMap.CreateMappingSource(_mapService, SourceCreator.CreateSource("a")).Text);
+    }
+    
+    
+     
+    [Theory]
+    [InlineData("IEnumerable<int>")]
+    [InlineData("int[]")]
+    [InlineData("List<int>")]
+    [InlineData("ICollection<int>")]
+    [InlineData("IList<int>")]
+    [InlineData("HashSet<int>")]
+    public void CastType_CastAnyCollectionToList_IsSuccessful(string fromCollectionType)
+    {
+        //Arranges
+        var sourceBuilder = new SourceBuilder();
+        sourceBuilder.AddClass("Test")
+            .AddProperty(AccessModifier.@public, fromCollectionType, "ListA")
+            .AddProperty(AccessModifier.@public, "List<int>", "ListB");
+
+        var compilation = sourceBuilder.GetCompilation();
+        
+        var properties = compilation.GetClassSymbol("Test")
+            .ExtractProps().ToList();
+        
+        var listAType = TypeInformation.Create(properties.First());
+        var listBType = TypeInformation.Create(properties.Last());
+        
+        //Act
+        var castResult = _castingService.CastType(listAType, listBType);
+
+        //Assert
+        Assert.False(castResult.IsUnMapable);
+        Assert.Equal("any.ToList()",castResult.Cast("any"));
     }
     
 }
