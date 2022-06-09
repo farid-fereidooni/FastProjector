@@ -15,7 +15,12 @@ namespace FastProjector.Models.TypeInformations
             : base(fullname, genericTypes)
         { }
         
-        public abstract PropertyTypeEnum Type { get; }
+        public abstract PropertyType Type { get; }
+        
+        public virtual bool HasSameCategory(TypeInformation typeInformation)
+        {
+            return GetType() == typeInformation.GetType();
+        }
         
         public static TypeInformation Create(IPropertySymbol propertySymbol)
         {
@@ -34,7 +39,7 @@ namespace FastProjector.Models.TypeInformations
             // primitive:
             var primitiveType = GetPrimitiveType(typeSymbol);
 
-            if (primitiveType != PropertyTypeEnum.Other)
+            if (primitiveType != PropertyType.Other)
             {
                 return new PrimitiveTypeInformation(typeSymbol, primitiveType);
             }
@@ -46,7 +51,7 @@ namespace FastProjector.Models.TypeInformations
                 var genericType = GetGenericCollectionType(typeSymbol.GetFullName());
 
                 //Generic Enumerable
-                if (genericType != PropertyTypeEnum.Other)
+                if (genericType != PropertyType.Other)
                 {
                     return new GenericCollectionTypeInformation(typeSymbol, genericType);
                 }
@@ -67,41 +72,42 @@ namespace FastProjector.Models.TypeInformations
         
  
 
-        private static PropertyTypeEnum GetPrimitiveType(ITypeSymbol typeSymbol) =>
+        private static PropertyType GetPrimitiveType(ITypeSymbol typeSymbol) =>
             typeSymbol.SpecialType switch
             {
-                SpecialType.System_Enum => PropertyTypeEnum.System_Enum,
-                SpecialType.System_Boolean => PropertyTypeEnum.System_Boolean,
-                SpecialType.System_Char => PropertyTypeEnum.System_Char,
-                SpecialType.System_SByte => PropertyTypeEnum.System_SByte,
-                SpecialType.System_Byte => PropertyTypeEnum.System_Byte,
-                SpecialType.System_Int16 => PropertyTypeEnum.System_Int16,
-                SpecialType.System_UInt16 => PropertyTypeEnum.System_UInt16,
-                SpecialType.System_Int32 => PropertyTypeEnum.System_Int32,
-                SpecialType.System_UInt32 => PropertyTypeEnum.System_UInt32,
-                SpecialType.System_Int64 => PropertyTypeEnum.System_Int64,
-                SpecialType.System_UInt64 => PropertyTypeEnum.System_UInt64,
-                SpecialType.System_Decimal => PropertyTypeEnum.System_Decimal,
-                SpecialType.System_Single => PropertyTypeEnum.System_Single,
-                SpecialType.System_Double => PropertyTypeEnum.System_Double,
-                SpecialType.System_String => PropertyTypeEnum.System_String,
-                SpecialType.System_IntPtr => PropertyTypeEnum.System_IntPtr,
-                SpecialType.System_UIntPtr => PropertyTypeEnum.System_UIntPtr,
-                SpecialType.System_DateTime => PropertyTypeEnum.System_DateTime,
-                _ => PropertyTypeEnum.Other
+                SpecialType.System_Enum => PropertyType.System_Enum,
+                SpecialType.System_Boolean => PropertyType.System_Boolean,
+                SpecialType.System_Char => PropertyType.System_Char,
+                SpecialType.System_SByte => PropertyType.System_SByte,
+                SpecialType.System_Byte => PropertyType.System_Byte,
+                SpecialType.System_Int16 => PropertyType.System_Int16,
+                SpecialType.System_UInt16 => PropertyType.System_UInt16,
+                SpecialType.System_Int32 => PropertyType.System_Int32,
+                SpecialType.System_UInt32 => PropertyType.System_UInt32,
+                SpecialType.System_Int64 => PropertyType.System_Int64,
+                SpecialType.System_UInt64 => PropertyType.System_UInt64,
+                SpecialType.System_Decimal => PropertyType.System_Decimal,
+                SpecialType.System_Single => PropertyType.System_Single,
+                SpecialType.System_Double => PropertyType.System_Double,
+                SpecialType.System_String => PropertyType.System_String,
+                SpecialType.System_IntPtr => PropertyType.System_IntPtr,
+                SpecialType.System_UIntPtr => PropertyType.System_UIntPtr,
+                SpecialType.System_DateTime => PropertyType.System_DateTime,
+                _ => PropertyType.Other
             };
         
         
-    private static PropertyTypeEnum GetGenericCollectionType(string typeFullName) =>
+    private static PropertyType GetGenericCollectionType(string typeFullName) =>
         typeFullName switch
         {
-            "System.Collections.Generic.List" => PropertyTypeEnum.System_Collections_Generic_List_T,
-            "System.Collections.Generic.IList" => PropertyTypeEnum.System_Collections_Generic_IList_T,
-            "System.Collections.Generic.IEnumerable" => PropertyTypeEnum
+            "System.Collections.Generic.List" => PropertyType.System_Collections_Generic_List_T,
+            "System.Collections.Generic.IList" => PropertyType.System_Collections_Generic_IList_T,
+            "System.Collections.Generic.IEnumerable" => PropertyType
                 .System_Collections_Generic_IEnumerable_T,
-            "System.Collections.Generic.ICollection" => PropertyTypeEnum
+            "System.Collections.Generic.ICollection" => PropertyType
                 .System_Collections_Generic_ICollection_T,
-            _ => PropertyTypeEnum.Other
+            "System.Collections.Generic.HashSet" => PropertyType.System_Collections_Generic_HashSet_T,
+            _ => PropertyType.Other
         };
         
 

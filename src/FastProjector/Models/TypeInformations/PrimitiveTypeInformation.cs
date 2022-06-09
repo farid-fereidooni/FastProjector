@@ -5,11 +5,11 @@ namespace FastProjector.Models.TypeInformations
 {
     internal sealed class PrimitiveTypeInformation: TypeInformation
     {
-        public override PropertyTypeEnum Type { get; }
+        public override PropertyType Type { get; }
         
-        public PrimitiveTypeInformation(ITypeSymbol type, PropertyTypeEnum typeEnum) : base(type)
+        public PrimitiveTypeInformation(ITypeSymbol typeSymbol, PropertyType type) : base(typeSymbol)
         {
-            Type = typeEnum;
+            Type = type;
         }
         
         public PrimitiveTypeInformation(PrimitiveTypeEnum typeEnum) : base(typeEnum.ConvertToPropertyTypeEnum().GetFullname(), null)

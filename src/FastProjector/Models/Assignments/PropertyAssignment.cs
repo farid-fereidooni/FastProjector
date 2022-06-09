@@ -14,7 +14,7 @@ namespace FastProjector.Models.Assignments
         public static PropertyAssignment Create(PropertyMetadata sourceType,
             PropertyMetadata destinationType)
         {
-            if (!SameCategoryType(sourceType, destinationType))
+            if (! sourceType.TypeMetaData.HasSameTypeCategory(destinationType.TypeMetaData))
             {
                 return null;
             }
@@ -29,15 +29,6 @@ namespace FastProjector.Models.Assignments
 
                 _ => null
             };
-
         }
-
-        private static bool SameCategoryType(PropertyMetadata sourceType, PropertyMetadata destinationType)
-        {
-            return sourceType.TypeMetaData.GetType() == destinationType.TypeMetaData.GetType();
-        }
-
     }
-    
-    
 }

@@ -12,7 +12,6 @@ namespace FastProjector.Models.PropertyMetadatas
             TypeMetaData = typeMetaData;        
         }
         
-        
         public TypeMetaData TypeMetaData { get; }
 
         public string PropertyName { get; }
@@ -40,7 +39,7 @@ namespace FastProjector.Models.PropertyMetadatas
                 ClassTypeMetaData classTypeMetaData => new ClassPropertyMetadata(propertySymbol, classTypeMetaData),
                 PrimitiveTypeMetaData primitiveTypeMetaData => new PrimitivePropertyMetadata(propertySymbol,
                     primitiveTypeMetaData),
-                _ => throw new ArgumentOutOfRangeException(nameof(typeMetadata))
+                _ => throw new ArgumentException(nameof(propertySymbol))
             };
         }
     }

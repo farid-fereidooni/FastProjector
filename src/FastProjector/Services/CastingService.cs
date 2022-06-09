@@ -10,11 +10,11 @@ namespace FastProjector.Services
 {
     internal class CastingService : ICastingService
     {
-        private readonly Dictionary<PropertyTypeEnum, CastingConfiguration> _availableCasts;
+        private readonly Dictionary<PropertyType, CastingConfiguration> _availableCasts;
 
         public CastingService(IEnumerable<CastingConfiguration> castingConfigurations)
         {
-            _availableCasts = new Dictionary<PropertyTypeEnum, CastingConfiguration>();
+            _availableCasts = new Dictionary<PropertyType, CastingConfiguration>();
             InitializeCasts(castingConfigurations);
         }
         
@@ -34,8 +34,7 @@ namespace FastProjector.Services
                 DestinationProperyTypeInfo = destinationProp,
             };
 
-            //same category types, might be castable
-            if (sourceProp.GetType() == destinationProp.GetType()) //Not necessary
+            if (sourceProp.HasSameCategory(destinationProp))
             {
                 //collections:
                 if (sourceProp is CollectionTypeInformation collectionType &&
@@ -61,8 +60,8 @@ namespace FastProjector.Services
             return result;
         }
 
-        private Func<string, string> GetAvailableCast(PropertyTypeEnum sourcePropType,
-            PropertyTypeEnum destinationPropType)
+        private Func<string, string> GetAvailableCast(PropertyType sourcePropType,
+            PropertyType destinationPropType)
         {
             if (_availableCasts.TryGetValue(destinationPropType, out var availableCast))
             {

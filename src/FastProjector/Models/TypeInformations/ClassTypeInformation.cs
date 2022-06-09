@@ -6,9 +6,9 @@ namespace FastProjector.Models.TypeInformations
     {
         public ClassTypeInformation(ITypeSymbol type) : base(type)
         {
-            Type = PropertyTypeEnum.Other;
+            Type = PropertyType.Other;
         }
 
-        public override PropertyTypeEnum Type { get; }
+        public override PropertyType Type { get; }
     }
 }

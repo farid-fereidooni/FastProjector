@@ -1,6 +1,6 @@
 namespace FastProjector.Models
 {
-    public enum PropertyTypeEnum: byte
+    public enum PropertyType: byte
     {
         Other = 0,
         System_Enum,
@@ -26,5 +26,6 @@ namespace FastProjector.Models
         System_Collections_Generic_IList_T,
         System_Collections_Generic_List_T,
         System_Collections_Generic_ICollection_T,
+        System_Collections_Generic_HashSet_T
     }
 }

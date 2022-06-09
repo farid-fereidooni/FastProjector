@@ -13,17 +13,17 @@ namespace FastProjector.Models.TypeInformations
             if (type is not IArrayTypeSymbol arraySymbol)
                 throw new ArgumentException("Type should be array type");
             
-            Type = PropertyTypeEnum.System_Array;
+            Type = PropertyType.System_Array;
             _arrayType = Create(arraySymbol.ElementType);
         }
         
-        public ArrayTypeInformation(TypeInformation arrayType) : base(PropertyTypeEnum.System_Array.GetFullname())
+        public ArrayTypeInformation(TypeInformation arrayType) : base(PropertyType.System_Array.GetFullname())
         {
-            Type = PropertyTypeEnum.System_Array;
+            Type = PropertyType.System_Array;
             _arrayType = arrayType;
         }
         
-        public override PropertyTypeEnum Type { get; }
+        public override PropertyType Type { get; }
         public override TypeInformation GetCollectionType()
         {
             return _arrayType;

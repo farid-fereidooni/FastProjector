@@ -17,6 +17,11 @@ namespace FastProjector.Models.TypeInformations
         { }
 
         public abstract TypeInformation GetCollectionType();
+        
+        public override bool HasSameCategory(TypeInformation typeInformation)
+        {
+            return typeInformation.GetType().IsSubclassOf(typeof(CollectionTypeInformation));
+        }
 
         public bool HasSameCollectionType(CollectionTypeInformation typeInfo)
         {

@@ -11,24 +11,24 @@ namespace FastProjector.Helpers
             return prop.GenericTypes.NotNullAny();
         }
 
-        public static PropertyTypeEnum ConvertToPropertyTypeEnum(this PrimitiveTypeEnum primitiveType)
+        public static PropertyType ConvertToPropertyTypeEnum(this PrimitiveTypeEnum primitiveType)
         {
             return ConvertAnyToPropertyTypeEnum(primitiveType);
         }
         
-        public static PropertyTypeEnum ConvertToPropertyTypeEnum(this CollectionTypeEnum primitiveType)
+        public static PropertyType ConvertToPropertyTypeEnum(this CollectionTypeEnum primitiveType)
         {
             return ConvertAnyToPropertyTypeEnum(primitiveType);
         }
         
-        public static string GetFullname(this PropertyTypeEnum propertyType)
+        public static string GetFullname(this PropertyType propertyType)
         {
             return propertyType.ToString().Replace('_', '.');
         }
 
-        private static PropertyTypeEnum ConvertAnyToPropertyTypeEnum(Enum anyEnum)
+        private static PropertyType ConvertAnyToPropertyTypeEnum(Enum anyEnum)
         {
-            if (!Enum.TryParse(anyEnum.ToString(), true, out PropertyTypeEnum propertyTypeEnum))
+            if (!Enum.TryParse(anyEnum.ToString(), true, out PropertyType propertyTypeEnum))
                 throw new ArgumentException("Invalid Type");
 
             return propertyTypeEnum;

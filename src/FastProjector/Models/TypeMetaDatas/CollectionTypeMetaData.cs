@@ -8,5 +8,6 @@ namespace FastProjector.Models.TypeMetaDatas
         { }
 
         public abstract TypeMetaData GetCollectionType();
+
     }
 }

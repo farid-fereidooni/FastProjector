@@ -10,7 +10,12 @@ namespace FastProjector.Models.TypeMetaDatas
             TypeSymbol = typeSymbol;
         }
         public abstract TypeInformation TypeInformation { get; }
-        public ITypeSymbol TypeSymbol { get; } 
+        public ITypeSymbol TypeSymbol { get; }
+
+        public virtual bool HasSameTypeCategory(TypeMetaData typeMetaData)
+        {
+            return TypeInformation.HasSameCategory(typeMetaData.TypeInformation);
+        }
 
         public override bool Equals(object obj)
         {
