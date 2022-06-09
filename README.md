@@ -1,5 +1,7 @@
 # FastProjector
 
+![Build and Test Workflow](https://github.com/farid-fereidooni/FastProjector/actions/workflows/dotnet.yml/badge.svg)
+
 ## Under Production
 
 Fast projector is a lightweight library for projecting lists into other models, which is mainly used in Database querying.
