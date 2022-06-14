@@ -1,7 +1,7 @@
 using System;
-using System.ComponentModel;
 using FastProjector.Contracts;
 using FastProjector.Models.PropertyMetadatas;
+using FastProjector.Models.TypeInformations;
 using FastProjector.Models.TypeMetaDatas;
 using SourceCreationHelper;
 using SourceCreationHelper.Interfaces;
@@ -14,6 +14,8 @@ namespace FastProjector.Models.Projections
         private readonly CollectionPropertyMetadata _destinationPropertyMetaData;
 
         public PrimitiveProjection(CollectionPropertyMetadata destinationMetaData, CollectionPropertyMetadata sourcePropertyMetaData)
+        : base(destinationMetaData.TypeMetaData.TypeInformation as CollectionTypeInformation)
+          
         {
             _destinationPropertyMetaData = destinationMetaData;
             _sourcePropertyMetaData = sourcePropertyMetaData;

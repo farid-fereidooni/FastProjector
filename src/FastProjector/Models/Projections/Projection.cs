@@ -5,8 +5,14 @@ using SourceCreationHelper.Interfaces;
 
 namespace FastProjector.Models.Projections
 {
-    internal abstract class Projection
+    internal abstract class Projection : IProjection
     {
+        private readonly CollectionTypeInformation _destinationTypeInformation;
+        
+        protected Projection(CollectionTypeInformation destinationTypeInformation)
+        {
+            _destinationTypeInformation = destinationTypeInformation;
+        }
         public abstract ISourceText CreateProjection(IModelMapService mapService, ISourceText parameterName);
         
         protected static ICallSourceText CreateSelectExpression(string paramName, ISourceText returnExpression)
@@ -19,11 +25,23 @@ namespace FastProjector.Models.Projections
                 .AddArgument(selectExpression);
         }
 
-        protected static TypeInformation CreateIEnumerableTypeInformation(TypeInformation genericType)
+        protected PropertyCastResult CreateIEnumerableCasting(IModelMapService mapService)
+        {
+            var iEnumerableTypeOfProjected =
+                CreateIEnumerableTypeInformation(_destinationTypeInformation.GetCollectionType());
+
+            var enumerableCastInfo = mapService.CastType(iEnumerableTypeOfProjected,
+                _destinationTypeInformation);
+
+            return enumerableCastInfo;
+        }
+        
+        private static TypeInformation CreateIEnumerableTypeInformation(TypeInformation genericType)
         {
             return new GenericCollectionTypeInformation(CollectionTypeEnum.System_Collections_Generic_IEnumerable_T,
                 genericType);
         }
+
     }
     
   
