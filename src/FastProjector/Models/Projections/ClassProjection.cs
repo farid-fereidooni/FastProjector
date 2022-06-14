@@ -9,17 +9,12 @@ namespace FastProjector.Models.Projections
 {
     internal sealed class ClassProjection : MapBasedProjection
     {
-        private readonly CollectionPropertyMetadata _sourcePropertyMetadata;
-        private readonly CollectionPropertyMetadata _destinationPropertyMetadata;
 
         public ClassProjection(CollectionPropertyMetadata sourcePropertyMetadata,
-            CollectionPropertyMetadata destinationPropertyMetadata, ModelMap modelMap)
-            : base(modelMap)
-        {
-            _sourcePropertyMetadata = sourcePropertyMetadata;
-            _destinationPropertyMetadata = destinationPropertyMetadata;
-        }
-
+            CollectionPropertyMetadata destinationPropertyMetadata)
+            : base(destinationPropertyMetadata.TypeMetaData.TypeInformation as CollectionTypeInformation,
+                sourcePropertyMetadata.TypeMetaData.TypeInformation as CollectionTypeInformation)
+        { }
 
         public override ISourceText CreateProjection(IModelMapService mapService, ISourceText parameterName)
         {
@@ -30,27 +25,13 @@ namespace FastProjector.Models.Projections
             var modelMapSource = ModelMap.CreateMappingSource(mapService, projectionParam);
             var projectionSource = CreateSelectExpression(projectionParam.Text, modelMapSource);
 
-            return CreateIEnumerableCasting(mapService, parameterName, projectionSource);
-        }
-
-        private ISourceText CreateIEnumerableCasting(IModelMapService mapService, ISourceText parameterName,
-            ICallSourceText projectionSource)
-        {
-            var iEnumerableTypeOfProjected = CreateIEnumerableTypeInformation(ModelMap.DestinationType);
-
-            var enumerableCastInfo = mapService.CastType(iEnumerableTypeOfProjected,
-                _destinationPropertyMetadata.TypeMetaData.TypeInformation);
-
+            var enumerableCastInfo = CreateIEnumerableCasting(mapService);
+            
             if (enumerableCastInfo.IsUnMapable)
                 return null;
 
             return SourceCreator.CreateSource(
-                enumerableCastInfo.Cast($"{parameterName}.{_sourcePropertyMetadata.PropertyName}.{projectionSource}"));
-        }
-
-        protected override void ValidateMap()
-        {
-            throw new System.NotImplementedException();
+                enumerableCastInfo.Cast($"{parameterName}.{projectionSource}"));
         }
     }
 }
