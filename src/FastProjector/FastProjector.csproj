@@ -38,6 +38,10 @@
     <Folder Include="Factories" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Models\Projections\MapBasedProjection.cs" />
+  </ItemGroup>
+
   
   <Target Name="GetDependencyTargetPaths">
     <ItemGroup>

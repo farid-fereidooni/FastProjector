@@ -7,14 +7,18 @@ using SourceCreationHelper.Interfaces;
 
 namespace FastProjector.Models.Projections
 {
-    internal sealed class ClassProjection : MapBasedProjection
+    internal sealed class ClassProjection : Projection, IMapBasedProjection
     {
+        private readonly CollectionTypeInformation _sourceTypeInformation;
+        private readonly CollectionTypeInformation _destinationTypeInformation;
 
-        public ClassProjection(CollectionPropertyMetadata sourcePropertyMetadata,
-            CollectionPropertyMetadata destinationPropertyMetadata)
-            : base(destinationPropertyMetadata.TypeMetaData.TypeInformation as CollectionTypeInformation,
-                sourcePropertyMetadata.TypeMetaData.TypeInformation as CollectionTypeInformation)
-        { }
+        public ClassProjection(CollectionTypeInformation sourceTypeInformation,
+            CollectionTypeInformation destinationTypeInformation)
+            : base(destinationTypeInformation)
+        {
+            _sourceTypeInformation = sourceTypeInformation;
+            _destinationTypeInformation = destinationTypeInformation;
+        }
 
         public override ISourceText CreateProjection(IModelMapService mapService, ISourceText parameterName)
         {
@@ -32,6 +36,30 @@ namespace FastProjector.Models.Projections
 
             return SourceCreator.CreateSource(
                 enumerableCastInfo.Cast($"{parameterName}.{projectionSource}"));
+        }
+
+        public ModelMap ModelMap { get; private set; }
+
+        public void AddModelMap(ModelMap modelMap)
+        {
+            ValidateMap();
+            ModelMap = modelMap;
+        }
+
+        public bool HasModelMap()
+        {
+            return ModelMap is not null;
+        }
+
+        private void ValidateMap()
+        {
+            if(ModelMap is null)
+                return;
+            if (!ModelMap.SourceType.Equals(_sourceTypeInformation))
+                throw new ArgumentException("Invalid Metadata passed");
+
+            if (!ModelMap.DestinationType.Equals(_destinationTypeInformation))
+                throw new ArgumentException("Invalid Metadata passed");
         }
     }
 }

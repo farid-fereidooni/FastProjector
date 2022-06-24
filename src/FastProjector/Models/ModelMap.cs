@@ -57,8 +57,7 @@ namespace FastProjector.Models
             return _targetSymbol.IsClass()
                    && _sourceSymbol.IsClass()
                    && _sourceSymbol.HasParameterlessConstructor();
+  
         }
-
-   
     }
 }

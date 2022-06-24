@@ -10,11 +10,6 @@ namespace FastProjector.Models.Assignments
             throw new System.NotImplementedException();
         }
 
-        public override bool CanMapLater()
-        {
-            throw new System.NotImplementedException();
-        }
-
         protected override void ValidateMap()
         {
             throw new System.NotImplementedException();

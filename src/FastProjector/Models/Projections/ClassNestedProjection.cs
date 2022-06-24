@@ -7,9 +7,9 @@ namespace FastProjector.Models.Projections
 {
     internal sealed class ClassNestedProjection : NestedProjection, IMapBasedProjection
     {
-        private readonly MapBasedProjection _innerProjection;
+        private readonly IMapBasedProjection _innerProjection;
 
-        public ClassNestedProjection(MapBasedProjection innerProjection,
+        public ClassNestedProjection(IMapBasedProjection innerProjection,
             CollectionTypeInformation destinationTypeInformation) : base(innerProjection, destinationTypeInformation)
         {
             _innerProjection = innerProjection;
@@ -18,6 +18,11 @@ namespace FastProjector.Models.Projections
         public void AddModelMap(ModelMap modelMap)
         {
             _innerProjection.AddModelMap(modelMap);
+        }
+
+        public bool HasModelMap()
+        {
+            return _innerProjection.HasModelMap();
         }
     }
 }

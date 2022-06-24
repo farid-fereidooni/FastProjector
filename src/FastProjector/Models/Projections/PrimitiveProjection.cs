@@ -8,23 +8,29 @@ using SourceCreationHelper.Interfaces;
 
 namespace FastProjector.Models.Projections
 {
-    internal class PrimitiveProjection: Projection
+    internal class PrimitiveProjection : Projection
     {
-        private readonly CollectionPropertyMetadata _sourcePropertyMetaData;
-        private readonly CollectionPropertyMetadata _destinationPropertyMetaData;
+        private readonly CollectionTypeInformation _destinationTypeInformation;
+        private readonly CollectionTypeInformation _sourceTypeInformation;
 
-        public PrimitiveProjection(CollectionPropertyMetadata destinationMetaData, CollectionPropertyMetadata sourcePropertyMetaData)
-        : base(destinationMetaData.TypeMetaData.TypeInformation as CollectionTypeInformation)
-          
+        public PrimitiveProjection(CollectionTypeInformation sourceTypeInformation,
+            CollectionTypeInformation destinationTypeInformation
+        )
+            : base(destinationTypeInformation)
         {
-            _destinationPropertyMetaData = destinationMetaData;
-            _sourcePropertyMetaData = sourcePropertyMetaData;
+            _destinationTypeInformation = destinationTypeInformation;
+            _sourceTypeInformation = sourceTypeInformation;
             ValidateMetaData();
         }
 
         private void ValidateMetaData()
         {
-            if (_destinationPropertyMetaData.TypeMetaData.GetCollectionType() is not PrimitiveTypeMetaData)
+            if (_destinationTypeInformation.GetCollectionType() is not PrimitiveTypeInformation)
+            {
+                throw new ArgumentException("Only Primitive Collections are allowed");
+            }
+
+            if (_sourceTypeInformation.GetCollectionType() is not PrimitiveTypeInformation)
             {
                 throw new ArgumentException("Only Primitive Collections are allowed");
             }
@@ -32,11 +38,10 @@ namespace FastProjector.Models.Projections
 
         public override ISourceText CreateProjection(IModelMapService mapService, ISourceText parameterName)
         {
-            var castResult = mapService.CastType(_sourcePropertyMetaData.TypeMetaData.TypeInformation,
-                _destinationPropertyMetaData.TypeMetaData.TypeInformation);
-            
-            return castResult.IsUnMapable ? null :
-                SourceCreator.CreateSource(castResult.Cast($"{parameterName}.{_sourcePropertyMetaData.PropertyName}"));
+            var castResult = mapService.CastType(_sourceTypeInformation,
+                _destinationTypeInformation);
+
+            return castResult.IsUnMapable ? null : SourceCreator.CreateSource(castResult.Cast($"{parameterName}"));
         }
     }
 }

@@ -7,7 +7,7 @@ namespace FastProjector.Models.Projections
 {
     internal sealed class PrimitiveNestedProjection : NestedProjection
     {
-        public PrimitiveNestedProjection(Projection innerProjection,
+        public PrimitiveNestedProjection(IProjection innerProjection,
             CollectionTypeInformation destinationTypeInformation) : base(innerProjection, destinationTypeInformation)
         { }
     }

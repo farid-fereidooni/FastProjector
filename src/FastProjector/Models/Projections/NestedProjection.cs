@@ -9,9 +9,9 @@ namespace FastProjector.Models.Projections
 {
     internal abstract class NestedProjection : Projection
     {
-        private readonly Projection _innerProjection;
+        private readonly IProjection _innerProjection;
 
-        protected NestedProjection(Projection innerProjection,
+        protected NestedProjection(IProjection innerProjection,
             CollectionTypeInformation destinationTypeInformation)
             : base(destinationTypeInformation)
         {
@@ -34,6 +34,18 @@ namespace FastProjector.Models.Projections
             return SourceCreator.CreateSource(
                 enumerableCastInfo.Cast($"{parameterName}.{projectionSource}"));
             
+        }
+
+        public new static NestedProjection Create(CollectionTypeInformation sourceTypeInformation,
+            CollectionTypeInformation destinationTypeInformation)
+        {
+            var innerProjection = Projection.Create(sourceTypeInformation, destinationTypeInformation);
+
+            if (innerProjection.GetType().IsSubclassOf(typeof(IMapBasedProjection)))
+            {
+                return new ClassNestedProjection(innerProjection as IMapBasedProjection, destinationTypeInformation);
+            }
+            return new PrimitiveNestedProjection(innerProjection, destinationTypeInformation);
         }
 
     }

@@ -4,5 +4,7 @@ namespace FastProjector.Models.Projections
     {
         public void AddModelMap(ModelMap modelMap);
 
+        public bool HasModelMap();
+
     }
 }
