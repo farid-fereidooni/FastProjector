@@ -55,10 +55,10 @@ namespace FastProjector.Models.Projections
         {
             if(ModelMap is null)
                 return;
-            if (!ModelMap.SourceType.Equals(_sourceTypeInformation))
+            if (!ModelMap.SourceType.Equals(_sourceTypeInformation.GetCollectionType()))
                 throw new ArgumentException("Invalid Metadata passed");
 
-            if (!ModelMap.DestinationType.Equals(_destinationTypeInformation))
+            if (!ModelMap.DestinationType.Equals(_destinationTypeInformation.GetCollectionType()))
                 throw new ArgumentException("Invalid Metadata passed");
         }
     }

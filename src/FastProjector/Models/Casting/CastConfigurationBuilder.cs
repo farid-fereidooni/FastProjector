@@ -60,6 +60,7 @@ namespace FastProjector.Models.Casting
         IEnumerable<CastingConfiguration> ICanSetCastFunctionWithMultipleTo.With(Func<string, string> castFunction)
         {
             if (castFunction == null) throw new ArgumentNullException(nameof(castFunction));
+            _castToList.Add(_castTo);
             return _castToList.Select(castToItem => new CastingConfiguration(_castFromList, castToItem, castFunction));
         }
     }

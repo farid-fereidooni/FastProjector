@@ -11,6 +11,7 @@ using SourceCreationHelper;
 using SourceCreationHelper.Interfaces;
 
 [assembly:InternalsVisibleTo("FastProjector.Test")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace FastProjector.Models
 {
     internal class ModelMap

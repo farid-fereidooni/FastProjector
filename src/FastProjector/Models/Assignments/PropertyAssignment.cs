@@ -1,5 +1,9 @@
+using System;
+using System.Diagnostics;
 using FastProjector.Contracts;
+using FastProjector.Models.Projections;
 using FastProjector.Models.PropertyMetadatas;
+using FastProjector.Models.TypeInformations;
 using FastProjector.Models.TypeMetaDatas;
 using SourceCreationHelper.Interfaces;
 
@@ -7,26 +11,52 @@ namespace FastProjector.Models.Assignments
 {
     internal abstract class PropertyAssignment
     {
-        public abstract IAssignmentSourceText CreateAssignmentSource(IModelMapService mapService, ISourceText parameterName);
+        public abstract IAssignmentSourceText CreateAssignmentSource(IModelMapService mapService,
+            ISourceText parameterName);
 
-        public abstract bool CanMapLater();
-        
         public static PropertyAssignment Create(PropertyMetadata sourceType,
             PropertyMetadata destinationType)
         {
-            if (! sourceType.TypeMetaData.HasSameTypeCategory(destinationType.TypeMetaData))
+            if (!sourceType.TypeMetaData.HasSameTypeCategory(destinationType.TypeMetaData))
             {
                 return null;
             }
-            
+
             return sourceType switch
             {
                 PrimitivePropertyMetadata primitiveSource => new PrimitivePropertyAssignment(primitiveSource,
                     destinationType as PrimitivePropertyMetadata),
-                
-                ClassPropertyMetadata classSource => new ClassPropertyAssignment(classSource,
-                    destinationType as ClassPropertyMetadata), 
 
+                ClassPropertyMetadata classSource => new ClassPropertyAssignment(classSource,
+                    destinationType as ClassPropertyMetadata),
+
+                CollectionPropertyMetadata collectionType => CreateCollection(collectionType,
+                    (CollectionPropertyMetadata) destinationType),
+
+                _ => null
+            };
+        }
+
+        private static PropertyAssignment CreateCollection(CollectionPropertyMetadata sourceType,
+            CollectionPropertyMetadata destinationType)
+        {
+            var projection = Projection.Create(sourceType.TypeMetaData.TypeInformation as CollectionTypeInformation,
+                destinationType.TypeMetaData.TypeInformation as CollectionTypeInformation);
+
+            if (projection is null)
+                return null;
+
+            return projection switch
+            {
+                ClassProjection classProjection => new ClassCollectionPropertyAssignment(classProjection,
+                    destinationType),
+                ClassNestedProjection classNestedProjection => new ClassCollectionPropertyAssignment(
+                    classNestedProjection,
+                    destinationType),
+                PrimitiveNestedProjection primitiveNestedProjection => new PrimitiveCollectionPropertyAssignment(
+                    primitiveNestedProjection, destinationType),
+                PrimitiveProjection primitiveProjection => new PrimitiveCollectionPropertyAssignment(
+                    primitiveProjection, destinationType),
                 _ => null
             };
         }

@@ -40,7 +40,5 @@ namespace FastProjector.Models.Assignments
             return null;
 
         }
-
-        public override bool CanMapLater() => false;
     }
 }

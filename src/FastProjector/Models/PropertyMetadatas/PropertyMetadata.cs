@@ -9,9 +9,9 @@ namespace FastProjector.Models.PropertyMetadatas
         protected PropertyMetadata(IPropertySymbol propertySymbol, TypeMetaData typeMetaData)
         {
             PropertyName = propertySymbol.Name;
-            TypeMetaData = typeMetaData;        
+            TypeMetaData = typeMetaData;
         }
-        
+
         public TypeMetaData TypeMetaData { get; }
 
         public string PropertyName { get; }
@@ -22,6 +22,7 @@ namespace FastProjector.Models.PropertyMetadatas
             {
                 return TypeMetaData.Equals(other.TypeMetaData) && PropertyName.Equals(other.PropertyName);
             }
+
             return false;
         }
 
@@ -32,13 +33,14 @@ namespace FastProjector.Models.PropertyMetadatas
 
         public static PropertyMetadata Create(IPropertySymbol propertySymbol)
         {
-            
             var typeMetadata = TypeMetaData.Create(propertySymbol.Type);
             return typeMetadata switch
             {
                 ClassTypeMetaData classTypeMetaData => new ClassPropertyMetadata(propertySymbol, classTypeMetaData),
                 PrimitiveTypeMetaData primitiveTypeMetaData => new PrimitivePropertyMetadata(propertySymbol,
                     primitiveTypeMetaData),
+                CollectionTypeMetaData or GenericCollectionTypeMetaData or ArrayTypeMetaData =>
+                    new CollectionPropertyMetadata(propertySymbol, typeMetadata as CollectionTypeMetaData),
                 _ => throw new ArgumentException(nameof(propertySymbol))
             };
         }

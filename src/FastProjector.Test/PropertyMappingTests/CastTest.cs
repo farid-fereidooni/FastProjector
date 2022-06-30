@@ -146,4 +146,36 @@ public class CastTest
         Assert.False(castResult.IsUnMapable);
         Assert.Equal("any.ToArray()",castResult.Cast("any"));
     }
+    
+    
+    [Theory]
+    [InlineData("IEnumerable<int>")]
+    [InlineData("int[]")]
+    [InlineData("List<int>")]
+    [InlineData("ICollection<int>")]
+    [InlineData("IList<int>")]
+    [InlineData("HashSet<int>")]
+    public void CastType_CastAnyCollectionToEnumerable_IsSuccessful(string fromCollectionType)
+    {
+        //Arranges
+        var sourceBuilder = new SourceBuilder();
+        sourceBuilder.AddClass("Test")
+            .AddProperty(AccessModifier.@public, fromCollectionType, "ListA")
+            .AddProperty(AccessModifier.@public, "IEnumerable<int>", "ListB");
+
+        var compilation = sourceBuilder.GetCompilation();
+        
+        var properties = compilation.GetClassSymbol("Test")
+            .ExtractProps().ToList();
+        
+        var listAType = TypeInformation.Create(properties.First());
+        var listBType = TypeInformation.Create(properties.Last());
+        
+        //Act
+        var castResult = _castingService.CastType(listAType, listBType);
+
+        //Assert
+        Assert.False(castResult.IsUnMapable);
+        Assert.Equal("any.ToList()",castResult.Cast("any"));
+    }
 }
