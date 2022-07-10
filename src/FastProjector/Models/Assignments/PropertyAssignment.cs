@@ -1,10 +1,6 @@
-using System;
-using System.Diagnostics;
 using FastProjector.Contracts;
 using FastProjector.Models.Projections;
 using FastProjector.Models.PropertyMetadatas;
-using FastProjector.Models.TypeInformations;
-using FastProjector.Models.TypeMetaDatas;
 using SourceCreationHelper.Interfaces;
 
 namespace FastProjector.Models.Assignments
@@ -40,8 +36,8 @@ namespace FastProjector.Models.Assignments
         private static PropertyAssignment CreateCollection(CollectionPropertyMetadata sourceType,
             CollectionPropertyMetadata destinationType)
         {
-            var projection = Projection.Create(sourceType.TypeMetaData.TypeInformation as CollectionTypeInformation,
-                destinationType.TypeMetaData.TypeInformation as CollectionTypeInformation);
+            var projection = Projection.Create(sourceType.TypeMetaData,
+                destinationType.TypeMetaData);
 
             if (projection is null)
                 return null;

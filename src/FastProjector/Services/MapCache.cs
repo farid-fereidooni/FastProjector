@@ -83,7 +83,7 @@ namespace FastProjector.Services
             if (propType.HasGenericTypes())
             {
                 stringBuilder.Append("<");
-                string.Join(",", propType.GenericTypes.Select(s => s.FullName));
+                stringBuilder.Append(string.Join(",", propType.GenericTypes.Select(s => s.FullName)));
                 stringBuilder.Append(">");
             }
 

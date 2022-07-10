@@ -48,11 +48,6 @@ namespace FastProjector.Models.Assignments
 
             return null;
         }
-        public override void AddModelMap(ModelMap modelMap)
-        {
-            ValidateMap();
-            base.AddModelMap(modelMap);
-        }
 
         private ModelMap TryCreateSameTypeMap(IModelMapService mapService)
         {
@@ -73,18 +68,9 @@ namespace FastProjector.Models.Assignments
             );
         }
 
-        private void ValidateMap()
+        public override (TypeMetaData sourceType, TypeMetaData destinationType) GetRequiredMapTypes()
         {
-            if(ModelMap is null)
-                return;
-            
-            if (!ModelMap.SourceType.Equals(_sourceType.TypeMetaData.TypeInformation))
-                throw new ArgumentException("Invalid Metadata passed");
-            
-            if (!ModelMap.DestinationType.Equals(_destinationType.TypeMetaData.TypeInformation))
-                throw new ArgumentException("Invalid Metadata passed");
+            return (_sourceType.TypeMetaData, _destinationType.TypeMetaData);
         }
-
-
     }
 }

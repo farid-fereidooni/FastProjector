@@ -5,11 +5,11 @@ namespace FastProjector.Models.TypeMetaDatas
 {
     internal class ClassTypeMetaData : TypeMetaData
     {
-        public ClassTypeMetaData(ITypeSymbol typeSymbol, ClassTypeInformation typeInformation) : base(typeSymbol)
+        public ClassTypeMetaData(ITypeSymbol typeSymbol, ClassTypeInformation typeInformation) : base(typeSymbol, typeInformation)
         {
             TypeInformation = typeInformation;
         }
 
-        public override TypeInformation TypeInformation { get; }
+        public new ClassTypeInformation TypeInformation { get; }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using FastProjector.Contracts;
 using FastProjector.Models.TypeInformations;
+using FastProjector.Models.TypeMetaDatas;
 using SourceCreationHelper;
 using SourceCreationHelper.Interfaces;
 
@@ -44,9 +45,12 @@ namespace FastProjector.Models.Projections
                 genericType);
         }
 
-        public static Projection Create(CollectionTypeInformation sourceTypeInformation,
-            CollectionTypeInformation destinationTypeInformation)
+        public static Projection Create(CollectionTypeMetaData sourceTypeMetaData,
+            CollectionTypeMetaData destinationTypeMetadata)
         {
+            var sourceTypeInformation = sourceTypeMetaData.TypeInformation;
+            var destinationTypeInformation = destinationTypeMetadata.TypeInformation;
+            
             if (!sourceTypeInformation.GetCollectionType()
                     .HasSameCategory(destinationTypeInformation.GetCollectionType()))
             {
@@ -57,9 +61,9 @@ namespace FastProjector.Models.Projections
             
             return collectionType switch
             {
-                ClassTypeInformation => new ClassProjection(sourceTypeInformation, destinationTypeInformation),
-                CollectionTypeInformation => NestedProjection.Create(sourceTypeInformation, destinationTypeInformation),
-                GenericClassTypeInformation => new ClassProjection(sourceTypeInformation, destinationTypeInformation),
+                ClassTypeInformation => new ClassProjection(sourceTypeMetaData, destinationTypeMetadata),
+                CollectionTypeInformation => NestedProjection.Create(sourceTypeMetaData, destinationTypeMetadata),
+                GenericClassTypeInformation => new ClassProjection(sourceTypeMetaData, destinationTypeMetadata),
                 PrimitiveTypeInformation => new PrimitiveProjection(sourceTypeInformation, destinationTypeInformation),
                 _ => null
             };

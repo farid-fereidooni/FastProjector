@@ -1,5 +1,6 @@
 using FastProjector.Contracts;
 using FastProjector.Models.TypeInformations;
+using FastProjector.Models.TypeMetaDatas;
 using SourceCreationHelper;
 using SourceCreationHelper.Interfaces;
 
@@ -18,6 +19,11 @@ namespace FastProjector.Models.Projections
         public void AddModelMap(ModelMap modelMap)
         {
             _innerProjection.AddModelMap(modelMap);
+        }
+
+        public (TypeMetaData sourceType, TypeMetaData destinationType) GetRequiredMapTypes()
+        {
+            return _innerProjection.GetRequiredMapTypes();
         }
 
         public bool HasModelMap()

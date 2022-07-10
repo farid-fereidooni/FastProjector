@@ -2,6 +2,7 @@ using System;
 using FastProjector.Contracts;
 using FastProjector.Models.PropertyMetadatas;
 using FastProjector.Models.TypeInformations;
+using FastProjector.Models.TypeMetaDatas;
 using SourceCreationHelper;
 using SourceCreationHelper.Interfaces;
 
@@ -36,16 +37,16 @@ namespace FastProjector.Models.Projections
             
         }
 
-        public new static NestedProjection Create(CollectionTypeInformation sourceTypeInformation,
-            CollectionTypeInformation destinationTypeInformation)
+        public new static NestedProjection Create(CollectionTypeMetaData sourceTypeMetaData,
+            CollectionTypeMetaData destinationTypeMetaData)
         {
-            var innerProjection = Projection.Create(sourceTypeInformation, destinationTypeInformation);
+            var innerProjection = Projection.Create(sourceTypeMetaData, destinationTypeMetaData);
 
             if (innerProjection.GetType().IsSubclassOf(typeof(IMapBasedProjection)))
             {
-                return new ClassNestedProjection(innerProjection as IMapBasedProjection, destinationTypeInformation);
+                return new ClassNestedProjection(innerProjection as IMapBasedProjection, destinationTypeMetaData.TypeInformation);
             }
-            return new PrimitiveNestedProjection(innerProjection, destinationTypeInformation);
+            return new PrimitiveNestedProjection(innerProjection, destinationTypeMetaData.TypeInformation);
         }
 
     }

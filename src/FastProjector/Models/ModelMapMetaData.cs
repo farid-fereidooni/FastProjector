@@ -30,7 +30,7 @@ namespace FastProjector.Models
 
             var destinationProps = new HashSet<IPropertySymbol>(GetTargetProperties(), SymbolEqualityComparer.Default);
 
-            var assignments = GetAssignments(sourceProps, destinationProps, mapService);
+            var assignments = GetAssignments(sourceProps, destinationProps, mapService).ToList();
 
             var modelMap = new ModelMap(_sourceSymbol, _targetSymbol, assignments);
 

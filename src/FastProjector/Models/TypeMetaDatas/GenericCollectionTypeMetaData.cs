@@ -7,12 +7,8 @@ namespace FastProjector.Models.TypeMetaDatas
     internal class GenericCollectionTypeMetaData : CollectionTypeMetaData
     {
         public GenericCollectionTypeMetaData(ITypeSymbol typeSymbol, GenericCollectionTypeInformation typeInformation) :
-            base(typeSymbol)
-        {
-            TypeInformation = typeInformation;
-        }
-
-        public override TypeInformation TypeInformation { get; }
+            base(typeSymbol, typeInformation)
+        { }
         
         public override TypeMetaData GetCollectionType()
         {
@@ -20,5 +16,6 @@ namespace FastProjector.Models.TypeMetaDatas
 
             return Create(collectionType);
         }
+
     }
 }

@@ -5,11 +5,12 @@ namespace FastProjector.Models.TypeMetaDatas
 {
     internal abstract class TypeMetaData
     {
-        protected TypeMetaData(ITypeSymbol typeSymbol)
+        protected TypeMetaData(ITypeSymbol typeSymbol, TypeInformation typeInformation)
         {
             TypeSymbol = typeSymbol;
+            TypeInformation = typeInformation;
         }
-        public abstract TypeInformation TypeInformation { get; }
+        public TypeInformation TypeInformation { get; }
         public ITypeSymbol TypeSymbol { get; }
 
         public virtual bool HasSameTypeCategory(TypeMetaData typeMetaData)

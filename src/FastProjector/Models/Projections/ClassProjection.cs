@@ -1,7 +1,6 @@
 using System;
 using FastProjector.Contracts;
-using FastProjector.Models.PropertyMetadatas;
-using FastProjector.Models.TypeInformations;
+using FastProjector.Models.TypeMetaDatas;
 using SourceCreationHelper;
 using SourceCreationHelper.Interfaces;
 
@@ -9,15 +8,15 @@ namespace FastProjector.Models.Projections
 {
     internal sealed class ClassProjection : Projection, IMapBasedProjection
     {
-        private readonly CollectionTypeInformation _sourceTypeInformation;
-        private readonly CollectionTypeInformation _destinationTypeInformation;
+        private readonly CollectionTypeMetaData _sourceTypeMetaData;
+        private readonly CollectionTypeMetaData _destinationTypeMetadata;
 
-        public ClassProjection(CollectionTypeInformation sourceTypeInformation,
-            CollectionTypeInformation destinationTypeInformation)
-            : base(destinationTypeInformation)
+        public ClassProjection(CollectionTypeMetaData sourceTypeMetaData,
+            CollectionTypeMetaData destinationTypeMetadata)
+            : base(destinationTypeMetadata.TypeInformation)
         {
-            _sourceTypeInformation = sourceTypeInformation;
-            _destinationTypeInformation = destinationTypeInformation;
+            _sourceTypeMetaData = sourceTypeMetaData;
+            _destinationTypeMetadata = destinationTypeMetadata;
         }
 
         public override ISourceText CreateProjection(IModelMapService mapService, ISourceText parameterName)
@@ -46,6 +45,11 @@ namespace FastProjector.Models.Projections
             ModelMap = modelMap;
         }
 
+        public (TypeMetaData sourceType, TypeMetaData destinationType) GetRequiredMapTypes()
+        {
+            return (_sourceTypeMetaData, _destinationTypeMetadata);
+        }
+
         public bool HasModelMap()
         {
             return ModelMap is not null;
@@ -55,10 +59,10 @@ namespace FastProjector.Models.Projections
         {
             if(ModelMap is null)
                 return;
-            if (!ModelMap.SourceType.Equals(_sourceTypeInformation.GetCollectionType()))
+            if (!ModelMap.SourceType.Equals(_sourceTypeMetaData.GetCollectionType().TypeInformation))
                 throw new ArgumentException("Invalid Metadata passed");
 
-            if (!ModelMap.DestinationType.Equals(_destinationTypeInformation.GetCollectionType()))
+            if (!ModelMap.DestinationType.Equals(_destinationTypeMetadata.GetCollectionType().TypeInformation))
                 throw new ArgumentException("Invalid Metadata passed");
         }
     }

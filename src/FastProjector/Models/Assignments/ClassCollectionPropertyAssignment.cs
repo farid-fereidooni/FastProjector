@@ -8,12 +8,13 @@ using SourceCreationHelper.Interfaces;
 
 namespace FastProjector.Models.Assignments
 {
-    internal class ClassCollectionPropertyAssignment: MapBasedPropertyAssignments
+    internal class ClassCollectionPropertyAssignment : MapBasedPropertyAssignments
     {
         private readonly IMapBasedProjection _projection;
         private readonly CollectionPropertyMetadata _destinationType;
 
-        public ClassCollectionPropertyAssignment(IMapBasedProjection projection, CollectionPropertyMetadata destinationType)
+        public ClassCollectionPropertyAssignment(IMapBasedProjection projection,
+            CollectionPropertyMetadata destinationType)
         {
             if (destinationType.TypeMetaData.GetCollectionType() is not ClassTypeMetaData)
             {
@@ -23,7 +24,9 @@ namespace FastProjector.Models.Assignments
             _projection = projection;
             _destinationType = destinationType;
         }
-        public override IAssignmentSourceText CreateAssignmentSource(IModelMapService mapService, ISourceText parameterName)
+
+        public override IAssignmentSourceText CreateAssignmentSource(IModelMapService mapService,
+            ISourceText parameterName)
         {
             var rightPartOfAssignmentParameterName =
                 SourceCreator.CreateSource($"{parameterName}.{_destinationType.PropertyName}");
@@ -39,6 +42,11 @@ namespace FastProjector.Models.Assignments
                 SourceCreator.CreateSource(_destinationType.PropertyName),
                 projection
             );
+        }
+
+        public override (TypeMetaData sourceType, TypeMetaData destinationType) GetRequiredMapTypes()
+        {
+            return _projection.GetRequiredMapTypes();
         }
 
         public override void AddModelMap(ModelMap modelMap)

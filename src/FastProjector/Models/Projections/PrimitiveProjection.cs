@@ -10,7 +10,7 @@ namespace FastProjector.Models.Projections
 {
     internal class PrimitiveProjection : Projection
     {
-        private readonly CollectionTypeInformation _destinationTypeInformation;
+        private readonly CollectionTypeInformation _destinationTypeMetadata;
         private readonly CollectionTypeInformation _sourceTypeInformation;
 
         public PrimitiveProjection(CollectionTypeInformation sourceTypeInformation,
@@ -18,14 +18,14 @@ namespace FastProjector.Models.Projections
         )
             : base(destinationTypeInformation)
         {
-            _destinationTypeInformation = destinationTypeInformation;
+            _destinationTypeMetadata = destinationTypeInformation;
             _sourceTypeInformation = sourceTypeInformation;
             ValidateMetaData();
         }
 
         private void ValidateMetaData()
         {
-            if (_destinationTypeInformation.GetCollectionType() is not PrimitiveTypeInformation)
+            if (_destinationTypeMetadata.GetCollectionType() is not PrimitiveTypeInformation)
             {
                 throw new ArgumentException("Only Primitive Collections are allowed");
             }
@@ -39,7 +39,7 @@ namespace FastProjector.Models.Projections
         public override ISourceText CreateProjection(IModelMapService mapService, ISourceText parameterName)
         {
             var castResult = mapService.CastType(_sourceTypeInformation,
-                _destinationTypeInformation);
+                _destinationTypeMetadata);
 
             return castResult.IsUnMapable ? null : SourceCreator.CreateSource(castResult.Cast($"{parameterName}"));
         }
