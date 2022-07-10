@@ -44,7 +44,7 @@ namespace FastProjector.Models.Assignments
             );
         }
 
-        public override (TypeMetaData sourceType, TypeMetaData destinationType) GetRequiredMapTypes()
+        public override (ClassTypeMetaData sourceType, ClassTypeMetaData destinationType) GetRequiredMapTypes()
         {
             return _projection.GetRequiredMapTypes();
         }
@@ -53,6 +53,11 @@ namespace FastProjector.Models.Assignments
         {
             base.AddModelMap(modelMap);
             _projection.AddModelMap(modelMap);
+        }
+
+        public override bool HasModelMap()
+        {
+            return _projection.HasModelMap();
         }
     }
 }

@@ -30,8 +30,7 @@ namespace FastProjector.Services
         {
             _mapCache.Add(modelMap);
         }
-
-
+        
         public PropertyCastResult CastType(TypeInformation sourceType,
             TypeInformation destinationType)
         {

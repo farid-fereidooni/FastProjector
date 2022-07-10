@@ -1,5 +1,6 @@
 using System;
 using FastProjector.Contracts;
+using FastProjector.Models.TypeInformations;
 using FastProjector.Models.TypeMetaDatas;
 using SourceCreationHelper;
 using SourceCreationHelper.Interfaces;
@@ -22,7 +23,8 @@ namespace FastProjector.Models.Projections
         public override ISourceText CreateProjection(IModelMapService mapService, ISourceText parameterName)
         {
             if (ModelMap is null)
-                throw new InvalidOperationException("No model map has been passed");
+                return null;
+            
             var projectionParam = SourceCreator.CreateSource(mapService.GetNewProjectionVariableName());
 
             var modelMapSource = ModelMap.CreateMappingSource(mapService, projectionParam);
@@ -45,9 +47,9 @@ namespace FastProjector.Models.Projections
             ModelMap = modelMap;
         }
 
-        public (TypeMetaData sourceType, TypeMetaData destinationType) GetRequiredMapTypes()
+        public (ClassTypeMetaData sourceType, ClassTypeMetaData destinationType) GetRequiredMapTypes()
         {
-            return (_sourceTypeMetaData, _destinationTypeMetadata);
+            return (_sourceTypeMetaData.GetCollectionType() as ClassTypeMetaData, _destinationTypeMetadata.GetCollectionType() as ClassTypeMetaData);
         }
 
         public bool HasModelMap()

@@ -61,9 +61,9 @@ namespace FastProjector.Models.Projections
             
             return collectionType switch
             {
+                GenericClassTypeInformation => new ClassProjection(sourceTypeMetaData, destinationTypeMetadata),
                 ClassTypeInformation => new ClassProjection(sourceTypeMetaData, destinationTypeMetadata),
                 CollectionTypeInformation => NestedProjection.Create(sourceTypeMetaData, destinationTypeMetadata),
-                GenericClassTypeInformation => new ClassProjection(sourceTypeMetaData, destinationTypeMetadata),
                 PrimitiveTypeInformation => new PrimitiveProjection(sourceTypeInformation, destinationTypeInformation),
                 _ => null
             };

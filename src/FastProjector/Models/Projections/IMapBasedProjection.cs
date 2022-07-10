@@ -2,10 +2,9 @@ using FastProjector.Models.TypeMetaDatas;
 
 namespace FastProjector.Models.Projections
 {
-    internal interface IMapBasedProjection: IProjection
+    internal interface IMapBasedProjection: IProjection, IRequireMapData
     {
         public void AddModelMap(ModelMap modelMap);
-        public (TypeMetaData sourceType, TypeMetaData destinationType) GetRequiredMapTypes();
         public bool HasModelMap();
 
     }

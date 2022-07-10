@@ -3,16 +3,21 @@ using FastProjector.Models.TypeMetaDatas;
 
 namespace FastProjector.Models.Assignments
 {
-    internal abstract class MapBasedPropertyAssignments : PropertyAssignment
+    internal abstract class MapBasedPropertyAssignments : PropertyAssignment, IRequireMapData
     {
         protected ModelMap ModelMap { get; set; }
 
-        public abstract (TypeMetaData sourceType, TypeMetaData destinationType) GetRequiredMapTypes();
+        public abstract (ClassTypeMetaData sourceType, ClassTypeMetaData destinationType) GetRequiredMapTypes();
 
         public virtual void AddModelMap(ModelMap modelMap)
         {
             ValidateMap(modelMap);
             ModelMap = modelMap;
+        }
+        
+        public virtual bool HasModelMap()
+        {
+            return ModelMap is not null;
         }
         
         private void ValidateMap(ModelMap modelMap)

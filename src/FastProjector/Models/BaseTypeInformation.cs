@@ -31,7 +31,7 @@ namespace FastProjector.Models
         {
             if (obj is BaseTypeInformation res)
             {
-                return string.Equals(FullName, res.FullName, StringComparison.CurrentCultureIgnoreCase);
+                return string.Equals(FullName, res.FullName, StringComparison.CurrentCultureIgnoreCase) && HasSameGenerics(res);
             }
 
             return false;
@@ -42,7 +42,7 @@ namespace FastProjector.Models
             return FullName.GetHashCode() ^ (GenericTypes != null ? GenericTypes.GetHashCode() : 0);
         }
 
-        public bool HasSameGenerics(TypeInformation typeInfo)
+        public bool HasSameGenerics(BaseTypeInformation typeInfo)
         {
             if (typeInfo.GenericTypes == null && GenericTypes == null)
                 return true;

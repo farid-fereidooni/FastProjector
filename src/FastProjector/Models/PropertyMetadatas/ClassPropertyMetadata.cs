@@ -7,6 +7,8 @@ namespace FastProjector.Models.PropertyMetadatas
     {
         public ClassPropertyMetadata(IPropertySymbol propertySymbol, ClassTypeMetaData typeMetaData) : base(propertySymbol, typeMetaData)
         {
+            TypeMetaData = typeMetaData;
         }
+        public new ClassTypeMetaData TypeMetaData { get; }
     }
 }

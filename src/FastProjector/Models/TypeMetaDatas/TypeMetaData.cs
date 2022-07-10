@@ -40,10 +40,10 @@ namespace FastProjector.Models.TypeMetaDatas
 
             return propertyTypeInformation switch
             {
+                GenericClassTypeInformation genericClassType => null,
                 ClassTypeInformation classType => new ClassTypeMetaData(typeSymbol, classType),
                 ArrayTypeInformation arrayType => new ArrayTypeMetaData(typeSymbol, arrayType),
                 GenericCollectionTypeInformation genericCollectionType => new GenericCollectionTypeMetaData(typeSymbol, genericCollectionType),
-                GenericClassTypeInformation genericClassType => null,
                 PrimitiveTypeInformation primitiveType => new PrimitiveTypeMetaData(typeSymbol, primitiveType),
                 _ => null
             };

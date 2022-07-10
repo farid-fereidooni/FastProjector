@@ -32,32 +32,14 @@ namespace FastProjector.Models.Assignments
             if (cachedMapping is not null)
                 return CreateAssignment(cachedMapping.CreateMappingSource(mapService, fullParamName));
 
-            var sameTypeMap = TryCreateSameTypeMap(mapService);
-            
-            if (sameTypeMap is not null)
-                return CreateAssignment(sameTypeMap.CreateMappingSource(mapService, fullParamName));
-
             var castResult = mapService.CastType(_sourceType.TypeMetaData.TypeInformation,
                 _destinationType.TypeMetaData.TypeInformation);
 
-            if (!castResult.IsUnMapable)
-            {
-                var castedSourceText = SourceCreator.CreateSource(castResult.Cast(fullParamName.Text));
-                return CreateAssignment(castedSourceText);
-            }
-
-            return null;
-        }
-
-        private ModelMap TryCreateSameTypeMap(IModelMapService mapService)
-        {
-            if (!_sourceType.TypeMetaData.TypeInformation.Equals(_destinationType.TypeMetaData.TypeInformation))
-                return null;
+            if (castResult.IsUnMapable) return null;
             
-            var modelMap = new ModelMapMetaData(_sourceType.TypeMetaData.TypeSymbol,
-                _destinationType.TypeMetaData.TypeSymbol).CreateModelMap(mapService);
-            
-            return modelMap.CheckIfMappingPossible() ? modelMap : null;
+            var castedSourceText = SourceCreator.CreateSource(castResult.Cast(fullParamName.Text));
+            return CreateAssignment(castedSourceText);
+
         }
 
         private IAssignmentSourceText CreateAssignment(ISourceText mapSourceText)
@@ -68,7 +50,7 @@ namespace FastProjector.Models.Assignments
             );
         }
 
-        public override (TypeMetaData sourceType, TypeMetaData destinationType) GetRequiredMapTypes()
+        public override (ClassTypeMetaData sourceType, ClassTypeMetaData destinationType) GetRequiredMapTypes()
         {
             return (_sourceType.TypeMetaData, _destinationType.TypeMetaData);
         }

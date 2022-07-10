@@ -10,8 +10,9 @@ using Microsoft.CodeAnalysis;
 using SourceCreationHelper;
 using SourceCreationHelper.Interfaces;
 
-[assembly:InternalsVisibleTo("FastProjector.Test")]
+[assembly: InternalsVisibleTo("FastProjector.Test")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
+
 namespace FastProjector.Models
 {
     internal class ModelMap
@@ -19,23 +20,18 @@ namespace FastProjector.Models
         private readonly ITypeSymbol _sourceSymbol;
         private readonly ITypeSymbol _targetSymbol;
         private readonly IEnumerable<PropertyAssignment> _propertyAssignments;
-   
+
         public ModelMap(ITypeSymbol sourceSymbol, ITypeSymbol targetSymbol, IEnumerable<PropertyAssignment> assignments)
-        {   
+        {
             _sourceSymbol = sourceSymbol;
             _targetSymbol = targetSymbol;
             SourceType = _sourceSymbol.ToTypeInformation();
             DestinationType = _targetSymbol.ToTypeInformation();
             _propertyAssignments = assignments;
-            _notMappedProperties = new List<PropertyAssignment>();
         }
-        
+
         public TypeInformation SourceType { get; }
         public TypeInformation DestinationType { get; }
-
-        private readonly List<PropertyAssignment> _notMappedProperties;
-        public IReadOnlyCollection<PropertyAssignment> NotMappedProperties => _notMappedProperties;
-
 
         public ISourceText CreateMappingSource(IModelMapService mapService, ISourceText parameterName)
         {
@@ -47,10 +43,37 @@ namespace FastProjector.Models
             var assignmentSources = _propertyAssignments
                 .Select(x => x.CreateAssignmentSource(mapService, parameterName))
                 .Where(w => w is not null);
-   
+
             var instantiatingExpression = $"new {DestinationType.FullName} ";
-            
-            return SourceCreator.CreateSource(instantiatingExpression + SourceCreator.CreateMemberInit(assignmentSources).Text);
+
+            return SourceCreator.CreateSource(instantiatingExpression +
+                                              SourceCreator.CreateMemberInit(assignmentSources).Text);
+        }
+
+        public bool RequiresModelMaps()
+        {
+            return _propertyAssignments.Any(assignment =>
+                assignment is MapBasedPropertyAssignments mapBasedPropertyAssignment &&
+                !mapBasedPropertyAssignment.HasModelMap());
+        }
+
+        public void TryResolveRequiredMaps(IMapResolverService mapResolverService)
+        {
+            var mapLessAssignments = _propertyAssignments.Where(assignment =>
+                assignment is MapBasedPropertyAssignments mapBasedPropertyAssignment &&
+                !mapBasedPropertyAssignment.HasModelMap())
+                .Cast<MapBasedPropertyAssignments>();
+
+            foreach (var mapBasedPropertyAssignments in mapLessAssignments)
+            {
+                var requiredMapTypes = mapBasedPropertyAssignments.GetRequiredMapTypes();
+                var requiredMap =
+                    mapResolverService.ResolveMap(requiredMapTypes.sourceType, requiredMapTypes.destinationType);
+
+                if (requiredMap is null) continue;
+                
+                mapBasedPropertyAssignments.AddModelMap(requiredMap);
+            }
         }
 
         public bool CheckIfMappingPossible()
@@ -58,7 +81,6 @@ namespace FastProjector.Models
             return _targetSymbol.IsClass()
                    && _sourceSymbol.IsClass()
                    && _sourceSymbol.HasParameterlessConstructor();
-  
         }
     }
 }

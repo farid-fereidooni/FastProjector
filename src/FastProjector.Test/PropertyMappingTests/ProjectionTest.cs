@@ -3,6 +3,7 @@ using FastProjector.Contracts;
 using FastProjector.Models;
 using FastProjector.Models.Casting;
 using FastProjector.Models.TypeInformations;
+using FastProjector.Models.TypeMetaDatas;
 using FastProjector.Services;
 using FastProjector.Test.Helpers;
 using NSubstitute;
@@ -119,15 +120,21 @@ public class ProjectionTest
                 Arg.Is<TypeInformation>(x => x.FullName.Contains("RoleModel")))
             .Returns(roleModelMap);
 
+        var mapResolverMock = Substitute.For<IMapResolverService>();
+        mapResolverMock.ResolveMap(Arg.Is<ClassTypeMetaData>(a => a.TypeInformation.FullName.Contains("Role")),
+                Arg.Is<ClassTypeMetaData>(x => x.TypeInformation.FullName.Contains("RoleModel")))
+            .Returns(roleModelMap);
+
         var mapServiceMock = new ModelMapService(mapCacheMock, _castingService, _variableNameGenerator);
 
         //Act
         var modelMap = new ModelMapMetaData(userSymbol, userModelSymbol)
             .CreateModelMap(_mapService);
+        modelMap.TryResolveRequiredMaps(mapResolverMock);
         var sourceText = modelMap.CreateMappingSource(mapServiceMock, SourceCreator.CreateSource("a")).Text;
 
         //Assert
-        Assert.Matches(@"Roles = a\.Roles\.Select\(x => new RoleModel { Name = x\.Name }\)".ReplaceSpaceWithAnySpace(),
+        Assert.Matches($@"Roles = a\.Roles\.Select\(\({Anything}\) => new {AnyNamespace}RoleModel {{ Name = {AnyNamespace}Name }} \)".ReplaceSpaceWithAnySpace(),
             sourceText);
     }
 }

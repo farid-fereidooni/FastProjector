@@ -1,15 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using FastProjector.Contracts;
 using FastProjector.Helpers;
 using FastProjector.Models.Assignments;
 using FastProjector.Models.PropertyMetadatas;
-using FastProjector.Models.TypeMetaDatas;
 using Microsoft.CodeAnalysis;
-using SourceCreationHelper;
-using SourceCreationHelper.Interfaces;
 
 namespace FastProjector.Models
 {
@@ -30,11 +25,9 @@ namespace FastProjector.Models
 
             var destinationProps = new HashSet<IPropertySymbol>(GetTargetProperties(), SymbolEqualityComparer.Default);
 
-            var assignments = GetAssignments(sourceProps, destinationProps, mapService).ToList();
+            var assignments = GetAssignments(sourceProps, destinationProps).ToList();
 
             var modelMap = new ModelMap(_sourceSymbol, _targetSymbol, assignments);
-
-            mapService.AddToCache(modelMap);
 
             return modelMap;
         }
@@ -50,7 +43,7 @@ namespace FastProjector.Models
         }
 
         private IEnumerable<PropertyAssignment> GetAssignments(IEnumerable<IPropertySymbol> sourceProperties,
-            HashSet<IPropertySymbol> destinationProperties, IModelMapService modelMapService)
+            HashSet<IPropertySymbol> destinationProperties)
         {
             foreach (var sourceProp in sourceProperties)
             {
@@ -72,37 +65,8 @@ namespace FastProjector.Models
                 if (assignment is null)
                     continue;
 
-                SetModelMapIfAssignmentIsMapBased(assignment as MapBasedPropertyAssignments,
-                    sourceMetadata.TypeMetaData, destinationMetadata.TypeMetaData, modelMapService);
-
                 yield return assignment;
             }
-        }
-
-        private void SetModelMapIfAssignmentIsMapBased(MapBasedPropertyAssignments assignment,
-            TypeMetaData sourceType, TypeMetaData destinationType, IModelMapService mapService)
-        {
-            if (assignment is null)
-                return;
-
-            var modelMap = CreateModelMapOrFetchFromCache(sourceType, destinationType, mapService);
-
-            if (modelMap is null)
-                return;
-
-            assignment.AddModelMap(modelMap);
-        }
-
-        private ModelMap CreateModelMapOrFetchFromCache(TypeMetaData classSource,
-            TypeMetaData destinationType, IModelMapService mapService)
-        {
-            var modelMap = mapService.FetchFromCache(classSource.TypeInformation,
-                destinationType.TypeInformation);
-
-            if (modelMap != null)
-                return modelMap;
-            return new ModelMapMetaData(classSource.TypeSymbol, destinationType.TypeSymbol)
-                .CreateModelMap(mapService);
         }
     }
 }

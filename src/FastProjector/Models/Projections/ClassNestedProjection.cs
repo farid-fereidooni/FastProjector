@@ -21,7 +21,7 @@ namespace FastProjector.Models.Projections
             _innerProjection.AddModelMap(modelMap);
         }
 
-        public (TypeMetaData sourceType, TypeMetaData destinationType) GetRequiredMapTypes()
+        public (ClassTypeMetaData sourceType, ClassTypeMetaData destinationType) GetRequiredMapTypes()
         {
             return _innerProjection.GetRequiredMapTypes();
         }
