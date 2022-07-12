@@ -11,25 +11,20 @@ namespace FastProjector.Models.Assignments
     internal class PrimitiveCollectionPropertyAssignment : PropertyAssignment
     {
         private readonly IProjection _projection;
-        private readonly CollectionPropertyMetadata _destinationType;
+        private readonly CollectionPropertyMetadata _destinationMetaData;
 
         public PrimitiveCollectionPropertyAssignment(IProjection projection,
-            CollectionPropertyMetadata destinationType)
+            CollectionPropertyMetadata destinationMetaData)
         {
-            if (destinationType.TypeMetaData.GetCollectionType() is not PrimitiveTypeMetaData)
-            {
-                throw new ArgumentException($"{nameof(destinationType)} is not valid type");
-            }
-
             _projection = projection;
-            _destinationType = destinationType;
+            _destinationMetaData = destinationMetaData;
         }
 
         public override IAssignmentSourceText CreateAssignmentSource(IModelMapService mapService,
             ISourceText parameterName)
         {
             var rightPartOfAssignmentParameterName =
-                SourceCreator.CreateSource($"{parameterName}.{_destinationType.PropertyName}");
+                SourceCreator.CreateSource($"{parameterName}.{_destinationMetaData.PropertyName}");
 
             var projection = _projection.CreateProjection(mapService, rightPartOfAssignmentParameterName);
 
@@ -39,7 +34,7 @@ namespace FastProjector.Models.Assignments
             }
 
             return SourceCreator.CreateAssignment(
-                SourceCreator.CreateSource(_destinationType.PropertyName),
+                SourceCreator.CreateSource(_destinationMetaData.PropertyName),
                 projection
             );
         }

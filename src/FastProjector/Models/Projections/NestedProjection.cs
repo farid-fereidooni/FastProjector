@@ -1,5 +1,6 @@
 using System;
 using FastProjector.Contracts;
+using FastProjector.Models.Assignments;
 using FastProjector.Models.PropertyMetadatas;
 using FastProjector.Models.TypeInformations;
 using FastProjector.Models.TypeMetaDatas;
@@ -25,6 +26,9 @@ namespace FastProjector.Models.Projections
 
             var nestedProjectionSource = _innerProjection.CreateProjection(mapService, projectionParameterName);
 
+            if (nestedProjectionSource is null)
+                return null;
+
             var projectionSource = CreateSelectExpression(projectionParameterName.Text, nestedProjectionSource);
 
             var enumerableCastInfo = CreateIEnumerableCasting(mapService);
@@ -34,20 +38,21 @@ namespace FastProjector.Models.Projections
 
             return SourceCreator.CreateSource(
                 enumerableCastInfo.Cast($"{parameterName}.{projectionSource}"));
-            
         }
 
         public new static NestedProjection Create(CollectionTypeMetaData sourceTypeMetaData,
             CollectionTypeMetaData destinationTypeMetaData)
         {
-            var innerProjection = Projection.Create(sourceTypeMetaData, destinationTypeMetaData);
+            var innerProjection = Projection.Create(sourceTypeMetaData.GetCollectionType() as CollectionTypeMetaData,
+                destinationTypeMetaData.GetCollectionType() as CollectionTypeMetaData);
 
-            if (innerProjection.GetType().IsSubclassOf(typeof(IMapBasedProjection)))
+            if (innerProjection is IMapBasedProjection mapBasedProjection)
             {
-                return new ClassNestedProjection(innerProjection as IMapBasedProjection, destinationTypeMetaData.TypeInformation);
+                return new ClassNestedProjection(mapBasedProjection,
+                    destinationTypeMetaData.TypeInformation);
             }
+
             return new PrimitiveNestedProjection(innerProjection, destinationTypeMetaData.TypeInformation);
         }
-
     }
 }

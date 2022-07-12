@@ -16,11 +16,6 @@ namespace FastProjector.Models.Assignments
         public ClassCollectionPropertyAssignment(IMapBasedProjection projection,
             CollectionPropertyMetadata destinationType)
         {
-            if (destinationType.TypeMetaData.GetCollectionType() is not ClassTypeMetaData)
-            {
-                throw new ArgumentException($"{nameof(destinationType)} is not valid type");
-            }
-
             _projection = projection;
             _destinationType = destinationType;
         }
