@@ -30,8 +30,8 @@ namespace FastProjector.Services
         {
             var result = new PropertyCastResult()
             {
-                SourceProperyTypeInfo = sourceProp,
-                DestinationProperyTypeInfo = destinationProp,
+                SourcePropertyTypeInfo = sourceProp,
+                DestinationPropertyTypeInfo = destinationProp,
             };
 
             if (sourceProp.HasSameCategory(destinationProp))
@@ -40,7 +40,7 @@ namespace FastProjector.Services
                 if (sourceProp is CollectionTypeInformation collectionType &&
                     !collectionType.HasSameCollectionType(destinationProp as CollectionTypeInformation))
                 {
-                    result.IsUnMapable = true;
+                    result.IsUnMappable = true;
                     result.Cast = null;
                     return result;
                 }
@@ -49,13 +49,13 @@ namespace FastProjector.Services
 
                 if (castingFunc != null)
                 {
-                    result.IsUnMapable = false;
+                    result.IsUnMappable = false;
                     result.Cast = castingFunc;
                     return result;
                 }
             }
 
-            result.IsUnMapable = true;
+            result.IsUnMappable = true;
             result.Cast = null;
             return result;
         }

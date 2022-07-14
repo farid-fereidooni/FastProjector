@@ -33,7 +33,7 @@ namespace FastProjector.Models.Projections
 
             var enumerableCastInfo = CreateIEnumerableCasting(mapService);
 
-            if (enumerableCastInfo.IsUnMapable)
+            if (enumerableCastInfo.IsUnMappable)
                 return null;
 
             return SourceCreator.CreateSource(

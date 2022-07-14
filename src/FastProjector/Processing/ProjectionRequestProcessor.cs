@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using FastProjector.Analyzing;
 using FastProjector.Contracts;
 using FastProjector.Models;
-using FastProjector.Models.Assignments;
 
 namespace FastProjector.Processing
 {
@@ -38,12 +37,7 @@ namespace FastProjector.Processing
 
             return CreateAllMappingSource(mappings);
         }
-
-        private IEnumerable<PropertyAssignment> CreateOrFetchFromCacheAssignments(IEnumerable<PropertyMapMetaData> assignableProperties)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public string CreateAllMappingSource(List<ModelMap> mappings)
         {
             throw new NotImplementedException();

@@ -29,7 +29,7 @@ namespace FastProjector.Models.Assignments
             var castResult = mapService.CastType(_sourceType.TypeMetaData.TypeInformation,
                 _destinationType.TypeMetaData.TypeInformation);
 
-            if (castResult.IsUnMapable) return null;
+            if (castResult.IsUnMappable) return null;
             
             var castedSourceText = SourceCreator.CreateSource(castResult.Cast(fullParamName.Text));
             return CreateAssignment(castedSourceText);

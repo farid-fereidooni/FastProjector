@@ -2,10 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FastProjector.Helpers;
-using FastProjector.Models.TypeInformations;
 using Microsoft.CodeAnalysis;
 
-namespace FastProjector.Models
+namespace FastProjector.Models.TypeInformations
 {
     internal abstract class BaseTypeInformation
     {

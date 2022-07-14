@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 using FastProjector.Analyzing;
 using FastProjector.Contracts;
-using FastProjector.DevTools;
+using FastProjector.Helpers;
 using FastProjector.Ioc;
-using FastProjector.Processing;
-using FastProjector.Services;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
@@ -28,30 +25,21 @@ namespace FastProjector
 
         public void Execute(GeneratorExecutionContext context)
         {        
-            try {
-                if(context.SyntaxReceiver is not ProjectionSyntaxReceiver projectionSyntaxReceiver)
-                    return;
+          
+            if(context.SyntaxReceiver is not ProjectionSyntaxReceiver projectionSyntaxReceiver)
+                return;
 
-                if (!projectionSyntaxReceiver.ProjectionCandidates.NotNullAny()) return;
-                
-                var requests = new List<ProjectionRequest>();
-                foreach (var projectionCandidate in projectionSyntaxReceiver.ProjectionCandidates)
-                {
-                    try {
-                        requests.Add(SymbolDetector.AnalyzeProjectionCandidates(projectionCandidate, context));
-                    }
-                    catch (ArgumentException)
-                    { }
-                }
-                
-                var finalSource = _requestProcessor.ProcessProjectionRequest(requests);
-                context.AddSource("Projections.cs", SourceText.From(finalSource, Encoding.UTF8));
+            if (!projectionSyntaxReceiver.ProjectionCandidates.NotNullAny()) return;
+            
+            var requests = new List<ProjectionRequest>();
+            foreach (var projectionCandidate in projectionSyntaxReceiver.ProjectionCandidates)
+            {
+                requests.AddRange(SymbolDetector.AnalyzeProjectionCandidates(projectionCandidate, context));
             }
-            catch (Exception ex) {
-                Logger.Log(ex.Message);
-                Logger.Log(ex.StackTrace);
-                throw;
-            }
+            
+            var finalSource = _requestProcessor.ProcessProjectionRequest(requests);
+            context.AddSource("Projections.cs", SourceText.From(finalSource, Encoding.UTF8));
+            
 
         }
 
@@ -72,11 +60,7 @@ namespace FastProjector
             #endif
             */
             
-           // Logger.RemoveFile();
-            Logger.Log("started");
             context.RegisterForSyntaxNotifications(() => new ProjectionSyntaxReceiver());
         }
-   
     }
- 
 }

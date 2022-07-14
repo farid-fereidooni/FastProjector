@@ -111,7 +111,7 @@ public class CastTest
         var castResult = _castingService.CastType(listAType, listBType);
 
         //Assert
-        Assert.False(castResult.IsUnMapable);
+        Assert.False(castResult.IsUnMappable);
         Assert.Equal("any.ToList()",castResult.Cast("any"));
     }
     
@@ -142,7 +142,7 @@ public class CastTest
         var castResult = _castingService.CastType(listAType, listBType);
 
         //Assert
-        Assert.False(castResult.IsUnMapable);
+        Assert.False(castResult.IsUnMappable);
         Assert.Equal("any.ToArray()",castResult.Cast("any"));
     }
     
@@ -174,7 +174,7 @@ public class CastTest
         var castResult = _castingService.CastType(listAType, listBType);
 
         //Assert
-        Assert.False(castResult.IsUnMapable);
+        Assert.False(castResult.IsUnMappable);
         Assert.Equal("any.ToList()",castResult.Cast("any"));
     }
 }

@@ -41,7 +41,7 @@ namespace FastProjector.Models.Projections
             var castResult = mapService.CastType(_sourceTypeInformation,
                 _destinationTypeMetadata);
 
-            return castResult.IsUnMapable ? null : SourceCreator.CreateSource(castResult.Cast($"{parameterName}"));
+            return castResult.IsUnMappable ? null : SourceCreator.CreateSource(castResult.Cast($"{parameterName}"));
         }
     }
 }

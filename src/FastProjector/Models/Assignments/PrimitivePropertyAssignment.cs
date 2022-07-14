@@ -31,7 +31,7 @@ namespace FastProjector.Models.Assignments
             var castResult = mapService.CastType(_sourceType.TypeMetaData.TypeInformation,
                                                      _destinationType.TypeMetaData.TypeInformation);
             
-            if(!castResult.IsUnMapable)
+            if(!castResult.IsUnMappable)
                 return SourceCreator.CreateAssignment(
                     SourceCreator.CreateSource(_destinationType.PropertyName),
                     SourceCreator.CreateSource(castResult.Cast($"{parameterName}.{_sourceType.PropertyName}"))

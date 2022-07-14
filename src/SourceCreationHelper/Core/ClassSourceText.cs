@@ -23,7 +23,8 @@ namespace SourceCreationHelper.Core
         protected override string BuildSource()
         {
             var sourceStringBuilder = new StringBuilder();
-            sourceStringBuilder.AppendLine($"{_accessModifier} {(_isStatic? "static": (_isVirtual? "virtual" : ""))} class {Name}");
+            var virtualExpression = _isVirtual ? "virtual" : "";
+            sourceStringBuilder.AppendLine($"{_accessModifier} {(_isStatic? "static": virtualExpression)} class {Name}");
             sourceStringBuilder.AppendLine("{");
             foreach(var memberItem in _members)
             {

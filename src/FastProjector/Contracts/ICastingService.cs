@@ -1,4 +1,5 @@
 using FastProjector.Models;
+using FastProjector.Models.Casting;
 using FastProjector.Models.TypeInformations;
 
 namespace FastProjector.Contracts
