@@ -4,6 +4,7 @@ using FastProjector.Helpers;
 using FastProjector.Models;
 using FastProjector.Models.Casting;
 using FastProjector.Models.TypeInformations;
+using FastProjector.Repositories;
 using FastProjector.Services;
 using FastProjector.Test.Helpers;
 using SourceCreationHelper;
@@ -21,7 +22,7 @@ public class CastTest
     public CastTest()
     {
         _castingService = new CastingService(DefaultCastingConfigurations.GetConfigurations());
-        _mapService = new ModelMapService(new MapCache(),_castingService , new VariableNameGenerator());
+        _mapService = new ModelMapService(new MapRepository(),_castingService , new VariableNameGenerator());
     }
     
     

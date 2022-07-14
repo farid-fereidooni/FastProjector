@@ -6,10 +6,10 @@ namespace FastProjector.Services
 {
     internal class MapResolverService: IMapResolverService
     {
-        private readonly IMapCache _mapCache;
+        private readonly IMapRepository _mapCache;
         private readonly IModelMapService _mapService;
 
-        public MapResolverService(IMapCache mapCache, IModelMapService mapService)
+        public MapResolverService(IMapRepository mapCache, IModelMapService mapService)
         {
             _mapCache = mapCache;
             _mapService = mapService;

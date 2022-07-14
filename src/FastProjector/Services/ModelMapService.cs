@@ -9,11 +9,11 @@ namespace FastProjector.Services
 {
     internal class ModelMapService : IModelMapService
     {
-        private readonly IMapCache _mapCache;
+        private readonly IMapRepository _mapCache;
         private readonly ICastingService _castingService;
         private readonly IVariableNameGenerator _nameGenerator;
 
-        public ModelMapService(IMapCache mapCache, ICastingService castingService, IVariableNameGenerator nameGenerator)
+        public ModelMapService(IMapRepository mapCache, ICastingService castingService, IVariableNameGenerator nameGenerator)
         {
             _mapCache = mapCache;
             _castingService = castingService;
@@ -26,11 +26,6 @@ namespace FastProjector.Services
             return _mapCache.Get(sourceType, destinationType);
         }
 
-        public void AddToCache(ModelMap modelMap)
-        {
-            _mapCache.Add(modelMap);
-        }
-        
         public PropertyCastResult CastType(TypeInformation sourceType,
             TypeInformation destinationType)
         {

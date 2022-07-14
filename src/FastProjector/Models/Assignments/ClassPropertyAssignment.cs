@@ -26,12 +26,6 @@ namespace FastProjector.Models.Assignments
             if (ModelMap is not null)
                 return CreateAssignment(ModelMap.CreateMappingSource(mapService, fullParamName));
             
-            var cachedMapping = mapService.FetchFromCache(_sourceType.TypeMetaData.TypeInformation,
-                _destinationType.TypeMetaData.TypeInformation);
-
-            if (cachedMapping is not null)
-                return CreateAssignment(cachedMapping.CreateMappingSource(mapService, fullParamName));
-
             var castResult = mapService.CastType(_sourceType.TypeMetaData.TypeInformation,
                 _destinationType.TypeMetaData.TypeInformation);
 
@@ -39,7 +33,6 @@ namespace FastProjector.Models.Assignments
             
             var castedSourceText = SourceCreator.CreateSource(castResult.Cast(fullParamName.Text));
             return CreateAssignment(castedSourceText);
-
         }
 
         private IAssignmentSourceText CreateAssignment(ISourceText mapSourceText)

@@ -2,6 +2,7 @@ using FastProjector.Contracts;
 using FastProjector.Models;
 using FastProjector.Models.Casting;
 using FastProjector.Models.TypeMetaDatas;
+using FastProjector.Repositories;
 using FastProjector.Services;
 using FastProjector.Test.Helpers;
 using NSubstitute;
@@ -18,7 +19,7 @@ public class BindTest
 
     public BindTest()
     {
-        _mapService = new ModelMapService(new MapCache(),
+        _mapService = new ModelMapService(new MapRepository(),
             new CastingService(DefaultCastingConfigurations.GetConfigurations()), new VariableNameGenerator());
     }
 

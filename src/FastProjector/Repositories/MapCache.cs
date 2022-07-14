@@ -5,15 +5,14 @@ using FastProjector.Contracts;
 using FastProjector.Helpers;
 using FastProjector.Models;
 using FastProjector.Models.TypeInformations;
-using SourceCreationHelper.Interfaces;
 
-namespace FastProjector.Services
+namespace FastProjector.Repositories
 {
-    internal class MapCache: IMapCache
+    internal class MapRepository: IMapRepository
     {
         private readonly Dictionary<string, Dictionary<string, ModelMap>> _cachedMapMetaData;
 
-        public MapCache()
+        public MapRepository()
         {
             _cachedMapMetaData = new Dictionary<string, Dictionary<string, ModelMap>>();
         }

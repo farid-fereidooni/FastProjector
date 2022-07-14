@@ -4,6 +4,7 @@ using FastProjector.Models;
 using FastProjector.Models.Casting;
 using FastProjector.Models.TypeInformations;
 using FastProjector.Models.TypeMetaDatas;
+using FastProjector.Repositories;
 using FastProjector.Services;
 using FastProjector.Test.Helpers;
 using NSubstitute;
@@ -26,7 +27,7 @@ public class ProjectionTest
     {
         _variableNameGenerator = new VariableNameGenerator();
         _castingService = new CastingService(DefaultCastingConfigurations.GetConfigurations());
-        _mapService = new ModelMapService(new MapCache(), _castingService, _variableNameGenerator);
+        _mapService = new ModelMapService(new MapRepository(), _castingService, _variableNameGenerator);
     }
 
     [Theory]
@@ -115,7 +116,7 @@ public class ProjectionTest
 
         var roleModelMap = new ModelMapMetaData(roleSymbol, roleModelSymbol).CreateModelMap(_mapService);
 
-        var mapCacheMock = Substitute.For<IMapCache>();
+        var mapCacheMock = Substitute.For<IMapRepository>();
         mapCacheMock.Get(Arg.Is<TypeInformation>(a => a.FullName.Contains("Role")),
                 Arg.Is<TypeInformation>(x => x.FullName.Contains("RoleModel")))
             .Returns(roleModelMap);
@@ -195,7 +196,7 @@ public class ProjectionTest
 
         var roleModelMap = new ModelMapMetaData(roleSymbol, roleModelSymbol).CreateModelMap(_mapService);
 
-        var mapCacheMock = Substitute.For<IMapCache>();
+        var mapCacheMock = Substitute.For<IMapRepository>();
         mapCacheMock.Get(Arg.Is<TypeInformation>(a => a.FullName.Contains("Role")),
                 Arg.Is<TypeInformation>(x => x.FullName.Contains("RoleModel")))
             .Returns(roleModelMap);
