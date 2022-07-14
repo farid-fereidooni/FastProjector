@@ -17,17 +17,15 @@ namespace FastProjector.Models
 {
     internal class ModelMap
     {
-        private readonly ITypeSymbol _sourceSymbol;
-        private readonly ITypeSymbol _targetSymbol;
+        private readonly ModelMapMetaData _modelMapMetaData;
         private readonly IEnumerable<PropertyAssignment> _propertyAssignments;
 
-        public ModelMap(ITypeSymbol sourceSymbol, ITypeSymbol targetSymbol, IEnumerable<PropertyAssignment> assignments)
+        public ModelMap(ModelMapMetaData modelMapMetaData)
         {
-            _sourceSymbol = sourceSymbol;
-            _targetSymbol = targetSymbol;
-            SourceType = _sourceSymbol.ToTypeInformation();
-            DestinationType = _targetSymbol.ToTypeInformation();
-            _propertyAssignments = assignments;
+            _modelMapMetaData = modelMapMetaData;
+            SourceType = _modelMapMetaData.SourceTypeInformation;
+            DestinationType = _modelMapMetaData.DestinationTypeInformation;
+            _propertyAssignments = modelMapMetaData.CreateAssignments();
         }
 
         public TypeInformation SourceType { get; }
@@ -35,7 +33,7 @@ namespace FastProjector.Models
 
         public ISourceText CreateMappingSource(IModelMapService mapService, ISourceText parameterName)
         {
-            if (!CheckIfMappingPossible())
+            if (!_modelMapMetaData.CheckIfMappingPossible())
             {
                 throw new InvalidOperationException("Mapping was not possible for the requested types");
             }
@@ -76,11 +74,6 @@ namespace FastProjector.Models
             }
         }
 
-        public bool CheckIfMappingPossible()
-        {
-            return _targetSymbol.IsClass()
-                   && _sourceSymbol.IsClass()
-                   && _sourceSymbol.HasParameterlessConstructor();
-        }
+      
     }
 }

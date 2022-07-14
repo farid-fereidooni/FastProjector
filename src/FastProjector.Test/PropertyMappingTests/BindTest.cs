@@ -42,8 +42,7 @@ public class BindTest
         var productModelSymbol = compilation.GetClassSymbol("ProductModel");
 
         //Act
-        var modelMap = new ModelMapMetaData(productSymbol, productModelSymbol)
-            .CreateModelMap(_mapService);
+        var modelMap = new ModelMap(new ModelMapMetaData(productSymbol, productModelSymbol));
         var sourceText = modelMap.CreateMappingSource(_mapService, SourceCreator.CreateSource("a")).Text;
 
         //Assert
@@ -68,8 +67,7 @@ public class BindTest
         var productModelSymbol = compilation.GetClassSymbol("ProductModel");
 
         //Act
-        var source = new ModelMapMetaData(productSymbol, productModelSymbol)
-            .CreateModelMap(_mapService)
+        var source = new ModelMap(new ModelMapMetaData(productSymbol, productModelSymbol))
             .CreateMappingSource(_mapService, SourceCreator.CreateSource("a"));
 
         //Assert
@@ -99,7 +97,7 @@ public class BindTest
         var productModelSymbol = compilation.GetClassSymbol("ProductModel");
         var categorySymbol = compilation.GetClassSymbol("Category");
 
-        var categoryModelMap = new ModelMapMetaData(categorySymbol, categorySymbol).CreateModelMap(_mapService);
+        var categoryModelMap = new ModelMap(new ModelMapMetaData(categorySymbol, categorySymbol));
 
         var mapResolverMock = Substitute.For<IMapResolverService>();
         mapResolverMock.ResolveMap(Arg.Is<ClassTypeMetaData>(a => a.TypeInformation.FullName.Contains("Category")),
@@ -107,8 +105,7 @@ public class BindTest
             .Returns(categoryModelMap);
 
         //Act
-        var modelMap = new ModelMapMetaData(productSymbol, productModelSymbol)
-            .CreateModelMap(_mapService);
+        var modelMap = new ModelMap(new ModelMapMetaData(productSymbol, productModelSymbol));
 
         modelMap.TryResolveRequiredMaps(mapResolverMock);
 

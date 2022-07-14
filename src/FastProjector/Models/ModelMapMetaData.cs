@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using FastProjector.Contracts;
 using FastProjector.Helpers;
 using FastProjector.Models.Assignments;
 using FastProjector.Models.PropertyMetadatas;
+using FastProjector.Models.TypeInformations;
 using Microsoft.CodeAnalysis;
 
 namespace FastProjector.Models
@@ -19,25 +19,30 @@ namespace FastProjector.Models
             _targetSymbol = targetSymbol;
         }
 
-        public ModelMap CreateModelMap(IModelMapService mapService)
+        public TypeInformation SourceTypeInformation => _sourceSymbol.ToTypeInformation();
+        public TypeInformation DestinationTypeInformation => _targetSymbol.ToTypeInformation();
+
+        public IEnumerable<PropertyAssignment> CreateAssignments()
         {
             var sourceProps = GetSourceProperties();
 
             var destinationProps = new HashSet<IPropertySymbol>(GetTargetProperties(), SymbolEqualityComparer.Default);
+            
+            return GetAssignments(sourceProps, destinationProps).ToList();
 
-            var assignments = GetAssignments(sourceProps, destinationProps).ToList();
-
-            var modelMap = new ModelMap(_sourceSymbol, _targetSymbol, assignments);
-
-            return modelMap;
         }
-
-        public IEnumerable<IPropertySymbol> GetSourceProperties()
+        public bool CheckIfMappingPossible()
+        {
+            return _targetSymbol.IsClass()
+                   && _sourceSymbol.IsClass()
+                   && _sourceSymbol.HasParameterlessConstructor();
+        }
+        private IEnumerable<IPropertySymbol> GetSourceProperties()
         {
             return _sourceSymbol.ExtractProps().Where(w => w.IsPublic());
         }
 
-        public IEnumerable<IPropertySymbol> GetTargetProperties()
+        private IEnumerable<IPropertySymbol> GetTargetProperties()
         {
             return _targetSymbol.ExtractProps().Where(w => w.IsSettable());
         }
@@ -68,5 +73,6 @@ namespace FastProjector.Models
                 yield return assignment;
             }
         }
+
     }
 }

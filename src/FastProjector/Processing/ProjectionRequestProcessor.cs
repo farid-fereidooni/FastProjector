@@ -11,10 +11,14 @@ namespace FastProjector.Processing
     internal class ProjectionRequestProcessor : IProjectionRequestProcessor
     {
         private readonly IModelMapService _mapService;
+        private readonly IMapRepository _mapRepository;
+        private readonly IMapResolverService _mapResolverService;
 
-        public ProjectionRequestProcessor(IModelMapService mapService)
+        public ProjectionRequestProcessor(IModelMapService mapService, IMapRepository mapRepository, IMapResolverService mapResolverService)
         {
             _mapService = mapService;
+            _mapRepository = mapRepository;
+            _mapResolverService = mapResolverService;
         }
         public string ProcessProjectionRequest(IEnumerable<ProjectionRequest> requests)
         {
@@ -22,12 +26,14 @@ namespace FastProjector.Processing
             
             foreach(var item in requests)
             {
-                //TODO: check if already done
                 var modelMetadata = new ModelMapMetaData(item.ProjectionSource, item.ProjectionTarget);
+                
+                if(_mapRepository.Exists(modelMetadata.SourceTypeInformation, modelMetadata.DestinationTypeInformation))
+                    continue;
+                
+                var mapping = new ModelMap(modelMetadata);
 
-                var mapping = modelMetadata.CreateModelMap(_mapService);
-   
-                mappings.Add(mapping);
+                _mapRepository.Add(mapping);
             }
 
             return CreateAllMappingSource(mappings);

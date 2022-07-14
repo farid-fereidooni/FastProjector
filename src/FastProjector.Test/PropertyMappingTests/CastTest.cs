@@ -48,8 +48,7 @@ public class CastTest
         var productModelSymbol = compilation.GetClassSymbol("ProductModel");
         
         //Act
-        var modelMap = new ModelMapMetaData(productSymbol, productModelSymbol)
-            .CreateModelMap(_mapService);
+        var modelMap = new ModelMap(new ModelMapMetaData(productSymbol, productModelSymbol));
         
         //Assert
         Assert.Matches($@"Price = {AnyNamespace}Price.ToString()".ReplaceSpaceWithAnySpace(), 
@@ -76,8 +75,7 @@ public class CastTest
         var productModelSymbol = compilation.GetClassSymbol("ProductModel");
         
         //Act
-        var modelMap = new ModelMapMetaData(productSymbol, productModelSymbol)
-            .CreateModelMap(_mapService);
+        var modelMap = new ModelMap(new ModelMapMetaData(productSymbol, productModelSymbol));
         
         //Assert
         Assert.Matches($@"Price = \(int\){AnyNamespace}Price".ReplaceSpaceWithAnySpace(),

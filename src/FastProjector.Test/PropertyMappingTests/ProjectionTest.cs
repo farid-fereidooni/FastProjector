@@ -51,8 +51,8 @@ public class ProjectionTest
         var userModelSymbol = compilation.GetClassSymbol("UserModel");
 
         //Act
-        var modelMap = new ModelMapMetaData(userSymbol, userModelSymbol)
-            .CreateModelMap(_mapService);
+        var modelMap = new ModelMap(new ModelMapMetaData(userSymbol, userModelSymbol));
+        
         var sourceText = modelMap.CreateMappingSource(_mapService, SourceCreator.CreateSource("a")).Text;
 
         //Assert
@@ -80,8 +80,8 @@ public class ProjectionTest
         var userModelSymbol = compilation.GetClassSymbol("UserModel");
 
         //Act
-        var modelMap = new ModelMapMetaData(userSymbol, userModelSymbol)
-            .CreateModelMap(_mapService);
+        var modelMap = new ModelMap(new ModelMapMetaData(userSymbol, userModelSymbol));
+        
         var sourceText = modelMap.CreateMappingSource(_mapService, SourceCreator.CreateSource("a")).Text;
 
         //Assert
@@ -114,7 +114,7 @@ public class ProjectionTest
         var roleSymbol = compilation.GetClassSymbol("Role");
         var roleModelSymbol = compilation.GetClassSymbol("RoleModel");
 
-        var roleModelMap = new ModelMapMetaData(roleSymbol, roleModelSymbol).CreateModelMap(_mapService);
+        var roleModelMap = new ModelMap(new ModelMapMetaData(roleSymbol, roleModelSymbol));
 
         var mapCacheMock = Substitute.For<IMapRepository>();
         mapCacheMock.Get(Arg.Is<TypeInformation>(a => a.FullName.Contains("Role")),
@@ -129,8 +129,7 @@ public class ProjectionTest
         var mapServiceMock = new ModelMapService(mapCacheMock, _castingService, _variableNameGenerator);
 
         //Act
-        var modelMap = new ModelMapMetaData(userSymbol, userModelSymbol)
-            .CreateModelMap(_mapService);
+        var modelMap = new ModelMap(new ModelMapMetaData(userSymbol, userModelSymbol));
         modelMap.TryResolveRequiredMaps(mapResolverMock);
         var sourceText = modelMap.CreateMappingSource(mapServiceMock, SourceCreator.CreateSource("a")).Text;
 
@@ -158,8 +157,7 @@ public class ProjectionTest
         var userModelSymbol = compilation.GetClassSymbol("UserModel");
 
         //Act
-        var modelMap = new ModelMapMetaData(userSymbol, userModelSymbol)
-            .CreateModelMap(_mapService);
+        var modelMap = new ModelMap(new ModelMapMetaData(userSymbol, userModelSymbol));
         var sourceText = modelMap.CreateMappingSource(_mapService, SourceCreator.CreateSource("a")).Text;
 
         //Assert
@@ -194,7 +192,7 @@ public class ProjectionTest
         var roleSymbol = compilation.GetClassSymbol("Role");
         var roleModelSymbol = compilation.GetClassSymbol("RoleModel");
 
-        var roleModelMap = new ModelMapMetaData(roleSymbol, roleModelSymbol).CreateModelMap(_mapService);
+        var roleModelMap = new ModelMap(new ModelMapMetaData(roleSymbol, roleModelSymbol));
 
         var mapCacheMock = Substitute.For<IMapRepository>();
         mapCacheMock.Get(Arg.Is<TypeInformation>(a => a.FullName.Contains("Role")),
@@ -210,8 +208,7 @@ public class ProjectionTest
 
 
         //Act
-        var modelMap = new ModelMapMetaData(userSymbol, userModelSymbol)
-            .CreateModelMap(_mapService);
+        var modelMap = new ModelMap(new ModelMapMetaData(userSymbol, userModelSymbol));
 
         modelMap.TryResolveRequiredMaps(mapResolverMock);
         var sourceText = modelMap.CreateMappingSource(mapServiceMock, SourceCreator.CreateSource("a")).Text;

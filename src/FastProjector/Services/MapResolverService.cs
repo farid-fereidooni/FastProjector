@@ -6,25 +6,23 @@ namespace FastProjector.Services
 {
     internal class MapResolverService: IMapResolverService
     {
-        private readonly IMapRepository _mapCache;
-        private readonly IModelMapService _mapService;
+        private readonly IMapRepository _mapRepository;
 
-        public MapResolverService(IMapRepository mapCache, IModelMapService mapService)
+        public MapResolverService(IMapRepository mapRepository)
         {
-            _mapCache = mapCache;
-            _mapService = mapService;
+            _mapRepository = mapRepository;
         }
         
         public ModelMap ResolveMap(ClassTypeMetaData sourceType, ClassTypeMetaData destinationType)
         {
-            var cachedMap = _mapCache.Get(sourceType.TypeInformation, destinationType.TypeInformation);
+            var cachedMap = _mapRepository.Get(sourceType.TypeInformation, destinationType.TypeInformation);
             if (cachedMap is not null)
                 return cachedMap;
 
             if (sourceType.TypeInformation.Equals(destinationType.TypeInformation))
             {
-               return new ModelMapMetaData(sourceType.TypeSymbol, destinationType.TypeSymbol)
-                    .CreateModelMap(_mapService);
+                var modelMapMetadata = new ModelMapMetaData(sourceType.TypeSymbol, destinationType.TypeSymbol);
+               return new ModelMap(modelMapMetadata);
             }
 
             return null;
