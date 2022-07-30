@@ -6,39 +6,39 @@ namespace SourceCreationHelper.Core
 {   
     internal class MethodSourceText: SourceTextBase, IMethodSourceText
     {
-        private readonly AccessModifier accessModifier;
-        private readonly string returnType;
-        private readonly string name;
-        private readonly IEnumerable<string> parameters;
-        private readonly bool isStatic;
-        private readonly bool isVirtual;
-        private readonly bool isAsync;
-        private readonly List<ISourceText> members;
+        private readonly AccessModifier _accessModifier;
+        private readonly string _returnType;
+        private readonly string _name;
+        private readonly List<string> _parameters;
+        private readonly List<ISourceText> _members;
+        private bool _isStatic;
+        private bool _isVirtual;
+        private bool _isAsync;
 
-        public MethodSourceText(AccessModifier accessModifier, string returnType, string name, IEnumerable<string> parameters, bool isStatic = false, bool isVirtual = false, bool isAsync = false)
+        public MethodSourceText(AccessModifier accessModifier, string returnType, string name)
         {
-            this.accessModifier = accessModifier;
-            this.returnType = returnType;
-            this.name = name;
-            this.parameters = parameters;
-            this.isStatic = isStatic;
-            this.isVirtual = isVirtual;
-            this.isAsync = isAsync;
-            members = new List<ISourceText>();
+            _accessModifier = accessModifier;
+            _returnType = returnType;
+            _name = name;
+            _isStatic = false;
+            _isVirtual = false;
+            _isAsync = false;
+            _parameters = new List<string>();
+            _members = new List<ISourceText>();
         }
 
         protected override string BuildSource()
         {
              var sourceStringBuilder = new StringBuilder();
-            sourceStringBuilder.AppendLine($"{accessModifier} {(isAsync? "async " : "" )}{(isStatic? "static": (isVirtual? "virtual" : ""))} {returnType} {name}");
+            sourceStringBuilder.AppendLine($"{_accessModifier} {(_isAsync? "async " : "" )}{(_isStatic? "static": (_isVirtual? "virtual" : ""))} {_returnType} {_name}");
             sourceStringBuilder.Append("(");
-            if(parameters.NotNullAny())
+            if(_parameters.NotNullAny())
             {
-                sourceStringBuilder.Append(string.Join(", ", parameters));
+                sourceStringBuilder.Append(string.Join(", ", _parameters));
             }
             sourceStringBuilder.Append(")");
             sourceStringBuilder.AppendLine("{");
-            foreach(var memberItem in members)
+            foreach(var memberItem in _members)
             {
                 sourceStringBuilder.Append(memberItem.Text);
             }
@@ -46,15 +46,40 @@ namespace SourceCreationHelper.Core
             return sourceStringBuilder.ToString();
         }
 
+        public IMethodSourceText SetAsStatic(bool isStatic = true)
+        {
+            _isStatic = isStatic;
+            return this;
+        }
+        
+        public IMethodSourceText SetAsVirtual(bool isVirtual = true)
+        {
+            _isVirtual = isVirtual;
+            return this;
+        }
+        
+        public IMethodSourceText SetAsAsync(bool isAsync = true)
+        {
+            _isAsync = isAsync;
+            return this;
+        }
+
+        
+        public IMethodSourceText AddParameter(string type, string name)
+        {
+            _parameters.Add($"{type} {name}");
+            return this;
+        }
+
         public IMethodSourceText AddSource(ISourceText source)
         {
-            members.Add(source);
+            _members.Add(source);
             return this;
         }
 
         public IMethodSourceText AddSource(string source)
         {
-            members.Add(new SourceText(source));
+            _members.Add(new SourceText(source));
             return this;
         }
     }

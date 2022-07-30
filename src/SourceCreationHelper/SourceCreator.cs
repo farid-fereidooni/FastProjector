@@ -11,24 +11,29 @@ namespace SourceCreationHelper
             return new NamespaceSourceText(name);
         }
 
-        public static IClassSourceText CreateClass(string name, AccessModifier accessModifier, bool isStatic = false, bool isVirtual = false)
+        public static IClassSourceText CreateClass(string name, AccessModifier accessModifier)
         {
-            return new ClassSourceText(name, accessModifier, isStatic, isVirtual);
+            return new ClassSourceText(name, accessModifier);
         }
 
-        public static IMethodSourceText CreateMethod(AccessModifier accessModifier, string returnType, string name, IEnumerable<string> parameters, bool isStatic = false, bool isVirtual = false, bool isAsync = false)
+        public static IMethodSourceText CreateMethod(AccessModifier accessModifier, string returnType, string name)
         {
-            return new MethodSourceText(accessModifier, returnType, name, parameters, isStatic, isVirtual, isAsync);
+            return new MethodSourceText(accessModifier, returnType, name);
         }
 
-        public static IPropertySourceText CreateProperty(AccessModifier accessModifier, string type, string name, string initializer = null)
+        public static IConstructorSourceText CreateConstructor(AccessModifier accessModifier, string name)
         {
-            return new PropertySourceText(accessModifier, type, name, initializer);
+            return new ConstructorSourceText(accessModifier, name);
+        }
+        
+        public static IPropertySourceText CreateProperty(AccessModifier accessModifier, string type, string name, bool getOnly = false)
+        {
+            return new PropertySourceText(accessModifier, type, name, getOnly);
         }
 
-        public static IFieldSourceText CreateField(AccessModifier accessModifier, string type, string name, string initializer = null)
+        public static IFieldSourceText CreateField(AccessModifier accessModifier, string type, string name)
         {
-            return new FieldSourceText(accessModifier, type, name, initializer);
+            return new FieldSourceText(accessModifier, type, name);
         }
 
         public static IBlockSourceText CreateCodeBlock(string blockExpression)

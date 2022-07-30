@@ -21,9 +21,9 @@ namespace SourceCreationHelper.Core
             classes.Add(classSource);
             return this;
         }
-        public INamespaceSourceText AddUsing(string usingExpression)
+        public INamespaceSourceText AddUsing(string packageName)
         {
-            usings.Add(usingExpression);
+            usings.Add(packageName);
             return this;
         }
 

@@ -4,6 +4,6 @@ namespace SourceCreationHelper.Interfaces
     {
         INamespaceSourceText AddClass(IClassSourceText classSource);
 
-        INamespaceSourceText AddUsing(string usingExpression);
+        INamespaceSourceText AddUsing(string packageName);
     }
 }
