@@ -1,9 +1,8 @@
 using FastProjector.Contracts;
 using FastProjector.Models.Casting;
-using FastProjector.Processing;
 using FastProjector.Repositories;
 using FastProjector.Services;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using FastProjector.Services.Processing;
 
 namespace FastProjector.Ioc
 {

@@ -70,8 +70,6 @@ namespace FastProjector.Models.TypeInformations
             return null;
         }
         
- 
-
         private static PropertyType GetPrimitiveType(ITypeSymbol typeSymbol) =>
             typeSymbol.SpecialType switch
             {

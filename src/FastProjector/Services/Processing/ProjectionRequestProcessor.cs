@@ -4,7 +4,7 @@ using FastProjector.Analyzing;
 using FastProjector.Contracts;
 using FastProjector.Models;
 
-namespace FastProjector.Processing
+namespace FastProjector.Services.Processing
 {
     
     internal class ProjectionRequestProcessor : IProjectionRequestProcessor

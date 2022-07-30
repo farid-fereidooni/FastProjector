@@ -15,5 +15,15 @@ namespace FastProjector.Helpers
             return enumerable != null && enumerable.Any(predict);
         }
 
+        public static string ToLowerFirstChar(this string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return value;
+            
+            var trimmed = value.TrimStart();
+
+            return char.ToLowerInvariant(trimmed[0]) + trimmed.Substring(1);
+        }
+
     }
 }

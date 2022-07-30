@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <Folder Include="Factories" />
+    <Folder Include="Processing" />
   </ItemGroup>
 
   <ItemGroup>

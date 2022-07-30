@@ -76,17 +76,7 @@ namespace FastProjector.Repositories
 
         private static string GenerateKey(TypeInformation propType)
         {
-            var stringBuilder = new StringBuilder();
-
-            stringBuilder.Append(propType.FullName);
-            if (propType.HasGenericTypes())
-            {
-                stringBuilder.Append("<");
-                stringBuilder.Append(string.Join(",", propType.GenericTypes.Select(s => s.FullName)));
-                stringBuilder.Append(">");
-            }
-
-            return stringBuilder.ToString();
+            return propType.FullName;
         }
 
     }
