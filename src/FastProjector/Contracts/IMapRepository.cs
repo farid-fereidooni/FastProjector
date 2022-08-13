@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using FastProjector.Models;
 using FastProjector.Models.TypeInformations;
 using SourceCreationHelper.Interfaces;
@@ -8,6 +9,7 @@ namespace FastProjector.Contracts
     {
         void Add(ModelMap map);
         ModelMap Get(TypeInformation sourceType, TypeInformation destinationType);
+        IReadOnlyDictionary<string, IReadOnlyCollection<ModelMap>> GetAll(); 
         bool Exists(TypeInformation sourceType, TypeInformation destinationType);
     }
 }

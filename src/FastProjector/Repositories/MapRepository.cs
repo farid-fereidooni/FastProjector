@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using FastProjector.Contracts;
 using FastProjector.Helpers;
@@ -8,7 +10,7 @@ using FastProjector.Models.TypeInformations;
 
 namespace FastProjector.Repositories
 {
-    internal class MapRepository: IMapRepository
+    internal class MapRepository : IMapRepository
     {
         private readonly Dictionary<string, Dictionary<string, ModelMap>> _cachedMapMetaData;
 
@@ -26,7 +28,7 @@ namespace FastProjector.Repositories
             if (existence.sourceExistence && existence.destinationExistence)
                 return;
 
-            if(existence.sourceExistence)
+            if (existence.sourceExistence)
             {
                 _cachedMapMetaData[sourceTypeKey].Add(destinationTypeKey, map);
             }
@@ -45,13 +47,20 @@ namespace FastProjector.Repositories
             );
         }
 
+
+        public IReadOnlyDictionary<string, IReadOnlyCollection<ModelMap>> GetAll()
+        {
+            return _cachedMapMetaData.ToDictionary(k => k.Key,
+                v => (IReadOnlyCollection<ModelMap>) v.Value.Values.ToList());
+        }
+
         private ModelMap Get(string sourceTypeKey, string destinationTypeKey)
         {
             if (!_cachedMapMetaData.TryGetValue(sourceTypeKey, out var destinationTypes)) return null;
-            
+
             return destinationTypes.TryGetValue(destinationTypeKey, out var metaData) ? metaData : null;
         }
-        
+
 
         public bool Exists(TypeInformation sourceType, TypeInformation destinationType)
         {
@@ -60,24 +69,24 @@ namespace FastProjector.Repositories
                 GenerateKey(destinationType)
             ) == (true, true);
         }
-        
-        private (bool sourceExistence, bool destinationExistence) Exists(string sourceTypeKey, string destinationTypeKey)
+
+        private (bool sourceExistence, bool destinationExistence) Exists(string sourceTypeKey,
+            string destinationTypeKey)
         {
             (bool sourceExistence, bool destinationExistence) result = (false, false);
-            
-           if(_cachedMapMetaData.TryGetValue(sourceTypeKey, out var destinationTypes))
-           {
-               result.sourceExistence = true;
-               result.destinationExistence = destinationTypes.ContainsKey(destinationTypeKey);
-           }
 
-           return result;
+            if (_cachedMapMetaData.TryGetValue(sourceTypeKey, out var destinationTypes))
+            {
+                result.sourceExistence = true;
+                result.destinationExistence = destinationTypes.ContainsKey(destinationTypeKey);
+            }
+
+            return result;
         }
 
         private static string GenerateKey(TypeInformation propType)
         {
             return propType.FullName;
         }
-
     }
 }
