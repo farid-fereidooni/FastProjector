@@ -1,3 +1,4 @@
+using FastProjector.Contracts;
 using FastProjector.Helpers;
 using SourceCreationHelper;
 using SourceCreationHelper.Core;
@@ -6,7 +7,7 @@ using static FastProjector.Constants.Constants;
 
 namespace FastProjector.Services.Processing
 {
-    internal class ProjectorClassGenerator
+    internal class ProjectorClassGenerator : IProjectorClassGenerator
     {
         private const string ProjectionEntriesName = "_projections";
         
@@ -20,8 +21,6 @@ namespace FastProjector.Services.Processing
 
             var projectorClassSource = CreateProjectorClass(projectorConstructor);
             namespaceSource.AddClass(projectorClassSource);
-            namespaceSource.AddClass(CreateQueryableProjectionMetadataClass());
-            namespaceSource.AddClass(CreateProjectionMetadataClass());
 
             projectorClassSource.AddProperty(CreateProjectionDictionary());
 
@@ -58,36 +57,6 @@ namespace FastProjector.Services.Processing
             return SourceCreator.CreateClass(PublicApiClassName, AccessModifier.@public)
                 .SetAsStatic()
                 .AddConstructor(constructorSource);
-        }
-
-        private IClassSourceText CreateQueryableProjectionMetadataClass()
-        {
-            return SourceCreator.CreateClass(QueryableProjectionMetadataClassName, AccessModifier.@public)
-                .AddProperty(
-                    SourceCreator.CreateProperty(AccessModifier.@public, "Expression", "QueryableExpression", true)
-                )
-                .AddConstructor(
-                    SourceCreator.CreateConstructor(AccessModifier.@public, QueryableProjectionMetadataClassName)
-                        .AddParameter("Expression", "queryableExpression")
-                        .AddSource(SourceCreator.CreateSource(@"
-                                QueryableExpression = queryableExpression;
-                            "))
-                );
-        }
-        
-        private IClassSourceText CreateProjectionMetadataClass()
-        {
-            return SourceCreator.CreateClass(ProjectionMetadataClassName, AccessModifier.@public)
-                .AddProperty(
-                    SourceCreator.CreateProperty(AccessModifier.@public, QueryableProjectionMetadataClassName, QueryableProjectionMetadataClassName, true)
-                )
-                .AddConstructor(
-                    SourceCreator.CreateConstructor(AccessModifier.@public, ProjectionMetadataClassName)
-                        .AddParameter(QueryableProjectionMetadataClassName, QueryableProjectionMetadataClassName.ToLowerFirstChar())
-                        .AddSource(SourceCreator.CreateSource(@$"
-                                {QueryableProjectionMetadataClassName} = {QueryableProjectionMetadataClassName.ToLowerFirstChar()};
-                            "))
-                );
         }
     }
 }

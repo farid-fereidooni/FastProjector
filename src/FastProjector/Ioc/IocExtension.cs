@@ -25,6 +25,11 @@ namespace FastProjector.Ioc
                 new ProjectionRequestProcessor(c.GetService<IModelMapService>(), c.GetService<IMapRepository>(),
                     c.GetService<IMapResolverService>()));
 
+            container.AddScoped<IProjectorClassGenerator>(c => new ProjectorClassGenerator());
+
+            container.AddScoped<ProjectionInitializerGenerator>(c =>
+                new ProjectionInitializerGenerator(c.GetRequiredService<IMapRepository>(), c.GetRequiredService<IModelMapService>()));
+
             return container;
         }
     }
