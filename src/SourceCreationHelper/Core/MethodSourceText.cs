@@ -8,18 +8,18 @@ namespace SourceCreationHelper.Core
     {
         private readonly AccessModifier _accessModifier;
         private readonly string _returnType;
-        private readonly string _name;
         private readonly List<string> _parameters;
         private readonly List<ISourceText> _members;
         private bool _isStatic;
         private bool _isVirtual;
         private bool _isAsync;
+        public string Name { get; }
 
         public MethodSourceText(AccessModifier accessModifier, string returnType, string name)
         {
             _accessModifier = accessModifier;
             _returnType = returnType;
-            _name = name;
+            Name = name;
             _isStatic = false;
             _isVirtual = false;
             _isAsync = false;
@@ -30,7 +30,7 @@ namespace SourceCreationHelper.Core
         protected override string BuildSource()
         {
              var sourceStringBuilder = new StringBuilder();
-            sourceStringBuilder.AppendLine($"{_accessModifier} {(_isAsync? "async " : "" )}{(_isStatic? "static": (_isVirtual? "virtual" : ""))} {_returnType} {_name}");
+            sourceStringBuilder.AppendLine($"{_accessModifier} {(_isAsync? "async " : "" )}{(_isStatic? "static": (_isVirtual? "virtual" : ""))} {_returnType} {Name}");
             sourceStringBuilder.Append("(");
             if(_parameters.NotNullAny())
             {
