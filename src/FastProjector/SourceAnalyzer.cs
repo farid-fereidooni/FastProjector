@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
 using FastProjector.Analyzing;
@@ -38,6 +37,7 @@ namespace FastProjector
             }
             
             var finalSource = _requestProcessor.ProcessProjectionRequest(requests);
+          
             context.AddSource("Projections.cs", SourceText.From(finalSource, Encoding.UTF8));
             
 

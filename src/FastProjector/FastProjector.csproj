@@ -1,14 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Version>0.1.0</Version>
+    <Authors>Farid_Fereidooni</Authors>
+    <Company>Farid_Fereidooni</Company>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>9.0</LangVersion>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild> <!-- Generates a package at build -->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild> <!-- Generates a package at build -->
     <IncludeBuildOutput>false</IncludeBuildOutput> <!-- Do not include the generator as a lib dependency -->
   </PropertyGroup>
 
   <ItemGroup>
-       <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" PrivateAssets="all" />
   </ItemGroup>
 
@@ -17,39 +20,29 @@
   </PropertyGroup>
 
   <ItemGroup>
-<!--    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" PrivateAssets="all" GeneratePathProperty="true" />-->
-<!--    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" PrivateAssets="all" GeneratePathProperty="true" />-->
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" GeneratePathProperty="true" PrivateAssets="all" />
-
-    <!-- Package the generator in the analyzer directory of the nuget package -->
-    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-
-    <!-- Package the Newtonsoft.Json dependency alongside the generator assembly -->
-    <None Include="$(PKGNewtonsoft_Json)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-<!--    <None Include="$(PKGMicrosoft_Extensions_DependencyInjection)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />-->
-<!--    <None Include="$(PKGMicrosoft_Extensions_DependencyInjection_Abstractions)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />-->
+    <ProjectReference Include="..\SourceCreationHelper\SourceCreationHelper.csproj" GeneratePathProperty="true" PrivateAssets="all"/>
+    <ProjectReference Include="..\FastProjector.Shared\FastProjector.Shared.csproj" GeneratePathProperty="true" />
+    <ProjectReference Include="..\FastProjector.Service\FastProjector.Service.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SourceCreationHelper\SourceCreationHelper.csproj" OutputItemType="Analyzer" />
-  </ItemGroup>
+
+    <None Include="$(PKGSourceCreationHelper)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGFastProjector_Shared)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    
+    <!-- Package the generator in the analyzer directory of the nuget package -->
+    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />  </ItemGroup>
+
 
   <ItemGroup>
     <Folder Include="Factories" />
     <Folder Include="Processing" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Models\Projections\MapBasedProjection.cs" />
-  </ItemGroup>
-
   
   <Target Name="GetDependencyTargetPaths">
     <ItemGroup>
-        <TargetPathWithTargetPlatformMoniker Include="$(PKGNewtonsoft_Json)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />
-<!--        <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Extensions_DependencyInjection)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />-->
-<!--        <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_Extensions_DependencyInjection_Abstractions)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />-->
-
+        <TargetPathWithTargetPlatformMoniker Include="$(PKGSourceCreationHelper)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />
+        <TargetPathWithTargetPlatformMoniker Include="$(PKGFastProjector_Shared)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />
     </ItemGroup>
   </Target>
 

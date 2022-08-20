@@ -42,5 +42,5 @@ namespace FastProjector.Services.Processing
         {
             throw new NotImplementedException();
         }
-    }    
+    }
 }
