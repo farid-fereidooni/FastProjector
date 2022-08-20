@@ -7,24 +7,24 @@ namespace SourceCreationHelper.Core
     {
 
         
-        private readonly string methodName;
-        private readonly List<string> arguments;
+        private readonly string _methodName;
+        private readonly List<string> _arguments;
 
         public CallSourceText(string methodName)
         {
-            this.methodName = methodName;
-            this.arguments = new List<string>();
+            _methodName = methodName;
+            _arguments = new List<string>();
         }
         
         protected override string BuildSource()
         {
-            var argumentsJoined = string.Join(", ", arguments);
-            return $"{methodName}({argumentsJoined})";
+            var argumentsJoined = string.Join(", ", _arguments);
+            return $"{_methodName}({argumentsJoined})";
         }
 
         public ICallSourceText AddArgument(ISourceText argument)
         {
-            arguments.Add(argument.Text);
+            _arguments.Add(argument.Text);
             return this;
         }
     }

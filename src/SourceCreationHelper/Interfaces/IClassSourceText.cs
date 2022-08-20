@@ -11,6 +11,7 @@ namespace SourceCreationHelper.Interfaces
         IClassSourceText AddConstructor(IConstructorSourceText constructorSource);
         IClassSourceText SetAsStatic(bool isStatic = true);
         IClassSourceText SetAsVirtual(bool isVirtual = true);
+        IClassSourceText Inherit(string objectName);
         string Name { get; }
     }
 }

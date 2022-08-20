@@ -1,6 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <PackageId>SourceCreationHelper</PackageId>
+        <Version>0.1.0</Version>
+        <Authors>Farid_Fereidooni</Authors>
+        <Company>Farid_Fereidooni</Company>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <TargetFramework>netstandard2.0</TargetFramework>
         <AssemblyName>SourceCreationHelper</AssemblyName>
         <RootNamespace>SourceCreationHelper</RootNamespace>

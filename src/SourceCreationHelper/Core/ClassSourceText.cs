@@ -13,6 +13,7 @@ namespace SourceCreationHelper.Core
         private bool _isVirtual;
         private readonly List<ISourceText> _members;
         private readonly List<IConstructorSourceText> _constructors;
+        private readonly List<string> _derivedObjects;
 
         public ClassSourceText(string name, AccessModifier accessModifier)
         {
@@ -22,13 +23,21 @@ namespace SourceCreationHelper.Core
             _isVirtual = false;
             _members = new List<ISourceText>();
             _constructors = new List<IConstructorSourceText>();
+            _derivedObjects = new List<string>();
 
         }
         protected override string BuildSource()
         {
             var sourceStringBuilder = new StringBuilder();
             var virtualExpression = _isVirtual ? "virtual" : "";
-            sourceStringBuilder.AppendLine($"{_accessModifier} {(_isStatic? "static": virtualExpression)} class {Name}");
+            sourceStringBuilder.Append($"{_accessModifier} {(_isStatic? "static": virtualExpression)} class {Name}");
+            if (_derivedObjects.NotNullAny())
+            {
+                var commaDelimitedObjects = string.Join(", ", _derivedObjects);
+                sourceStringBuilder.Append($": {commaDelimitedObjects}");
+            }
+
+            sourceStringBuilder.AppendLine();
             sourceStringBuilder.AppendLine("{");
             foreach(var memberItem in _members)
             {
@@ -61,6 +70,17 @@ namespace SourceCreationHelper.Core
         public IClassSourceText SetAsVirtual(bool isVirtual = true)
         {
             _isVirtual = isVirtual;
+            return this;
+        }
+
+        public IClassSourceText Inherit(string objectName)
+        {
+            if (_derivedObjects.Contains(objectName))
+            {
+                throw new ArgumentException("The object already added to derived list");
+            }
+            _derivedObjects.Add(objectName);
+
             return this;
         }
 
