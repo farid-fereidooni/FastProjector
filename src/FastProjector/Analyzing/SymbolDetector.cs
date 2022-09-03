@@ -36,14 +36,14 @@ namespace FastProjector.Analyzing
         {
             foreach (var projectionAttrib in projectionAttribs)
             {
-                var projectionTarget =
+                var projectionSource =
                     compilation.GetTypeByMetadataName(projectionAttrib.ConstructorArguments.FirstOrDefault().Value
                         .ToString());
-                if (projectionTarget == null) continue;
+                if (projectionSource == null) continue;
                 yield return new ProjectionRequest
                 {
-                    ProjectionSource = projectionCandidateSymbol,
-                    ProjectionTarget = projectionTarget
+                    ProjectionSource = projectionSource,
+                    ProjectionTarget = projectionCandidateSymbol
                 };
             }
         }

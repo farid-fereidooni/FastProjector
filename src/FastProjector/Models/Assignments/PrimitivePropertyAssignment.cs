@@ -22,8 +22,8 @@ namespace FastProjector.Models.Assignments
             if (_sourceType.Equals(_destinationType))
             {
                 return SourceCreator.CreateAssignment(
-                    SourceCreator.CreateSource(_sourceType.PropertyName),
-                    SourceCreator.CreateSource($"{parameterName}.{_destinationType.PropertyName}")
+                    SourceCreator.CreateSource(_destinationType.PropertyName),
+                    SourceCreator.CreateSource($"{parameterName}.{_sourceType.PropertyName}")
                 );
             }
             

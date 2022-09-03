@@ -104,7 +104,7 @@ namespace FastProjector.Services.Processing
 
                     destinations.{nameof(ProjectionDestinations.AddDestination)}
                     (
-                        ""{sourceFullname}"",
+                        ""{destinationFullname}"",
                         new {ProjectionMetadataClassName}(new {nameof(IQueryableProjectionMetadata).TrimStart('I')}(to_{destinationNormalizedForVariable}))
                     );                
                 "));
