@@ -10,7 +10,7 @@ namespace FastProjector.Services
         private readonly ICastingService _castingService;
         private readonly IVariableNameGenerator _nameGenerator;
 
-        public ModelMapService(IMapRepository mapCache, ICastingService castingService, IVariableNameGenerator nameGenerator)
+        public ModelMapService(ICastingService castingService, IVariableNameGenerator nameGenerator)
         {
             _castingService = castingService;
             _nameGenerator = nameGenerator;

@@ -19,8 +19,8 @@ public class BindTest
 
     public BindTest()
     {
-        _mapService = new ModelMapService(new MapRepository(),
-            new CastingService(DefaultCastingConfigurations.GetConfigurations()), new VariableNameGenerator());
+        _mapService = new ModelMapService(new CastingService(DefaultCastingConfigurations.GetConfigurations()),
+            new VariableNameGenerator());
     }
 
     [Fact]

@@ -16,18 +16,16 @@ namespace FastProjector.Ioc
             container.AddSingleton<IVariableNameGenerator>(c => new VariableNameGenerator());
 
             container.AddTransient<IModelMapService>(c =>
-                new ModelMapService(c.GetService<IMapRepository>(), c.GetService<ICastingService>(),
+                new ModelMapService(c.GetService<ICastingService>(),
                     c.GetService<IVariableNameGenerator>()));
 
             container.AddScoped<IMapResolverService>(c => new MapResolverService(c.GetService<IMapRepository>()));
 
             container.AddScoped<IProjectionRequestProcessor>(c =>
-                new ProjectionRequestProcessor(c.GetService<IModelMapService>(), c.GetService<IMapRepository>(),
+                new ProjectionRequestProcessor(c.GetService<IMapRepository>(),
                     c.GetService<IMapResolverService>()));
 
-            //container.AddScoped<IProjectorClassGenerator>(c => new ProjectorClassGenerator());
-
-            container.AddScoped<ProjectionInitializerGenerator>(c =>
+            container.AddScoped<IProjectionInitializerGenerator>(c =>
                 new ProjectionInitializerGenerator(c.GetRequiredService<IMapRepository>(), c.GetRequiredService<IModelMapService>()));
 
             return container;

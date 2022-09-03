@@ -9,19 +9,17 @@ namespace FastProjector.Services.Processing
     
     internal class ProjectionRequestProcessor : IProjectionRequestProcessor
     {
-        private readonly IModelMapService _mapService;
         private readonly IMapRepository _mapRepository;
         private readonly IMapResolverService _mapResolverService;
 
-        public ProjectionRequestProcessor(IModelMapService mapService, IMapRepository mapRepository, IMapResolverService mapResolverService)
+        public ProjectionRequestProcessor(IMapRepository mapRepository, IMapResolverService mapResolverService)
         {
-            _mapService = mapService;
             _mapRepository = mapRepository;
             _mapResolverService = mapResolverService;
         }
-        public string ProcessProjectionRequest(IEnumerable<ProjectionRequest> requests)
+        public void ProcessProjectionRequest(IEnumerable<ProjectionRequest> requests)
         {
-            var mappings = new List<ModelMap>();
+            var notResolvedMappings = new List<ModelMap>();
             
             foreach(var item in requests)
             {
@@ -31,16 +29,24 @@ namespace FastProjector.Services.Processing
                     continue;
                 
                 var mapping = new ModelMap(modelMetadata);
+                
+                mapping.TryResolveRequiredMaps(_mapResolverService);
+
+                if (mapping.RequiresModelMaps())
+                    notResolvedMappings.Add(mapping);
 
                 _mapRepository.Add(mapping);
             }
 
-            return CreateAllMappingSource(mappings);
+            TryResolveRequiredMapsAfterAllMappingProcessed(notResolvedMappings);
         }
-        
-        public string CreateAllMappingSource(List<ModelMap> mappings)
+
+        private void TryResolveRequiredMapsAfterAllMappingProcessed(List<ModelMap> notResolvedMappings)
         {
-            throw new NotImplementedException();
+            foreach (var mapping in notResolvedMappings)
+            {
+                mapping.TryResolveRequiredMaps(_mapResolverService);
+            }
         }
     }
 }

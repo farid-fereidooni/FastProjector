@@ -22,7 +22,7 @@ public class CastTest
     public CastTest()
     {
         _castingService = new CastingService(DefaultCastingConfigurations.GetConfigurations());
-        _mapService = new ModelMapService(new MapRepository(),_castingService , new VariableNameGenerator());
+        _mapService = new ModelMapService(_castingService , new VariableNameGenerator());
     }
     
     

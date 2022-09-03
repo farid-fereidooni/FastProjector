@@ -27,7 +27,7 @@ public class ProjectionTest
     {
         _variableNameGenerator = new VariableNameGenerator();
         _castingService = new CastingService(DefaultCastingConfigurations.GetConfigurations());
-        _mapService = new ModelMapService(new MapRepository(), _castingService, _variableNameGenerator);
+        _mapService = new ModelMapService(_castingService, _variableNameGenerator);
     }
 
     [Theory]
@@ -116,17 +116,12 @@ public class ProjectionTest
 
         var roleModelMap = new ModelMap(new ModelMapMetaData(roleSymbol, roleModelSymbol));
 
-        var mapCacheMock = Substitute.For<IMapRepository>();
-        mapCacheMock.Get(Arg.Is<TypeInformation>(a => a.FullName.Contains("Role")),
-                Arg.Is<TypeInformation>(x => x.FullName.Contains("RoleModel")))
-            .Returns(roleModelMap);
-
         var mapResolverMock = Substitute.For<IMapResolverService>();
         mapResolverMock.ResolveMap(Arg.Is<ClassTypeMetaData>(a => a.TypeInformation.FullName.Contains("Role")),
                 Arg.Is<ClassTypeMetaData>(x => x.TypeInformation.FullName.Contains("RoleModel")))
             .Returns(roleModelMap);
 
-        var mapServiceMock = new ModelMapService(mapCacheMock, _castingService, _variableNameGenerator);
+        var mapServiceMock = new ModelMapService(_castingService, _variableNameGenerator);
 
         //Act
         var modelMap = new ModelMap(new ModelMapMetaData(userSymbol, userModelSymbol));
@@ -194,18 +189,12 @@ public class ProjectionTest
 
         var roleModelMap = new ModelMap(new ModelMapMetaData(roleSymbol, roleModelSymbol));
 
-        var mapCacheMock = Substitute.For<IMapRepository>();
-        mapCacheMock.Get(Arg.Is<TypeInformation>(a => a.FullName.Contains("Role")),
-                Arg.Is<TypeInformation>(x => x.FullName.Contains("RoleModel")))
-            .Returns(roleModelMap);
-
         var mapResolverMock = Substitute.For<IMapResolverService>();
         mapResolverMock.ResolveMap(Arg.Is<ClassTypeMetaData>(a => a.TypeInformation.FullName.Contains("Role")),
                 Arg.Is<ClassTypeMetaData>(x => x.TypeInformation.FullName.Contains("RoleModel")))
             .Returns(roleModelMap);
 
-        var mapServiceMock = new ModelMapService(mapCacheMock, _castingService, _variableNameGenerator);
-
+        var mapServiceMock = new ModelMapService(_castingService, _variableNameGenerator);
 
         //Act
         var modelMap = new ModelMap(new ModelMapMetaData(userSymbol, userModelSymbol));

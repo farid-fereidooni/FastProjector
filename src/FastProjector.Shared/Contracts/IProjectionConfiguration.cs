@@ -1,6 +1,6 @@
 namespace FastProjector.Shared.Contracts
 {
-    public interface IProjectionDictionary
+    public interface IProjectionConfiguration
     {
         IProjectionDestinations From<TSource>();
     }

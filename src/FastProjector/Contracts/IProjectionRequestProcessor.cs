@@ -5,6 +5,6 @@ namespace FastProjector.Contracts
 {
     internal interface IProjectionRequestProcessor
     {
-        string ProcessProjectionRequest(IEnumerable<ProjectionRequest> requests);
+        void ProcessProjectionRequest(IEnumerable<ProjectionRequest> requests);
     }
 }
