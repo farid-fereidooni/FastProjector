@@ -5,8 +5,6 @@ namespace SourceCreationHelper.Core
 {   
     internal class CallSourceText: SourceTextBase, ICallSourceText
     {
-
-        
         private readonly string _methodName;
         private readonly List<string> _arguments;
 

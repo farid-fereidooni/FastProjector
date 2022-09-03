@@ -30,17 +30,17 @@ namespace SourceCreationHelper.Core
         protected override string BuildSource()
         {
              var sourceStringBuilder = new StringBuilder();
-            sourceStringBuilder.AppendLine($"{_accessModifier} {(_isAsync? "async " : "" )}{(_isStatic? "static": (_isVirtual? "virtual" : ""))} {_returnType} {Name}");
+            sourceStringBuilder.Append($"{_accessModifier} {(_isAsync? "async " : "" )}{(_isStatic? "static": (_isVirtual? "virtual" : ""))} {_returnType} {Name}");
             sourceStringBuilder.Append("(");
             if(_parameters.NotNullAny())
             {
                 sourceStringBuilder.Append(string.Join(", ", _parameters));
             }
-            sourceStringBuilder.Append(")");
+            sourceStringBuilder.AppendLine(")");
             sourceStringBuilder.AppendLine("{");
             foreach(var memberItem in _members)
             {
-                sourceStringBuilder.Append(memberItem.Text);
+                sourceStringBuilder.AppendLine(memberItem.Text);
             }
             sourceStringBuilder.AppendLine("}");
             return sourceStringBuilder.ToString();
