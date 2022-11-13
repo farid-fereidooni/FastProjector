@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using FastProjector.Shared.Contracts;
 
@@ -14,7 +15,12 @@ namespace FastProjector.Shared.Models
 
         public IProjectionMetadata To<TDestination>()
         {
-            var fullName = typeof(TDestination).FullName;
+            return To(typeof(TDestination));
+        }
+
+        public IProjectionMetadata To(Type type)
+        {
+            var fullName = type.FullName;
 
             return fullName != null && _destinations.TryGetValue(fullName, out var metadata)
                 ? metadata

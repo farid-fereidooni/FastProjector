@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using FastProjector.Shared.Contracts;
 
@@ -14,8 +15,13 @@ namespace FastProjector.Shared.Models
 
         public IProjectionDestinations From<TSource>()
         {
-            var fullName = typeof(TSource).FullName;
+            return From(typeof(TSource));
+        }
 
+        public IProjectionDestinations From(Type type)
+        {
+            var fullName = type.FullName;
+            
             return fullName != null && _configurations.TryGetValue(fullName, out var destinations)
                 ? destinations
                 : null;

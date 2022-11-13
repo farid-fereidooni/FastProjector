@@ -7,13 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\FastProjector.Service\FastProjector.Service.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
+        <ProjectReference Include="..\FastProjector.Service\FastProjector.Service.csproj" />
+        <ProjectReference Include="..\FastProjector.Shared\FastProjector.Shared.csproj" />
         <ProjectReference Include="..\FastProjector\FastProjector.csproj"
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false" />
     </ItemGroup>
-
 </Project>
